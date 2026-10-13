@@ -5,22 +5,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
+import 'stroke_score.dart';
 
 class PracticeState {
   const PracticeState({
     required this.item,
     this.strokes = const [],
     this.checked = false,
+    this.score,
   });
   final Item item;
   final List<List<Offset>> strokes; // coordenadas normalizadas 0..1
   final bool checked;
+  final double? score; // parecido 0..1 con el caracter correcto
 
-  PracticeState copyWith({List<List<Offset>>? strokes, bool? checked}) =>
+  PracticeState copyWith({List<List<Offset>>? strokes, bool? checked, double? score}) =>
       PracticeState(
         item: item,
         strokes: strokes ?? this.strokes,
         checked: checked ?? this.checked,
+        score: score ?? this.score,
       );
 }
 
@@ -68,9 +72,15 @@ class PracticeSession
     if (s != null) state = AsyncData(s.copyWith(strokes: const []));
   }
 
-  void check() {
+  Future<void> check() async {
     final s = state.valueOrNull;
-    if (s != null) state = AsyncData(s.copyWith(checked: true));
+    if (s == null || s.checked) return;
+    state = AsyncData(s.copyWith(checked: true));
+    final score = await scoreStrokes(s.strokes, s.item.japanese);
+    final cur = state.valueOrNull;
+    if (cur != null && cur.item.id == s.item.id && cur.checked) {
+      state = AsyncData(cur.copyWith(score: score));
+    }
   }
 
   void grade(bool ok) {

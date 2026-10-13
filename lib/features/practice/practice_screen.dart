@@ -95,6 +95,7 @@ class PracticeScreen extends ConsumerWidget {
             );
             final grade = Column(
               children: [
+                if (s.score != null) _ScoreBadge(s.score!),
                 const Text('¿Cómo te fue?',
                     style: TextStyle(fontSize: 15, color: Pt.subtext)),
                 const SizedBox(height: 12),
@@ -242,6 +243,32 @@ class PracticeScreen extends ConsumerWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class _ScoreBadge extends StatelessWidget {
+  const _ScoreBadge(this.score);
+  final double score;
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color) = score >= 0.72
+        ? ('Muy bien', Pt.green)
+        : score >= 0.5
+            ? ('Casi, revisa la forma', Pt.yellow)
+            : ('Repasa los trazos', Pt.red);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color),
+      ),
+      child: Text('${(score * 100).round()}% de parecido · $label',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w700)),
     );
   }
 }
