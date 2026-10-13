@@ -36,8 +36,8 @@ class ModuleMenuScreen extends StatelessWidget {
   }
 }
 
-class _Entry {
-  const _Entry(this.title, this.subtitle, this.color, this.path, {this.glyph, this.icon});
+class MenuEntry {
+  const MenuEntry(this.title, this.subtitle, this.color, this.path, {this.glyph, this.icon});
   final String title, subtitle, path;
   final Color color;
   final String? glyph;
@@ -58,13 +58,13 @@ class ModuleMenuBody extends ConsumerWidget {
         .firstOrNull;
     if (module == null) return const SizedBox();
     final entries = [
-      _Entry('Flashcards', 'Reconoce cada carácter', Pt.flamingo,
+      MenuEntry('Flashcards', 'Reconoce cada carácter', Pt.flamingo,
           '/m/$moduleId/flashcards', glyph: 'あ'),
-      _Entry('Práctica', 'Dibuja con el dedo', Pt.pink, '/m/$moduleId/practice',
+      MenuEntry('Práctica', 'Dibuja con el dedo', Pt.pink, '/m/$moduleId/practice',
           icon: Icons.edit_rounded),
-      _Entry('Vocabulario', 'Partes del cuerpo', Pt.teal,
+      MenuEntry('Vocabulario', 'Palabras por tema', Pt.teal,
           '/m/$moduleId/vocabulary', glyph: 'め'),
-      _Entry('Referencia', 'Tabla de caracteres', Pt.yellow,
+      MenuEntry('Referencia', 'Tabla de caracteres', Pt.yellow,
           '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
     ];
     final header = Row(
@@ -94,7 +94,7 @@ class ModuleMenuBody extends ConsumerWidget {
                 color: Pt.flamingo)),
       ],
     );
-    final tiles = [for (final e in entries) _EntryTile(e, expanded: expanded)];
+    final tiles = [for (final e in entries) MenuEntryTile(e, expanded: expanded)];
     if (expanded) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(40, 32, 40, 40),
@@ -118,9 +118,9 @@ class ModuleMenuBody extends ConsumerWidget {
   }
 }
 
-class _EntryTile extends StatelessWidget {
-  const _EntryTile(this.e, {required this.expanded});
-  final _Entry e;
+class MenuEntryTile extends StatelessWidget {
+  const MenuEntryTile(this.e, {super.key, required this.expanded});
+  final MenuEntry e;
   final bool expanded;
 
   @override

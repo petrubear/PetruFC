@@ -11,13 +11,14 @@ import 'quiz_session.dart';
 enum _Opt { idle, good, bad, dim }
 
 class QuizScreen extends ConsumerWidget {
-  const QuizScreen({super.key, required this.moduleId, required this.mode});
+  const QuizScreen({super.key, required this.moduleId, required this.mode, this.groupId});
   final String moduleId;
   final QuizMode mode;
+  final String? groupId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final args = (moduleId, mode);
+    final args = (moduleId, mode, groupId);
     final session = ref.watch(quizSessionProvider(args));
     return Scaffold(
       body: SafeArea(

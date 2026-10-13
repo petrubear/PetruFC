@@ -11,13 +11,19 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'petrufc'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
           await seedDatabase(this);
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await customStatement(
+                "UPDATE item_groups SET name = 'Partes del cuerpo' WHERE id = 'hiragana_body'");
+          }
         },
       );
 }

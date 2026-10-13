@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/data/providers.dart';
 import 'quiz_engine.dart';
 
-typedef QuizArgs = (String moduleId, QuizMode mode);
+typedef QuizArgs = (String moduleId, QuizMode mode, String? groupId);
 
 class QuizState {
   const QuizState({
@@ -24,11 +24,13 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
 
   @override
   Future<QuizState> build(QuizArgs arg) async {
-    final (moduleId, mode) = arg;
+    final (moduleId, mode, groupId) = arg;
     final repo = ref.read(repoProvider);
     final Set<String> ids;
     if (mode.kind == 'kana') {
       ids = await ref.read(activeGroupsProvider(moduleId).future);
+    } else if (groupId != null) {
+      ids = {groupId};
     } else {
       ids = (await repo.groups(moduleId, 'word')).map((g) => g.id).toSet();
     }

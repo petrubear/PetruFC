@@ -9,8 +9,10 @@ import '../../core/widgets/ui_kit.dart';
 import 'quiz_engine.dart';
 
 class ModeSetupScreen extends StatelessWidget {
-  const ModeSetupScreen({super.key, required this.moduleId, required this.kind});
+  const ModeSetupScreen(
+      {super.key, required this.moduleId, required this.kind, this.groupId});
   final String moduleId, kind;
+  final String? groupId;
 
   bool get _isKana => kind == 'kana';
 
@@ -18,7 +20,7 @@ class ModeSetupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final expanded = isExpanded(context);
     final modes = QuizMode.values.where((m) => m.kind == kind).toList();
-    final title = _isKana ? 'Flashcards' : 'Vocabulario';
+    final title = _isKana ? 'Flashcards' : 'Práctica';
     final back = RoundIconButton(
         icon: Icons.arrow_back_ios_new_rounded,
         label: 'Volver',
@@ -53,7 +55,7 @@ class ModeSetupScreen extends StatelessWidget {
                             for (var i = 0; i < modes.length; i++) ...[
                               Expanded(
                                   child: _ModeTile(moduleId, modes[i],
-                                      primary: i == 0, tall: true)),
+                                      groupId: groupId, primary: i == 0, tall: true)),
                               if (i < modes.length - 1) const SizedBox(height: 14),
                             ],
                           ],
@@ -83,7 +85,8 @@ class ModeSetupScreen extends StatelessWidget {
               const SectionLabel('MODO'),
               const SizedBox(height: 12),
               for (var i = 0; i < modes.length; i++) ...[
-                _ModeTile(moduleId, modes[i], primary: i == 0, tall: false),
+                _ModeTile(moduleId, modes[i],
+                    groupId: groupId, primary: i == 0, tall: false),
                 const SizedBox(height: 12),
               ],
             ],
@@ -141,8 +144,10 @@ class _SetList extends ConsumerWidget {
 }
 
 class _ModeTile extends StatelessWidget {
-  const _ModeTile(this.moduleId, this.mode, {required this.primary, required this.tall});
+  const _ModeTile(this.moduleId, this.mode,
+      {required this.groupId, required this.primary, required this.tall});
   final String moduleId;
+  final String? groupId;
   final QuizMode mode;
   final bool primary, tall;
 
@@ -167,7 +172,8 @@ class _ModeTile extends StatelessWidget {
       child: InkWell(
         customBorder:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(tall ? 32 : 26)),
-        onTap: () => context.push('/m/$moduleId/play/${mode.name}'),
+        onTap: () => context.push(
+            '/m/$moduleId/play/${mode.name}${groupId == null ? '' : '?group=$groupId'}'),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: tall ? 28 : 22, vertical: tall ? 28 : 20),
           child: tall

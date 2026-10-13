@@ -104,7 +104,7 @@ Future<void> seedDatabase(AppDatabase db) async {
           id: 'hiragana_body',
           moduleId: 'hiragana',
           kind: 'word',
-          name: 'Cuerpo',
+          name: 'Partes del cuerpo',
           subtitle: '30 palabras',
           sortOrder: 3),
     ]);
