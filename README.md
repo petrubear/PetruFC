@@ -6,9 +6,11 @@ App Flutter para Android para estudiar japonés con flashcards. Incluye **Hiraga
 
 ## Funciones
 
-- **Flashcards**: Hiragana → Romaji y Romaji → Hiragana, con 4 opciones al azar y botón de pronunciación. Los sets (Básicos, Dakuten/handakuten, Combinados) se activan o desactivan a gusto.
-- **Práctica**: se muestra el romaji, dibujas el hiragana con el dedo y "Check" revela el carácter correcto, muestra un porcentaje de parecido (comparación local con la fuente) y tú decides si lo lograste.
-- **Vocabulario**: por secciones (Hiragana: "Partes del cuerpo", 30 palabras de cabello a pies; Katakana: "Comida y bebida", 30 palabras de origen extranjero; cada sistema solo usa su propia escritura). Cada sección tiene una **Referencia** (tabla hiragana y significado) y una **Práctica** en ambos sentidos: Hiragana → Español y Español → Hiragana.
+Cada módulo (Hiragana y Katakana) ofrece las mismas cuatro funciones:
+
+- **Flashcards**: Kana → Romaji y Romaji → Kana, con 4 opciones al azar y botón de pronunciación. Los sets (Básicos, Dakuten/handakuten, Combinados) se activan o desactivan a gusto.
+- **Práctica**: se muestra el romaji, dibujas el carácter con el dedo y "Check" revela el correcto, muestra un porcentaje de parecido (comparación local con la fuente) y tú decides si lo lograste.
+- **Vocabulario**: por secciones (Hiragana: "Partes del cuerpo"; Katakana: "Comida y bebida", palabras de origen extranjero; 30 palabras cada una, solo con su propia escritura). Cada sección tiene una **Referencia** (palabra y significado) y una **Práctica** en ambos sentidos: Palabra → Español y Español → Palabra.
 - **Referencia**: tabla con los 104 caracteres (46 básicos, 25 con dakuten/handakuten y 33 combinados) organizados por consonante y vocal; al tocar uno suena su pronunciación.
 - Todas las respuestas se registran en SQLite (`review_stats`) para futuras estadísticas.
 
@@ -38,7 +40,7 @@ App Flutter para Android para estudiar japonés con flashcards. Incluye **Hiraga
 | :---: |
 | <img src="docs/images/XVocab.png" width="420"> |
 
-Las capturas salen de los mockups de diseño (tema PetruTheme Dark). Las dos disposiciones se eligen por ancho de ventana (corte en 600 dp) y cambian en vivo al plegar o desplegar.
+Las capturas salen de los mockups de diseño (tema PetruTheme Dark) y muestran Hiragana; Katakana, Referencia y las secciones de vocabulario usan los mismos componentes. Las dos disposiciones se eligen por ancho de ventana (corte en 600 dp) y cambian en vivo al plegar o desplegar.
 
 ## Stack
 
@@ -54,7 +56,7 @@ Las capturas salen de los mockups de diseño (tema PetruTheme Dark). Las dos dis
 lib/
   app/        tema, router
   core/       datos (Drift), audio (TTS), layout, widgets compartidos
-  features/   home, quiz (flashcards y vocabulario), practice
+  features/   home, quiz (flashcards y vocabulario), practice, reference, vocabulary
 ```
 
 ## Desarrollo
