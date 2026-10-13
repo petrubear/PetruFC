@@ -9,6 +9,7 @@ App Flutter para Android para estudiar japonés con flashcards. Empieza con **Hi
 - **Flashcards**: Hiragana → Romaji y Romaji → Hiragana, con 4 opciones al azar y botón de pronunciación. Los sets (Básicos, Dakuten/handakuten, Combinados) se activan o desactivan a gusto.
 - **Práctica**: se muestra el romaji, dibujas el hiragana con el dedo y "Check" revela el carácter correcto para autoevaluarte.
 - **Vocabulario**: 30 palabras del cuerpo humano (del cabello a los pies), solo en hiragana, en ambos sentidos: Hiragana → Español y Español → Hiragana.
+- **Referencia**: tabla con los 104 caracteres (46 básicos, 25 con dakuten/handakuten y 33 combinados) organizados por consonante y vocal; al tocar uno suena su pronunciación.
 - Todas las respuestas se registran en SQLite (`review_stats`) para futuras estadísticas.
 
 ## Capturas

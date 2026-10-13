@@ -4,6 +4,7 @@ import '../features/home/home_screen.dart';
 import '../features/home/module_menu.dart';
 import '../features/practice/practice_screen.dart';
 import '../features/quiz/mode_setup_screen.dart';
+import '../features/reference/reference_screen.dart';
 import '../features/quiz/quiz_engine.dart';
 import '../features/quiz/quiz_screen.dart';
 
@@ -33,6 +34,11 @@ final router = GoRouter(
                 moduleId: s.pathParameters['module']!,
                 mode: QuizMode.values.byName(s.pathParameters['mode']!),
               ),
+            ),
+            GoRoute(
+              path: 'reference',
+              builder: (c, s) =>
+                  ReferenceScreen(moduleId: s.pathParameters['module']!),
             ),
             GoRoute(
               path: 'practice',

@@ -12,6 +12,7 @@ class Pt {
   static const flamingo = Color(0xFFFC8783);
   static const pink = Color(0xFFFC83DC);
   static const teal = Color(0xFF83FCE8);
+  static const yellow = Color(0xFFFCD583);
   static const green = Color(0xFF8DFC83);
   static const red = Color(0xFFFC83A5);
   static const greenTint = Color(0x248DFC83);

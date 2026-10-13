@@ -64,6 +64,8 @@ class ModuleMenuBody extends ConsumerWidget {
           icon: Icons.edit_rounded),
       _Entry('Vocabulario', 'Partes del cuerpo', Pt.teal,
           '/m/$moduleId/vocabulary', glyph: 'め'),
+      _Entry('Referencia', 'Tabla de caracteres', Pt.yellow,
+          '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
     ];
     final header = Row(
       crossAxisAlignment: CrossAxisAlignment.end,
