@@ -47,8 +47,9 @@ class PracticeScreen extends ConsumerWidget {
             );
             final romaji = Column(
               children: [
-                const Text('Dibuja el hiragana de',
-                    style: TextStyle(fontSize: 15, color: Pt.subtext)),
+                Text(
+                    'Dibuja el ${moduleId == 'katakana' ? 'katakana' : 'hiragana'} de',
+                    style: const TextStyle(fontSize: 15, color: Pt.subtext)),
                 Text(s.item.reading,
                     style: TextStyle(
                         fontSize: expanded ? 96 : 84,

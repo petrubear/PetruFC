@@ -69,7 +69,7 @@ class QuizScreen extends ConsumerWidget {
                     size: expanded ? 48 : 44,
                     onTap: () => context.pop()),
                 Expanded(
-                  child: Text(mode.label.toUpperCase(),
+                  child: Text(mode.label(moduleId).toUpperCase(),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(

@@ -154,13 +154,13 @@ class _ModeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fg = primary ? Pt.crust : Pt.text;
-    final badge = Text(mode.badge,
+    final badge = Text(mode.badge(moduleId),
         style: TextStyle(
             fontFamily: Pt.kana,
             fontWeight: FontWeight.w700,
             fontSize: tall ? 56 : 26,
             color: primary ? Pt.crust : Pt.flamingo));
-    final label = Text(mode.label,
+    final label = Text(mode.label(moduleId),
         style: TextStyle(
             fontSize: tall ? 24 : 19, fontWeight: FontWeight.w700, color: fg));
     return Material(

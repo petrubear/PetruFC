@@ -2,15 +2,37 @@ import 'dart:math';
 
 import '../../core/data/database.dart';
 
-enum QuizMode {
-  kanaToRomaji('Hiragana → Romaji', 'あ→a', 'kana', true),
-  romajiToKana('Romaji → Hiragana', 'a→あ', 'kana', false),
-  wordToMeaning('Hiragana → Español', 'はな→Nariz', 'word', true),
-  meaningToWord('Español → Hiragana', 'Nariz→はな', 'word', false);
+// (nombre del sistema, kana de ejemplo, palabra de ejemplo, su significado)
+const _scripts = {
+  'hiragana': ('Hiragana', 'あ', 'はな', 'Nariz'),
+  'katakana': ('Katakana', 'ア', 'コーヒー', 'Café'),
+};
 
-  const QuizMode(this.label, this.badge, this.kind, this.promptIsJapanese);
-  final String label, badge, kind;
+enum QuizMode {
+  kanaToRomaji('Hiragana → Romaji', 'kana', true),
+  romajiToKana('Romaji → Hiragana', 'kana', false),
+  wordToMeaning('Hiragana → Español', 'word', true),
+  meaningToWord('Español → Hiragana', 'word', false);
+
+  const QuizMode(this._template, this.kind, this.promptIsJapanese);
+  final String _template, kind;
   final bool promptIsJapanese;
+
+  (String, String, String, String) _script(String moduleId) =>
+      _scripts[moduleId] ?? _scripts['hiragana']!;
+
+  String label(String moduleId) =>
+      _template.replaceAll('Hiragana', _script(moduleId).$1);
+
+  String badge(String moduleId) {
+    final s = _script(moduleId);
+    return switch (this) {
+      kanaToRomaji => '${s.$2}→a',
+      romajiToKana => 'a→${s.$2}',
+      wordToMeaning => '${s.$3}→${s.$4}',
+      meaningToWord => '${s.$4}→${s.$3}',
+    };
+  }
 
   bool get answersAreJapanese => !promptIsJapanese;
 

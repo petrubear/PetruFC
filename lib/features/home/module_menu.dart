@@ -8,13 +8,29 @@ import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'home_screen.dart';
 
-class ModuleMenuScreen extends StatelessWidget {
+/// Rotulo japones, kana de ejemplo y glifo de vocabulario de cada modulo kana.
+const _scriptLabels = {
+  'hiragana': ('ひらがな', 'あ', 'め'),
+  'katakana': ('カタカナ', 'ア', 'メ'),
+};
+
+(String, String, String) scriptLabel(String moduleId) =>
+    _scriptLabels[moduleId] ?? _scriptLabels['hiragana']!;
+
+class ModuleMenuScreen extends ConsumerWidget {
   const ModuleMenuScreen({super.key, required this.moduleId});
   final String moduleId;
 
   @override
-  Widget build(BuildContext context) {
-    if (isExpanded(context)) return const HomeScreen();
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (isExpanded(context)) {
+      // Al desplegar el Fold, el panel derecho debe mostrar este modulo.
+      if (ref.read(selectedModuleProvider) != moduleId) {
+        Future.microtask(
+            () => ref.read(selectedModuleProvider.notifier).state = moduleId);
+      }
+      return const HomeScreen();
+    }
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -57,13 +73,14 @@ class ModuleMenuBody extends ConsumerWidget {
         ?.where((m) => m.id == moduleId)
         .firstOrNull;
     if (module == null) return const SizedBox();
+    final (eyebrow, kanaGlyph, wordGlyph) = scriptLabel(moduleId);
     final entries = [
       MenuEntry('Flashcards', 'Reconoce cada carácter', Pt.flamingo,
-          '/m/$moduleId/flashcards', glyph: 'あ'),
+          '/m/$moduleId/flashcards', glyph: kanaGlyph),
       MenuEntry('Práctica', 'Dibuja con el dedo', Pt.pink, '/m/$moduleId/practice',
           icon: Icons.edit_rounded),
       MenuEntry('Vocabulario', 'Palabras por tema', Pt.teal,
-          '/m/$moduleId/vocabulary', glyph: 'め'),
+          '/m/$moduleId/vocabulary', glyph: wordGlyph),
       MenuEntry('Referencia', 'Tabla de caracteres', Pt.yellow,
           '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
     ];
@@ -74,8 +91,8 @@ class ModuleMenuBody extends ConsumerWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('ひらがな',
-                style: TextStyle(
+            Text(eyebrow,
+                style: const TextStyle(
                     color: Pt.flamingo,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,

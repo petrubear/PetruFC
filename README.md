@@ -2,13 +2,13 @@
 
 <img src="assets/icon/icon.png" alt="Icono de Petru FC" width="120" align="right">
 
-App Flutter para Android para estudiar japonés con flashcards. Empieza con **Hiragana** y está pensada para crecer (Katakana, Kanji, etc.) a medida que avancen las clases. Funciona 100% sin conexión y se adapta al Galaxy Z Fold: vista **slab** (cerrado) y **extendida** (abierto).
+App Flutter para Android para estudiar japonés con flashcards. Incluye **Hiragana** y **Katakana** (mismas funciones en ambos) y está pensada para crecer (Kanji, etc.) a medida que avancen las clases. Funciona 100% sin conexión y se adapta al Galaxy Z Fold: vista **slab** (cerrado) y **extendida** (abierto).
 
 ## Funciones
 
 - **Flashcards**: Hiragana → Romaji y Romaji → Hiragana, con 4 opciones al azar y botón de pronunciación. Los sets (Básicos, Dakuten/handakuten, Combinados) se activan o desactivan a gusto.
 - **Práctica**: se muestra el romaji, dibujas el hiragana con el dedo y "Check" revela el carácter correcto, muestra un porcentaje de parecido (comparación local con la fuente) y tú decides si lo lograste.
-- **Vocabulario**: por secciones (hoy "Partes del cuerpo", 30 palabras de cabello a pies, solo en hiragana). Cada sección tiene una **Referencia** (tabla hiragana y significado) y una **Práctica** en ambos sentidos: Hiragana → Español y Español → Hiragana.
+- **Vocabulario**: por secciones (Hiragana: "Partes del cuerpo", 30 palabras de cabello a pies; Katakana: "Comida y bebida", 30 palabras de origen extranjero; cada sistema solo usa su propia escritura). Cada sección tiene una **Referencia** (tabla hiragana y significado) y una **Práctica** en ambos sentidos: Hiragana → Español y Español → Hiragana.
 - **Referencia**: tabla con los 104 caracteres (46 básicos, 25 con dakuten/handakuten y 33 combinados) organizados por consonante y vocal; al tocar uno suena su pronunciación.
 - Todas las respuestas se registran en SQLite (`review_stats`) para futuras estadísticas.
 

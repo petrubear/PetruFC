@@ -16,12 +16,14 @@ class VocabSectionsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groups = ref.watch(groupsProvider((moduleId, 'word'))).valueOrNull ?? [];
+    final wordGlyph = scriptLabel(moduleId).$3;
     return _MenuPage(
       title: 'Vocabulario',
+      glyph: wordGlyph,
       entries: [
         for (final g in groups)
           MenuEntry(g.name, g.subtitle, Pt.teal, '/m/$moduleId/vocabulary/${g.id}',
-              glyph: 'め'),
+              glyph: wordGlyph),
       ],
     );
   }
@@ -37,21 +39,23 @@ class VocabSectionMenuScreen extends ConsumerWidget {
     final groups = ref.watch(groupsProvider((moduleId, 'word'))).valueOrNull ?? [];
     final name = groups.where((g) => g.id == groupId).firstOrNull?.name ?? '';
     final base = '/m/$moduleId/vocabulary/$groupId';
+    final (_, kanaGlyph, wordGlyph) = scriptLabel(moduleId);
     return _MenuPage(
       title: name,
+      glyph: wordGlyph,
       entries: [
         MenuEntry('Referencia', 'Palabras y significados', Pt.yellow, '$base/reference',
             icon: Icons.grid_view_rounded),
         MenuEntry('Práctica', 'Elige la respuesta correcta', Pt.flamingo, '$base/practice',
-            glyph: 'あ'),
+            glyph: kanaGlyph),
       ],
     );
   }
 }
 
 class _MenuPage extends StatelessWidget {
-  const _MenuPage({required this.title, required this.entries});
-  final String title;
+  const _MenuPage({required this.title, required this.glyph, required this.entries});
+  final String title, glyph;
   final List<MenuEntry> entries;
 
   @override
@@ -77,7 +81,7 @@ class _MenuPage extends StatelessWidget {
             ],
           ),
         ),
-        Text('め',
+        Text(glyph,
             style: TextStyle(
                 fontFamily: Pt.kana,
                 fontWeight: FontWeight.w700,

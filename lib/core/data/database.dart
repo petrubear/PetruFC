@@ -11,7 +11,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'petrufc'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -23,6 +23,14 @@ class AppDatabase extends _$AppDatabase {
           if (from < 2) {
             await customStatement(
                 "UPDATE item_groups SET name = 'Partes del cuerpo' WHERE id = 'hiragana_body'");
+          }
+          if (from < 3) {
+            // El grupo de palabras de hiragana pasa de 'hiragana_body' a 'hiragana_words'.
+            await customStatement(
+                "UPDATE item_groups SET id = 'hiragana_words' WHERE id = 'hiragana_body'");
+            await customStatement(
+                "UPDATE items SET group_id = 'hiragana_words' WHERE group_id = 'hiragana_body'");
+            await upgradeToV3(this);
           }
         },
       );
