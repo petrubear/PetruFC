@@ -17,6 +17,9 @@ final modulesProvider =
 final groupsProvider = FutureProvider.family<List<ItemGroup>, (String, String)>(
     (ref, k) => ref.watch(repoProvider).groups(k.$1, k.$2));
 
+/// Flashcards de kana: 9 caracteres en 3 bloques de 3 en lugar de uno.
+final multiSelectProvider = StateProvider<bool>((ref) => false);
+
 final selectedModuleProvider = StateProvider<String>((ref) => 'hiragana');
 
 class ActiveGroups extends AutoDisposeFamilyAsyncNotifier<Set<String>, String> {

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/data/providers.dart';
 import 'quiz_engine.dart';
 
-typedef QuizArgs = (String moduleId, QuizMode mode, String? groupId);
+typedef QuizArgs = (String moduleId, QuizMode mode, String? groupId, bool multi);
 
 class QuizState {
   const QuizState({
@@ -24,7 +24,7 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
 
   @override
   Future<QuizState> build(QuizArgs arg) async {
-    final (moduleId, mode, groupId) = arg;
+    final (moduleId, mode, groupId, multi) = arg;
     final repo = ref.read(repoProvider);
     final Set<String> ids;
     if (mode.kind == 'kana') {
@@ -34,7 +34,7 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
     } else {
       ids = (await repo.groups(moduleId, 'word')).map((g) => g.id).toSet();
     }
-    _engine = QuizEngine(await repo.items(moduleId, ids), mode);
+    _engine = QuizEngine(await repo.items(moduleId, ids), mode, multi: multi);
     return QuizState(question: _engine.next());
   }
 
@@ -42,7 +42,9 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
     final s = state.requireValue;
     if (s.answered) return;
     final ok = option == s.question.correct;
-    ref.read(repoProvider).recordAnswer(s.question.item.id, ok);
+    for (final i in s.question.items) {
+      ref.read(repoProvider).recordAnswer(i.id, ok);
+    }
     state = AsyncData(QuizState(
       question: s.question,
       selected: option,

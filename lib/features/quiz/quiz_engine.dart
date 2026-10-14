@@ -50,21 +50,48 @@ enum QuizMode {
 }
 
 class QuizQuestion {
-  const QuizQuestion(this.item, this.prompt, this.options, this.correct);
-  final Item item;
+  const QuizQuestion(this.items, this.prompt, this.options, this.correct);
+  final List<Item> items;
+  Item get item => items.first;
   final String prompt;
   final List<String> options;
   final String correct;
 }
 
 class QuizEngine {
-  QuizEngine(this.pool, this.mode, [Random? rng]) : _rng = rng ?? Random();
+  QuizEngine(this.pool, this.mode, {this.multi = false, Random? rng})
+      : _rng = rng ?? Random();
   final List<Item> pool;
   final QuizMode mode;
+  final bool multi;
   final Random _rng;
   int? _lastId;
 
+  // 9 caracteres en 3 bloques de 3 (una linea por bloque).
+  static String _blocks(List<String> v) => [
+        for (var i = 0; i < v.length; i += 3) v.sublist(i, i + 3).join(' '),
+      ].join('\n');
+
+  QuizQuestion _nextMulti() {
+    final picks = [for (var i = 0; i < 9; i++) pool[_rng.nextInt(pool.length)]];
+    final answers = picks.map(mode.answer).toList();
+    final correct = _blocks(answers);
+    final choices = pool.map(mode.answer).toSet().toList();
+    final options = <String>{correct};
+    for (var tries = 0; options.length < 4 && tries < 50; tries++) {
+      final alt = [...answers];
+      final slots = List.generate(9, (i) => i)..shuffle(_rng);
+      for (final i in slots.take(2 + _rng.nextInt(2))) {
+        alt[i] = choices[_rng.nextInt(choices.length)];
+      }
+      options.add(_blocks(alt));
+    }
+    return QuizQuestion(picks, _blocks(picks.map(mode.prompt).toList()),
+        options.toList()..shuffle(_rng), correct);
+  }
+
   QuizQuestion next() {
+    if (multi) return _nextMulti();
     Item target;
     do {
       target = pool[_rng.nextInt(pool.length)];
@@ -74,6 +101,6 @@ class QuizEngine {
     final others = pool.map(mode.answer).where((a) => a != correct).toSet().toList()
       ..shuffle(_rng);
     final options = [correct, ...others.take(3)]..shuffle(_rng);
-    return QuizQuestion(target, mode.prompt(target), options, correct);
+    return QuizQuestion([target], mode.prompt(target), options, correct);
   }
 }

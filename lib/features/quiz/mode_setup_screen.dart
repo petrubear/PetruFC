@@ -138,6 +138,31 @@ class _SetList extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
         ],
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          decoration: BoxDecoration(
+              color: Pt.surface0, borderRadius: BorderRadius.circular(22)),
+          child: Row(
+            children: [
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Selección múltiple',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                    Text('9 caracteres en 3 bloques de 3',
+                        style: TextStyle(fontSize: 13, color: Pt.subtext)),
+                  ],
+                ),
+              ),
+              Switch(
+                value: ref.watch(multiSelectProvider),
+                onChanged: (v) => ref.read(multiSelectProvider.notifier).state = v,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
       ],
     );
   }

@@ -27,6 +27,19 @@ const _hBody = 'かみ:kami:Cabello あたま:atama:Cabeza かお:kao:Cara ひ�
     'あし:ashi:Pierna o pie ひざ:hiza:Rodilla かかと:kakato:Talón '
     'つまさき:tsumasaki:Punta del pie';
 
+// Organos y partes internas del cuerpo.
+const _hOrgans = 'しんぞう:shinzou:Corazón のう:nou:Cerebro はい:hai:Pulmones い:i:Estómago '
+    'かんぞう:kanzou:Hígado じんぞう:jinzou:Riñón ちょう:chou:Intestino '
+    'しょうちょう:shouchou:Intestino delgado だいちょう:daichou:Intestino grueso '
+    'しょくどう:shokudou:Esófago きかん:kikan:Tráquea ぼうこう:boukou:Vejiga '
+    'たんのう:tannou:Vesícula biliar すいぞう:suizou:Páncreas ひぞう:hizou:Bazo '
+    'ひふ:hifu:Piel ほね:hone:Hueso きんにく:kinniku:Músculo ち:chi:Sangre '
+    'けっかん:kekkan:Vaso sanguíneo かんせつ:kansetsu:Articulación '
+    'せぼね:sebone:Columna ずがいこつ:zugaikotsu:Cráneo ろっこつ:rokkotsu:Costilla '
+    'しきゅう:shikyuu:Útero ぜんりつせん:zenritsusen:Próstata '
+    'じょうみゃく:joumyaku:Vena どうみゃく:doumyaku:Arteria しんけい:shinkei:Nervio '
+    'せきずい:sekizui:Médula espinal';
+
 const _kBasic =
     'ア:a イ:i ウ:u エ:e オ:o カ:ka キ:ki ク:ku ケ:ke コ:ko サ:sa シ:shi ス:su セ:se ソ:so '
     'タ:ta チ:chi ツ:tsu テ:te ト:to ナ:na ニ:ni ヌ:nu ネ:ne ノ:no ハ:ha ヒ:hi フ:fu ヘ:he ホ:ho '
@@ -140,6 +153,14 @@ void _addHiragana(Batch b, AppDatabase db) => _addScript(b, db,
     combinedExample: 'きゃ しゅ ちょ',
     wordsCount: 30);
 
+void _addHiraganaOrgans(Batch b, AppDatabase db) {
+  final rows = _words('hiragana', 'hiragana_organs', _hOrgans);
+  assert(rows.length == 30, 'se esperaban 30 organos, hay ${rows.length}');
+  b.insert(db.itemGroups,
+      _group('hiragana', 'hiragana_organs', 'word', 'Órganos del cuerpo', '30 palabras', 4));
+  b.insertAll(db.items, rows);
+}
+
 void _addKatakana(Batch b, AppDatabase db) => _addScript(b, db,
     module: 'katakana',
     basic: _kBasic,
@@ -162,6 +183,7 @@ Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
             id: 'kanji', name: 'Kanji', glyph: '字', sortOrder: 2, enabled: false),
       ]);
       _addHiragana(b, db);
+      _addHiraganaOrgans(b, db);
       _addKatakana(b, db);
     });
 
@@ -170,3 +192,6 @@ Future<void> upgradeToV3(AppDatabase db) async {
   await db.customStatement("UPDATE modules SET enabled = 1 WHERE id = 'katakana'");
   await db.batch((b) => _addKatakana(b, db));
 }
+
+/// Esquema v4: seccion "Organos del cuerpo" en Hiragana.
+Future<void> upgradeToV4(AppDatabase db) => db.batch((b) => _addHiraganaOrgans(b, db));

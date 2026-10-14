@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
+import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'quiz_engine.dart';
@@ -18,7 +19,8 @@ class QuizScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final args = (moduleId, mode, groupId);
+    final multi = mode.kind == 'kana' && ref.read(multiSelectProvider);
+    final args = (moduleId, mode, groupId, multi);
     final session = ref.watch(quizSessionProvider(args));
     return Scaffold(
       body: SafeArea(
@@ -47,8 +49,10 @@ class QuizScreen extends ConsumerWidget {
             final prompt = _PromptCard(
               text: q.prompt,
               japanese: mode.promptIsJapanese,
-              size: expanded ? base * 1.7 : base,
-              speakText: mode.promptIsJapanese ? (q.item.audioText ?? q.item.japanese) : null,
+              size: (expanded ? base * 1.7 : base) * (multi ? 0.42 : 1),
+              speakText: mode.promptIsJapanese
+                  ? q.items.map((i) => i.audioText ?? i.japanese).join(multi ? '、' : '')
+                  : null,
             );
             final tiles = [
               for (final o in q.options)
@@ -57,7 +61,7 @@ class QuizScreen extends ConsumerWidget {
                   state: stateOf(o),
                   japanese: mode.answersAreJapanese,
                   list: asList && !expanded,
-                  fontSize: expanded ? 34 : (asList ? 21 : 28),
+                  fontSize: multi ? (expanded ? 26 : 17) : (expanded ? 34 : (asList ? 21 : 28)),
                   onTap: () => notifier.answer(o),
                 ),
             ];
@@ -186,6 +190,7 @@ class _PromptCard extends StatelessWidget {
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(text,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: japanese ? Pt.kana : Pt.ui,
                           fontSize: size,
@@ -242,9 +247,11 @@ class _OptionTile extends StatelessWidget {
             alignment: list ? Alignment.centerLeft : Alignment.center,
             padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 24),
             child: Text('$mark$label',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: japanese ? Pt.kana : Pt.ui,
                     fontSize: fontSize,
+                    height: 1.3,
                     fontWeight: FontWeight.w700,
                     color: fg)),
           ),
