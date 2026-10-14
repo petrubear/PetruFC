@@ -40,6 +40,22 @@ const _hOrgans = 'しんぞう:shinzou:Corazón のう:nou:Cerebro はい:hai:Pu
     'じょうみゃく:joumyaku:Vena どうみゃく:doumyaku:Arteria しんけい:shinkei:Nervio '
     'せきずい:sekizui:Médula espinal';
 
+// Colores (hiragana).
+const _hColors = 'あか:aka:Rojo あお:ao:Azul きいろ:kiiro:Amarillo みどり:midori:Verde '
+    'くろ:kuro:Negro しろ:shiro:Blanco はいいろ:haiiro:Gris ちゃいろ:chairo:Café '
+    'むらさき:murasaki:Morado ももいろ:momoiro:Rosado だいだいいろ:daidaiiro:Naranja '
+    'みずいろ:mizuiro:Celeste きんいろ:kiniro:Dorado ぎんいろ:giniro:Plateado '
+    'こんいろ:koniro:Azul marino はだいろ:hadairo:Color piel きみどり:kimidori:Verde lima '
+    'あいいろ:aiiro:Índigo';
+
+// Colores (katakana, palabras de origen extranjero).
+const _kColors = 'レッド:reddo:Rojo ブルー:buruu:Azul イエロー:ieroo:Amarillo '
+    'グリーン:guriin:Verde ブラック:burakku:Negro ホワイト:howaito:Blanco グレー:guree:Gris '
+    'ブラウン:buraun:Café パープル:paapuru:Morado ピンク:pinku:Rosado '
+    'オレンジ:orenji:Naranja ゴールド:goorudo:Dorado シルバー:shirubaa:Plateado '
+    'ベージュ:beeju:Beige ネイビー:neibii:Azul marino ターコイズ:taakoizu:Turquesa '
+    'ラベンダー:rabendaa:Lavanda クリーム:kuriimu:Crema';
+
 const _kBasic =
     'ア:a イ:i ウ:u エ:e オ:o カ:ka キ:ki ク:ku ケ:ke コ:ko サ:sa シ:shi ス:su セ:se ソ:so '
     'タ:ta チ:chi ツ:tsu テ:te ト:to ナ:na ニ:ni ヌ:nu ネ:ne ノ:no ハ:ha ヒ:hi フ:fu ヘ:he ホ:ho '
@@ -161,6 +177,19 @@ void _addHiraganaOrgans(Batch b, AppDatabase db) {
   b.insertAll(db.items, rows);
 }
 
+void _addColors(Batch b, AppDatabase db) {
+  for (final (module, data, order) in [
+    ('hiragana', _hColors, 5),
+    ('katakana', _kColors, 4),
+  ]) {
+    final id = '${module}_colors';
+    final rows = _words(module, id, data);
+    b.insert(db.itemGroups,
+        _group(module, id, 'word', 'Colores', '${rows.length} palabras', order));
+    b.insertAll(db.items, rows);
+  }
+}
+
 void _addKatakana(Batch b, AppDatabase db) => _addScript(b, db,
     module: 'katakana',
     basic: _kBasic,
@@ -185,6 +214,7 @@ Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
       _addHiragana(b, db);
       _addHiraganaOrgans(b, db);
       _addKatakana(b, db);
+      _addColors(b, db);
     });
 
 /// Esquema v3: activa Katakana en bases creadas antes de que existiera.
@@ -195,3 +225,6 @@ Future<void> upgradeToV3(AppDatabase db) async {
 
 /// Esquema v4: seccion "Organos del cuerpo" en Hiragana.
 Future<void> upgradeToV4(AppDatabase db) => db.batch((b) => _addHiraganaOrgans(b, db));
+
+/// Esquema v5: seccion "Colores" en Hiragana y Katakana.
+Future<void> upgradeToV5(AppDatabase db) => db.batch((b) => _addColors(b, db));
