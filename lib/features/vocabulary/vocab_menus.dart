@@ -48,6 +48,8 @@ class VocabSectionMenuScreen extends ConsumerWidget {
             icon: Icons.grid_view_rounded),
         MenuEntry('Práctica', 'Elige la respuesta correcta', Pt.flamingo, '$base/practice',
             glyph: kanaGlyph),
+        MenuEntry('Sopa de letras', 'Encuentra las palabras', Pt.pink, '$base/wordsearch',
+            icon: Icons.search_rounded),
       ],
     );
   }

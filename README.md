@@ -10,7 +10,7 @@ Cada módulo (Hiragana y Katakana) ofrece las mismas cuatro funciones:
 
 - **Flashcards**: Kana → Romaji y Romaji → Kana, con 4 opciones al azar y botón de pronunciación. Los sets (Básicos, Dakuten/handakuten, Combinados) se activan o desactivan a gusto.
 - **Práctica**: se muestra el romaji, dibujas el carácter con el dedo y "Check" revela el correcto, muestra un porcentaje de parecido (comparación local con la fuente) y tú decides si lo lograste.
-- **Vocabulario**: por secciones (Hiragana: "Partes del cuerpo" y "Órganos del cuerpo"; Katakana: "Comida y bebida", palabras de origen extranjero; 30 palabras por sección, solo con su propia escritura). Cada sección tiene una **Referencia** (palabra y significado) y una **Práctica** en ambos sentidos: Palabra → Español y Español → Palabra.
+- **Vocabulario**: por secciones (Hiragana: "Partes del cuerpo" y "Órganos del cuerpo"; Katakana: "Comida y bebida", palabras de origen extranjero; 30 palabras por sección, solo con su propia escritura). Cada sección tiene una **Referencia** (palabra y significado), una **Práctica** en ambos sentidos (Palabra → Español y Español → Palabra) y una **Sopa de letras** de 8x8 con 8 palabras al azar, en 8 direcciones (incluidas las diagonales).
 - **Referencia**: tabla con los 104 caracteres (46 básicos, 25 con dakuten/handakuten y 33 combinados) organizados por consonante y vocal; al tocar uno suena su pronunciación.
 - Todas las respuestas se registran en SQLite (`review_stats`) para futuras estadísticas.
 

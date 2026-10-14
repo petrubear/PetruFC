@@ -9,6 +9,7 @@ import '../features/quiz/quiz_screen.dart';
 import '../features/reference/reference_screen.dart';
 import '../features/vocabulary/vocab_menus.dart';
 import '../features/vocabulary/vocab_reference_screen.dart';
+import '../features/vocabulary/word_search_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -40,6 +41,13 @@ final router = GoRouter(
                     GoRoute(
                       path: 'reference',
                       builder: (c, s) => VocabReferenceScreen(
+                        moduleId: s.pathParameters['module']!,
+                        groupId: s.pathParameters['group']!,
+                      ),
+                    ),
+                    GoRoute(
+                      path: 'wordsearch',
+                      builder: (c, s) => WordSearchScreen(
                         moduleId: s.pathParameters['module']!,
                         groupId: s.pathParameters['group']!,
                       ),
