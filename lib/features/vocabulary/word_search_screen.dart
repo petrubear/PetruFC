@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
+import '../../core/activity/activity_tracker.dart';
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
@@ -141,70 +142,79 @@ class WordSearchScreen extends ConsumerWidget {
     final session = ref.watch(wordSearchProvider(args));
     final notifier = ref.read(wordSearchProvider(args).notifier);
     final expanded = isExpanded(context);
-    return Scaffold(
-      body: SafeArea(
-        child: session.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('$e')),
-          data: (s) {
-            final top = Row(
-              children: [
-                RoundIconButton(
+    return ActivityScope(
+      child: Scaffold(
+        body: SafeArea(
+          child: session.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text('$e')),
+            data: (s) {
+              final top = Row(
+                children: [
+                  RoundIconButton(
                     icon: Icons.close_rounded,
                     label: 'Cerrar',
                     size: expanded ? 48 : 44,
-                    onTap: () => context.pop()),
-                const Expanded(
-                  child: Text('SOPA DE LETRAS',
+                    onTap: () => context.pop(),
+                  ),
+                  const Expanded(
+                    child: Text(
+                      'SOPA DE LETRAS',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Pt.subtext,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1.4)),
-                ),
-                RoundIconButton(
+                        color: Pt.subtext,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.4,
+                      ),
+                    ),
+                  ),
+                  RoundIconButton(
                     icon: Icons.refresh_rounded,
                     label: 'Nueva sopa',
                     size: expanded ? 48 : 44,
-                    onTap: notifier.newGame),
-              ],
-            );
-            final board = _Board(s, notifier);
-            final clues = _Clues(s, notifier);
-            if (expanded) {
+                    onTap: notifier.newGame,
+                  ),
+                ],
+              );
+              final board = _Board(s, notifier);
+              final clues = _Clues(s, notifier);
+              if (expanded) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 24, 40, 40),
+                  child: Column(
+                    children: [
+                      top,
+                      const SizedBox(height: 28),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Center(child: AspectRatio(aspectRatio: 1, child: board)),
+                            ),
+                            const SizedBox(width: 32),
+                            SizedBox(width: 340, child: SingleChildScrollView(child: clues)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
               return Padding(
-                padding: const EdgeInsets.fromLTRB(40, 24, 40, 40),
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
                 child: Column(
                   children: [
                     top,
-                    const SizedBox(height: 28),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(child: Center(child: AspectRatio(aspectRatio: 1, child: board))),
-                          const SizedBox(width: 32),
-                          SizedBox(width: 340, child: SingleChildScrollView(child: clues)),
-                        ],
-                      ),
-                    ),
+                    const SizedBox(height: 20),
+                    AspectRatio(aspectRatio: 1, child: board),
+                    const SizedBox(height: 20),
+                    Expanded(child: SingleChildScrollView(child: clues)),
                   ],
                 ),
               );
-            }
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-              child: Column(
-                children: [
-                  top,
-                  const SizedBox(height: 20),
-                  AspectRatio(aspectRatio: 1, child: board),
-                  const SizedBox(height: 20),
-                  Expanded(child: SingleChildScrollView(child: clues)),
-                ],
-              ),
-            );
-          },
+            },
+          ),
         ),
       ),
     );

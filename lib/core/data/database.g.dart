@@ -1519,8 +1519,24 @@ class $ReviewStatsTable extends ReviewStats
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _streakMeta = const VerificationMeta('streak');
   @override
-  List<GeneratedColumn> get $columns => [itemId, attempts, correct, lastSeen];
+  late final GeneratedColumn<int> streak = GeneratedColumn<int>(
+    'streak',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    itemId,
+    attempts,
+    correct,
+    lastSeen,
+    streak,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1559,6 +1575,12 @@ class $ReviewStatsTable extends ReviewStats
     } else if (isInserting) {
       context.missing(_lastSeenMeta);
     }
+    if (data.containsKey('streak')) {
+      context.handle(
+        _streakMeta,
+        streak.isAcceptableOrUnknown(data['streak']!, _streakMeta),
+      );
+    }
     return context;
   }
 
@@ -1584,6 +1606,10 @@ class $ReviewStatsTable extends ReviewStats
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_seen'],
       )!,
+      streak: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}streak'],
+      )!,
     );
   }
 
@@ -1598,11 +1624,13 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
   final int attempts;
   final int correct;
   final DateTime lastSeen;
+  final int streak;
   const ReviewStat({
     required this.itemId,
     required this.attempts,
     required this.correct,
     required this.lastSeen,
+    required this.streak,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1611,6 +1639,7 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
     map['attempts'] = Variable<int>(attempts);
     map['correct'] = Variable<int>(correct);
     map['last_seen'] = Variable<DateTime>(lastSeen);
+    map['streak'] = Variable<int>(streak);
     return map;
   }
 
@@ -1620,6 +1649,7 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
       attempts: Value(attempts),
       correct: Value(correct),
       lastSeen: Value(lastSeen),
+      streak: Value(streak),
     );
   }
 
@@ -1633,6 +1663,7 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
       attempts: serializer.fromJson<int>(json['attempts']),
       correct: serializer.fromJson<int>(json['correct']),
       lastSeen: serializer.fromJson<DateTime>(json['lastSeen']),
+      streak: serializer.fromJson<int>(json['streak']),
     );
   }
   @override
@@ -1643,6 +1674,7 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
       'attempts': serializer.toJson<int>(attempts),
       'correct': serializer.toJson<int>(correct),
       'lastSeen': serializer.toJson<DateTime>(lastSeen),
+      'streak': serializer.toJson<int>(streak),
     };
   }
 
@@ -1651,11 +1683,13 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
     int? attempts,
     int? correct,
     DateTime? lastSeen,
+    int? streak,
   }) => ReviewStat(
     itemId: itemId ?? this.itemId,
     attempts: attempts ?? this.attempts,
     correct: correct ?? this.correct,
     lastSeen: lastSeen ?? this.lastSeen,
+    streak: streak ?? this.streak,
   );
   ReviewStat copyWithCompanion(ReviewStatsCompanion data) {
     return ReviewStat(
@@ -1663,6 +1697,7 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
       attempts: data.attempts.present ? data.attempts.value : this.attempts,
       correct: data.correct.present ? data.correct.value : this.correct,
       lastSeen: data.lastSeen.present ? data.lastSeen.value : this.lastSeen,
+      streak: data.streak.present ? data.streak.value : this.streak,
     );
   }
 
@@ -1672,13 +1707,14 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
           ..write('itemId: $itemId, ')
           ..write('attempts: $attempts, ')
           ..write('correct: $correct, ')
-          ..write('lastSeen: $lastSeen')
+          ..write('lastSeen: $lastSeen, ')
+          ..write('streak: $streak')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(itemId, attempts, correct, lastSeen);
+  int get hashCode => Object.hash(itemId, attempts, correct, lastSeen, streak);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1686,7 +1722,8 @@ class ReviewStat extends DataClass implements Insertable<ReviewStat> {
           other.itemId == this.itemId &&
           other.attempts == this.attempts &&
           other.correct == this.correct &&
-          other.lastSeen == this.lastSeen);
+          other.lastSeen == this.lastSeen &&
+          other.streak == this.streak);
 }
 
 class ReviewStatsCompanion extends UpdateCompanion<ReviewStat> {
@@ -1694,29 +1731,34 @@ class ReviewStatsCompanion extends UpdateCompanion<ReviewStat> {
   final Value<int> attempts;
   final Value<int> correct;
   final Value<DateTime> lastSeen;
+  final Value<int> streak;
   const ReviewStatsCompanion({
     this.itemId = const Value.absent(),
     this.attempts = const Value.absent(),
     this.correct = const Value.absent(),
     this.lastSeen = const Value.absent(),
+    this.streak = const Value.absent(),
   });
   ReviewStatsCompanion.insert({
     this.itemId = const Value.absent(),
     this.attempts = const Value.absent(),
     this.correct = const Value.absent(),
     required DateTime lastSeen,
+    this.streak = const Value.absent(),
   }) : lastSeen = Value(lastSeen);
   static Insertable<ReviewStat> custom({
     Expression<int>? itemId,
     Expression<int>? attempts,
     Expression<int>? correct,
     Expression<DateTime>? lastSeen,
+    Expression<int>? streak,
   }) {
     return RawValuesInsertable({
       if (itemId != null) 'item_id': itemId,
       if (attempts != null) 'attempts': attempts,
       if (correct != null) 'correct': correct,
       if (lastSeen != null) 'last_seen': lastSeen,
+      if (streak != null) 'streak': streak,
     });
   }
 
@@ -1725,12 +1767,14 @@ class ReviewStatsCompanion extends UpdateCompanion<ReviewStat> {
     Value<int>? attempts,
     Value<int>? correct,
     Value<DateTime>? lastSeen,
+    Value<int>? streak,
   }) {
     return ReviewStatsCompanion(
       itemId: itemId ?? this.itemId,
       attempts: attempts ?? this.attempts,
       correct: correct ?? this.correct,
       lastSeen: lastSeen ?? this.lastSeen,
+      streak: streak ?? this.streak,
     );
   }
 
@@ -1749,6 +1793,9 @@ class ReviewStatsCompanion extends UpdateCompanion<ReviewStat> {
     if (lastSeen.present) {
       map['last_seen'] = Variable<DateTime>(lastSeen.value);
     }
+    if (streak.present) {
+      map['streak'] = Variable<int>(streak.value);
+    }
     return map;
   }
 
@@ -1758,7 +1805,216 @@ class ReviewStatsCompanion extends UpdateCompanion<ReviewStat> {
           ..write('itemId: $itemId, ')
           ..write('attempts: $attempts, ')
           ..write('correct: $correct, ')
-          ..write('lastSeen: $lastSeen')
+          ..write('lastSeen: $lastSeen, ')
+          ..write('streak: $streak')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DailyActivityTable extends DailyActivity
+    with TableInfo<$DailyActivityTable, ActivityDay> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyActivityTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<String> day = GeneratedColumn<String>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _secondsMeta = const VerificationMeta(
+    'seconds',
+  );
+  @override
+  late final GeneratedColumn<int> seconds = GeneratedColumn<int>(
+    'seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [day, seconds];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_activity';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ActivityDay> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('seconds')) {
+      context.handle(
+        _secondsMeta,
+        seconds.isAcceptableOrUnknown(data['seconds']!, _secondsMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {day};
+  @override
+  ActivityDay map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ActivityDay(
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day'],
+      )!,
+      seconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}seconds'],
+      )!,
+    );
+  }
+
+  @override
+  $DailyActivityTable createAlias(String alias) {
+    return $DailyActivityTable(attachedDatabase, alias);
+  }
+}
+
+class ActivityDay extends DataClass implements Insertable<ActivityDay> {
+  final String day;
+  final int seconds;
+  const ActivityDay({required this.day, required this.seconds});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['day'] = Variable<String>(day);
+    map['seconds'] = Variable<int>(seconds);
+    return map;
+  }
+
+  DailyActivityCompanion toCompanion(bool nullToAbsent) {
+    return DailyActivityCompanion(day: Value(day), seconds: Value(seconds));
+  }
+
+  factory ActivityDay.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ActivityDay(
+      day: serializer.fromJson<String>(json['day']),
+      seconds: serializer.fromJson<int>(json['seconds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'day': serializer.toJson<String>(day),
+      'seconds': serializer.toJson<int>(seconds),
+    };
+  }
+
+  ActivityDay copyWith({String? day, int? seconds}) =>
+      ActivityDay(day: day ?? this.day, seconds: seconds ?? this.seconds);
+  ActivityDay copyWithCompanion(DailyActivityCompanion data) {
+    return ActivityDay(
+      day: data.day.present ? data.day.value : this.day,
+      seconds: data.seconds.present ? data.seconds.value : this.seconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActivityDay(')
+          ..write('day: $day, ')
+          ..write('seconds: $seconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(day, seconds);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ActivityDay &&
+          other.day == this.day &&
+          other.seconds == this.seconds);
+}
+
+class DailyActivityCompanion extends UpdateCompanion<ActivityDay> {
+  final Value<String> day;
+  final Value<int> seconds;
+  final Value<int> rowid;
+  const DailyActivityCompanion({
+    this.day = const Value.absent(),
+    this.seconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DailyActivityCompanion.insert({
+    required String day,
+    this.seconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : day = Value(day);
+  static Insertable<ActivityDay> custom({
+    Expression<String>? day,
+    Expression<int>? seconds,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (day != null) 'day': day,
+      if (seconds != null) 'seconds': seconds,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DailyActivityCompanion copyWith({
+    Value<String>? day,
+    Value<int>? seconds,
+    Value<int>? rowid,
+  }) {
+    return DailyActivityCompanion(
+      day: day ?? this.day,
+      seconds: seconds ?? this.seconds,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (day.present) {
+      map['day'] = Variable<String>(day.value);
+    }
+    if (seconds.present) {
+      map['seconds'] = Variable<int>(seconds.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyActivityCompanion(')
+          ..write('day: $day, ')
+          ..write('seconds: $seconds, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -1772,6 +2028,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ItemsTable items = $ItemsTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
   late final $ReviewStatsTable reviewStats = $ReviewStatsTable(this);
+  late final $DailyActivityTable dailyActivity = $DailyActivityTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1782,6 +2039,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     items,
     settings,
     reviewStats,
+    dailyActivity,
   ];
 }
 
@@ -2581,6 +2839,7 @@ typedef $$ReviewStatsTableCreateCompanionBuilder =
       Value<int> attempts,
       Value<int> correct,
       required DateTime lastSeen,
+      Value<int> streak,
     });
 typedef $$ReviewStatsTableUpdateCompanionBuilder =
     ReviewStatsCompanion Function({
@@ -2588,6 +2847,7 @@ typedef $$ReviewStatsTableUpdateCompanionBuilder =
       Value<int> attempts,
       Value<int> correct,
       Value<DateTime> lastSeen,
+      Value<int> streak,
     });
 
 class $$ReviewStatsTableFilterComposer
@@ -2616,6 +2876,11 @@ class $$ReviewStatsTableFilterComposer
 
   ColumnFilters<DateTime> get lastSeen => $composableBuilder(
     column: $table.lastSeen,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get streak => $composableBuilder(
+    column: $table.streak,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2648,6 +2913,11 @@ class $$ReviewStatsTableOrderingComposer
     column: $table.lastSeen,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get streak => $composableBuilder(
+    column: $table.streak,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ReviewStatsTableAnnotationComposer
@@ -2670,6 +2940,9 @@ class $$ReviewStatsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get lastSeen =>
       $composableBuilder(column: $table.lastSeen, builder: (column) => column);
+
+  GeneratedColumn<int> get streak =>
+      $composableBuilder(column: $table.streak, builder: (column) => column);
 }
 
 class $$ReviewStatsTableTableManager
@@ -2707,11 +2980,13 @@ class $$ReviewStatsTableTableManager
                 Value<int> attempts = const Value.absent(),
                 Value<int> correct = const Value.absent(),
                 Value<DateTime> lastSeen = const Value.absent(),
+                Value<int> streak = const Value.absent(),
               }) => ReviewStatsCompanion(
                 itemId: itemId,
                 attempts: attempts,
                 correct: correct,
                 lastSeen: lastSeen,
+                streak: streak,
               ),
           createCompanionCallback:
               ({
@@ -2719,11 +2994,13 @@ class $$ReviewStatsTableTableManager
                 Value<int> attempts = const Value.absent(),
                 Value<int> correct = const Value.absent(),
                 required DateTime lastSeen,
+                Value<int> streak = const Value.absent(),
               }) => ReviewStatsCompanion.insert(
                 itemId: itemId,
                 attempts: attempts,
                 correct: correct,
                 lastSeen: lastSeen,
+                streak: streak,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -2750,6 +3027,149 @@ typedef $$ReviewStatsTableProcessedTableManager =
       ReviewStat,
       PrefetchHooks Function()
     >;
+typedef $$DailyActivityTableCreateCompanionBuilder =
+    DailyActivityCompanion Function({
+      required String day,
+      Value<int> seconds,
+      Value<int> rowid,
+    });
+typedef $$DailyActivityTableUpdateCompanionBuilder =
+    DailyActivityCompanion Function({
+      Value<String> day,
+      Value<int> seconds,
+      Value<int> rowid,
+    });
+
+class $$DailyActivityTableFilterComposer
+    extends Composer<_$AppDatabase, $DailyActivityTable> {
+  $$DailyActivityTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get seconds => $composableBuilder(
+    column: $table.seconds,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DailyActivityTableOrderingComposer
+    extends Composer<_$AppDatabase, $DailyActivityTable> {
+  $$DailyActivityTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get seconds => $composableBuilder(
+    column: $table.seconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DailyActivityTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DailyActivityTable> {
+  $$DailyActivityTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get seconds =>
+      $composableBuilder(column: $table.seconds, builder: (column) => column);
+}
+
+class $$DailyActivityTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DailyActivityTable,
+          ActivityDay,
+          $$DailyActivityTableFilterComposer,
+          $$DailyActivityTableOrderingComposer,
+          $$DailyActivityTableAnnotationComposer,
+          $$DailyActivityTableCreateCompanionBuilder,
+          $$DailyActivityTableUpdateCompanionBuilder,
+          (
+            ActivityDay,
+            BaseReferences<_$AppDatabase, $DailyActivityTable, ActivityDay>,
+          ),
+          ActivityDay,
+          PrefetchHooks Function()
+        > {
+  $$DailyActivityTableTableManager(_$AppDatabase db, $DailyActivityTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyActivityTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyActivityTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyActivityTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> day = const Value.absent(),
+                Value<int> seconds = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyActivityCompanion(
+                day: day,
+                seconds: seconds,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String day,
+                Value<int> seconds = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyActivityCompanion.insert(
+                day: day,
+                seconds: seconds,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DailyActivityTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DailyActivityTable,
+      ActivityDay,
+      $$DailyActivityTableFilterComposer,
+      $$DailyActivityTableOrderingComposer,
+      $$DailyActivityTableAnnotationComposer,
+      $$DailyActivityTableCreateCompanionBuilder,
+      $$DailyActivityTableUpdateCompanionBuilder,
+      (
+        ActivityDay,
+        BaseReferences<_$AppDatabase, $DailyActivityTable, ActivityDay>,
+      ),
+      ActivityDay,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2764,4 +3184,6 @@ class $AppDatabaseManager {
       $$SettingsTableTableManager(_db, _db.settings);
   $$ReviewStatsTableTableManager get reviewStats =>
       $$ReviewStatsTableTableManager(_db, _db.reviewStats);
+  $$DailyActivityTableTableManager get dailyActivity =>
+      $$DailyActivityTableTableManager(_db, _db.dailyActivity);
 }

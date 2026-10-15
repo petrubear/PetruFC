@@ -7,6 +7,7 @@ import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
+import 'daily_goal_card.dart';
 import 'module_menu.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -32,23 +33,39 @@ class _Header extends StatelessWidget {
   final double title;
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('日本語 · NIHONGO',
-              style: TextStyle(
-                  color: Pt.flamingo,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 2)),
-          const SizedBox(height: 6),
-          Text('Petru FC',
-              style: TextStyle(fontSize: title, fontWeight: FontWeight.w700, height: 1.1)),
-          const SizedBox(height: 6),
-          const Text('Estudia japonés a tu ritmo',
-              style: TextStyle(fontSize: 16, color: Pt.subtext)),
-        ],
-      );
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Expanded(child: _titles()),
+      RoundIconButton(
+        icon: Icons.settings_rounded,
+        label: 'Configuración',
+        onTap: () => context.push('/settings'),
+      ),
+    ],
+  );
+
+  Widget _titles() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        '日本語 · NIHONGO',
+        style: TextStyle(
+          color: Pt.flamingo,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 2,
+        ),
+      ),
+      const SizedBox(height: 6),
+      Text(
+        'Petru FC',
+        style: TextStyle(fontSize: title, fontWeight: FontWeight.w700, height: 1.1),
+      ),
+      const SizedBox(height: 6),
+      const Text('Estudia japonés a tu ritmo', style: TextStyle(fontSize: 16, color: Pt.subtext)),
+    ],
+  );
 }
 
 class _Narrow extends StatelessWidget {
@@ -63,7 +80,9 @@ class _Narrow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
       children: [
         const _Header(),
-        const SizedBox(height: 28),
+        const SizedBox(height: 24),
+        const DailyGoalCard(),
+        const SizedBox(height: 20),
         for (final m in active) ...[_Hero(m), const SizedBox(height: 16)],
         if (soon.isNotEmpty) ...[
           const SizedBox(height: 12),
@@ -200,7 +219,9 @@ class _Wide extends ConsumerWidget {
           child: ListView(
             children: [
               const _Header(title: 36),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
+              const DailyGoalCard(),
+              const SizedBox(height: 20),
               for (final m in modules.where((m) => m.enabled)) ...[
                 _SideTile(m,
                     selected: m.id == selected,

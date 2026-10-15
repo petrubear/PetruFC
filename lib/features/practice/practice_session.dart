@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/data/app_settings.dart';
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import 'stroke_score.dart';
@@ -10,10 +11,18 @@ import 'stroke_score.dart';
 class PracticeState {
   const PracticeState({
     required this.item,
+    required this.size,
     this.strokes = const [],
     this.checked = false,
     this.score,
+    this.graded = 0,
+    this.hits = 0,
+    this.combo = 0,
+    this.bestCombo = 0,
+    this.summary = false,
   });
+  final int size, graded, hits, combo, bestCombo;
+  final bool summary;
   final Item item;
   final List<List<Offset>> strokes; // coordenadas normalizadas 0..1
   final bool checked;
@@ -22,9 +31,15 @@ class PracticeState {
   PracticeState copyWith({List<List<Offset>>? strokes, bool? checked, double? score}) =>
       PracticeState(
         item: item,
+        size: size,
         strokes: strokes ?? this.strokes,
         checked: checked ?? this.checked,
         score: score ?? this.score,
+        graded: graded,
+        hits: hits,
+        combo: combo,
+        bestCombo: bestCombo,
+        summary: summary,
       );
 }
 
@@ -47,7 +62,8 @@ class PracticeSession
   Future<PracticeState> build(String arg) async {
     final ids = await ref.read(activeGroupsProvider(arg).future);
     _pool = await ref.read(repoProvider).items(arg, ids);
-    return PracticeState(item: _pick());
+    final size = (await ref.read(settingsProvider.future)).sessionSize;
+    return PracticeState(item: _pick(), size: size);
   }
 
   void startStroke(Offset p) {
@@ -86,7 +102,26 @@ class PracticeSession
   void grade(bool ok) {
     final s = state.requireValue;
     ref.read(repoProvider).recordAnswer(s.item.id, ok);
-    state = AsyncData(PracticeState(item: _pick()));
+    final graded = s.graded + 1;
+    final combo = ok ? s.combo + 1 : 0;
+    final best = combo > s.bestCombo ? combo : s.bestCombo;
+    final hits = s.hits + (ok ? 1 : 0);
+    state = AsyncData(
+      PracticeState(
+        item: graded >= s.size ? s.item : _pick(),
+        size: s.size,
+        graded: graded,
+        hits: hits,
+        combo: combo,
+        bestCombo: best,
+        summary: graded >= s.size,
+      ),
+    );
+  }
+
+  void restart() {
+    final s = state.requireValue;
+    state = AsyncData(PracticeState(item: _pick(), size: s.size));
   }
 }
 

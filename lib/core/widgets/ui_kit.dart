@@ -157,3 +157,107 @@ class SpeakerButton extends ConsumerWidget {
         },
       );
 }
+
+class SessionProgress extends StatelessWidget {
+  const SessionProgress({super.key, required this.done, required this.size});
+  final int done, size;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      Expanded(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: LinearProgressIndicator(
+            value: (done / size).clamp(0, 1).toDouble(),
+            minHeight: 8,
+            backgroundColor: Pt.surface1,
+            color: Pt.flamingo,
+          ),
+        ),
+      ),
+      const SizedBox(width: 12),
+      Text(
+        '$done / $size',
+        style: const TextStyle(color: Pt.subtext, fontSize: 13, fontWeight: FontWeight.w500),
+      ),
+    ],
+  );
+}
+
+class SessionSummary extends StatelessWidget {
+  const SessionSummary({
+    super.key,
+    required this.correct,
+    required this.total,
+    required this.bestCombo,
+    required this.onAgain,
+    required this.onExit,
+  });
+  final int correct, total, bestCombo;
+  final VoidCallback onAgain, onExit;
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = total == 0 ? 0 : (correct * 100 / total).round();
+    Widget stat(String label, String value) => Expanded(
+      child: SurfaceCard(
+        radius: 24,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Text(value, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
+            Text(label, style: const TextStyle(fontSize: 13, color: Pt.subtext)),
+          ],
+        ),
+      ),
+    );
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '¡Ronda completa!',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '$correct / $total',
+                style: const TextStyle(fontSize: 72, fontWeight: FontWeight.w700, color: Pt.green),
+              ),
+              const Text('aciertos', style: TextStyle(fontSize: 16, color: Pt.subtext)),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  stat('Mejor combo', '$bestCombo'),
+                  const SizedBox(width: 12),
+                  stat('Precisión', '$pct%'),
+                ],
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                child: PillButton('Otra ronda', onTap: onAgain),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: PillButton(
+                  'Salir',
+                  onTap: onExit,
+                  bg: Pt.surface0,
+                  fg: Pt.text,
+                  border: Pt.surface1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

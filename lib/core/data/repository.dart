@@ -2,6 +2,9 @@ import 'package:drift/drift.dart';
 
 import 'database.dart';
 
+String dayKey(DateTime d) =>
+    '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
 class StudyRepository {
   StudyRepository(this.db);
   final AppDatabase db;
@@ -34,16 +37,42 @@ class StudyRepository {
           key: 'active_groups:$moduleId', value: ids.join(',')));
 
   Future<void> recordAnswer(int itemId, bool correct) => db.transaction(() async {
-        final cur = await (db.select(db.reviewStats)
-              ..where((r) => r.itemId.equals(itemId)))
-            .getSingleOrNull();
-        await db.into(db.reviewStats).insertOnConflictUpdate(
-              ReviewStatsCompanion.insert(
-                itemId: Value(itemId),
-                attempts: Value((cur?.attempts ?? 0) + 1),
-                correct: Value((cur?.correct ?? 0) + (correct ? 1 : 0)),
-                lastSeen: DateTime.now(),
-              ),
-            );
-      });
+    final cur = await (db.select(
+      db.reviewStats,
+    )..where((r) => r.itemId.equals(itemId))).getSingleOrNull();
+    await db
+        .into(db.reviewStats)
+        .insertOnConflictUpdate(
+          ReviewStatsCompanion.insert(
+            itemId: Value(itemId),
+            attempts: Value((cur?.attempts ?? 0) + 1),
+            correct: Value((cur?.correct ?? 0) + (correct ? 1 : 0)),
+            streak: Value(correct ? (cur?.streak ?? 0) + 1 : 0),
+            lastSeen: DateTime.now(),
+          ),
+        );
+  });
+
+  Future<Map<String, String>> allSettings() async => {
+    for (final r in await db.select(db.settings).get()) r.key: r.value,
+  };
+
+  Future<void> saveSetting(String key, String value) =>
+      db.into(db.settings).insertOnConflictUpdate(SettingsCompanion.insert(key: key, value: value));
+
+  Future<void> addSeconds(String day, int seconds) => db.transaction(() async {
+    final cur = await (db.select(
+      db.dailyActivity,
+    )..where((d) => d.day.equals(day))).getSingleOrNull();
+    await db
+        .into(db.dailyActivity)
+        .insertOnConflictUpdate(
+          DailyActivityCompanion.insert(day: day, seconds: Value((cur?.seconds ?? 0) + seconds)),
+        );
+  });
+
+  Stream<Map<String, int>> watchActivitySince(String day) =>
+      (db.select(db.dailyActivity)..where((d) => d.day.isBiggerOrEqualValue(day))).watch().map(
+        (l) => {for (final d in l) d.day: d.seconds},
+      );
 }

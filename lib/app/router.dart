@@ -4,6 +4,7 @@ import '../features/home/home_screen.dart';
 import '../features/home/module_menu.dart';
 import '../features/practice/practice_screen.dart';
 import '../features/quiz/mode_setup_screen.dart';
+import '../features/settings/settings_screen.dart';
 import '../features/quiz/quiz_engine.dart';
 import '../features/quiz/quiz_screen.dart';
 import '../features/reference/reference_screen.dart';
@@ -17,6 +18,7 @@ final router = GoRouter(
       path: '/',
       builder: (c, s) => const HomeScreen(),
       routes: [
+        GoRoute(path: 'settings', builder: (c, s) => const SettingsScreen()),
         GoRoute(
           path: 'm/:module',
           builder: (c, s) => ModuleMenuScreen(moduleId: s.pathParameters['module']!),

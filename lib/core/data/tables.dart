@@ -46,6 +46,16 @@ class ReviewStats extends Table {
   IntColumn get attempts => integer().withDefault(const Constant(0))();
   IntColumn get correct => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastSeen => dateTime()();
+  // Aciertos seguidos (0 tras un fallo): blanco/rojo/amarillo/verde en las tablas.
+  IntColumn get streak => integer().withDefault(const Constant(0))();
   @override
   Set<Column> get primaryKey => {itemId};
+}
+
+@DataClassName('ActivityDay')
+class DailyActivity extends Table {
+  TextColumn get day => text()(); // yyyy-MM-dd
+  IntColumn get seconds => integer().withDefault(const Constant(0))();
+  @override
+  Set<Column> get primaryKey => {day};
 }

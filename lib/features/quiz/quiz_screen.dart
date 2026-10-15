@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
+import '../../core/activity/activity_tracker.dart';
 import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
@@ -22,129 +23,152 @@ class QuizScreen extends ConsumerWidget {
     final multi = mode.kind == 'kana' && ref.read(multiSelectProvider);
     final args = (moduleId, mode, groupId, multi);
     final session = ref.watch(quizSessionProvider(args));
-    return Scaffold(
-      body: SafeArea(
-        child: session.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('$e')),
-          data: (s) {
-            final notifier = ref.read(quizSessionProvider(args).notifier);
-            final expanded = isExpanded(context);
-            final q = s.question;
-            final asList = mode == QuizMode.wordToMeaning;
-            final base = switch (mode) {
-              QuizMode.kanaToRomaji => 150.0,
-              QuizMode.romajiToKana => 110.0,
-              QuizMode.wordToMeaning => 96.0,
-              QuizMode.meaningToWord => 60.0,
-            };
-            _Opt stateOf(String o) => !s.answered
-                ? _Opt.idle
-                : o == q.correct
-                    ? _Opt.good
-                    : o == s.selected
-                        ? _Opt.bad
-                        : _Opt.dim;
+    return ActivityScope(
+      child: Scaffold(
+        body: SafeArea(
+          child: session.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text('$e')),
+            data: (s) {
+              final notifier = ref.read(quizSessionProvider(args).notifier);
+              if (s.summary) {
+                return SessionSummary(
+                  correct: s.correct,
+                  total: s.done,
+                  bestCombo: s.bestCombo,
+                  onAgain: notifier.restart,
+                  onExit: () => context.pop(),
+                );
+              }
+              final expanded = isExpanded(context);
+              final q = s.question;
+              final asList = mode == QuizMode.wordToMeaning;
+              final base = switch (mode) {
+                QuizMode.kanaToRomaji => 150.0,
+                QuizMode.romajiToKana => 110.0,
+                QuizMode.wordToMeaning => 96.0,
+                QuizMode.meaningToWord => 60.0,
+              };
+              _Opt stateOf(String o) => !s.answered
+                  ? _Opt.idle
+                  : o == q.correct
+                  ? _Opt.good
+                  : o == s.selected
+                  ? _Opt.bad
+                  : _Opt.dim;
 
-            final prompt = _PromptCard(
-              text: q.prompt,
-              japanese: mode.promptIsJapanese,
-              size: (expanded ? base * 1.7 : base) * (multi ? 0.42 : 1),
-              speakText: mode.promptIsJapanese
-                  ? q.items.map((i) => i.audioText ?? i.japanese).join(multi ? '、' : '')
-                  : null,
-            );
-            final tiles = [
-              for (final o in q.options)
-                _OptionTile(
-                  label: o,
-                  state: stateOf(o),
-                  japanese: mode.answersAreJapanese,
-                  list: asList && !expanded,
-                  fontSize: multi ? (expanded ? 26 : 17) : (expanded ? 34 : (asList ? 21 : 28)),
-                  onTap: () => notifier.answer(o),
+              final prompt = _PromptCard(
+                text: q.prompt,
+                japanese: mode.promptIsJapanese,
+                size: (expanded ? base * 1.7 : base) * (multi ? 0.42 : 1),
+                speakText: mode.promptIsJapanese
+                    ? q.items.map((i) => i.audioText ?? i.japanese).join(multi ? '、' : '')
+                    : null,
+              );
+              final tiles = [
+                for (final o in q.options)
+                  _OptionTile(
+                    label: o,
+                    state: stateOf(o),
+                    japanese: mode.answersAreJapanese,
+                    list: asList && !expanded,
+                    fontSize: multi ? (expanded ? 26 : 17) : (expanded ? 34 : (asList ? 21 : 28)),
+                    onTap: () => notifier.answer(o),
+                  ),
+              ];
+              final top = Column(
+                children: [
+                  Row(
+                    children: [
+                      RoundIconButton(
+                        icon: Icons.close_rounded,
+                        label: 'Cerrar',
+                        size: expanded ? 48 : 44,
+                        onTap: () => context.pop(),
+                      ),
+                      Expanded(
+                        child: Text(
+                          mode.label(moduleId).toUpperCase(),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Pt.subtext,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ),
+                      ScoreChips(correct: s.correct, wrong: s.wrong),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SessionProgress(done: s.done, size: s.size),
+                ],
+              );
+              final next = Opacity(
+                opacity: s.answered ? 1 : 0,
+                child: IgnorePointer(
+                  ignoring: !s.answered,
+                  child: PillButton(s.finished ? 'Ver resumen' : 'Siguiente', onTap: notifier.next),
                 ),
-            ];
-            final top = Row(
-              children: [
-                RoundIconButton(
-                    icon: Icons.close_rounded,
-                    label: 'Cerrar',
-                    size: expanded ? 48 : 44,
-                    onTap: () => context.pop()),
-                Expanded(
-                  child: Text(mode.label(moduleId).toUpperCase(),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          color: Pt.subtext,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1.2)),
-                ),
-                ScoreChips(correct: s.correct, wrong: s.wrong),
-              ],
-            );
-            final next = Opacity(
-              opacity: s.answered ? 1 : 0,
-              child: IgnorePointer(
-                ignoring: !s.answered,
-                child: PillButton('Siguiente', onTap: notifier.next),
-              ),
-            );
+              );
 
-            if (expanded) {
+              if (expanded) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 24, 40, 40),
+                  child: Column(
+                    children: [
+                      top,
+                      const SizedBox(height: 28),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(child: prompt),
+                            const SizedBox(width: 32),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  for (final t in tiles) ...[
+                                    Expanded(child: t),
+                                    const SizedBox(height: 14),
+                                  ],
+                                  next,
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
               return Padding(
-                padding: const EdgeInsets.fromLTRB(40, 24, 40, 40),
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
                 child: Column(
                   children: [
                     top,
-                    const SizedBox(height: 28),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(child: prompt),
-                          const SizedBox(width: 32),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                for (final t in tiles) ...[
-                                  Expanded(child: t),
-                                  const SizedBox(height: 14),
-                                ],
-                                next,
+                    const SizedBox(height: 24),
+                    Expanded(child: prompt),
+                    const SizedBox(height: 24),
+                    asList
+                        ? Column(
+                            children: [
+                              for (final t in tiles) ...[
+                                SizedBox(width: double.infinity, child: t),
+                                const SizedBox(height: 12),
                               ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                            ],
+                          )
+                        : _grid(tiles),
+                    const SizedBox(height: 12),
+                    next,
                   ],
                 ),
               );
-            }
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
-              child: Column(
-                children: [
-                  top,
-                  const SizedBox(height: 24),
-                  Expanded(child: prompt),
-                  const SizedBox(height: 24),
-                  asList
-                      ? Column(children: [
-                          for (final t in tiles) ...[
-                            SizedBox(width: double.infinity, child: t),
-                            const SizedBox(height: 12),
-                          ],
-                        ])
-                      : _grid(tiles),
-                  const SizedBox(height: 12),
-                  next,
-                ],
-              ),
-            );
-          },
+            },
+          ),
         ),
       ),
     );
