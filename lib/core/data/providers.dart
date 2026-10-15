@@ -20,6 +20,10 @@ final groupsProvider = FutureProvider.family<List<ItemGroup>, (String, String)>(
 /// Flashcards de kana: 9 caracteres en 3 bloques de 3 en lugar de uno.
 final multiSelectProvider = StateProvider<bool>((ref) => false);
 
+/// Estadisticas por item (racha, intentos) para colorear tablas y listas.
+final statsProvider = StreamProvider.autoDispose<Map<int, ReviewStat>>(
+    (ref) => ref.watch(repoProvider).watchStats());
+
 final selectedModuleProvider = StateProvider<String>((ref) => 'hiragana');
 
 class ActiveGroups extends AutoDisposeFamilyAsyncNotifier<Set<String>, String> {

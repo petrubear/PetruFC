@@ -36,10 +36,12 @@ class StudyRepository {
       db.into(db.settings).insertOnConflictUpdate(SettingsCompanion.insert(
           key: 'active_groups:$moduleId', value: ids.join(',')));
 
-  Future<void> recordAnswer(int itemId, bool correct) => db.transaction(() async {
+  /// Registra la respuesta y devuelve la racha de aciertos resultante.
+  Future<int> recordAnswer(int itemId, bool correct) => db.transaction(() async {
     final cur = await (db.select(
       db.reviewStats,
     )..where((r) => r.itemId.equals(itemId))).getSingleOrNull();
+    final streak = correct ? (cur?.streak ?? 0) + 1 : 0;
     await db
         .into(db.reviewStats)
         .insertOnConflictUpdate(
@@ -47,11 +49,15 @@ class StudyRepository {
             itemId: Value(itemId),
             attempts: Value((cur?.attempts ?? 0) + 1),
             correct: Value((cur?.correct ?? 0) + (correct ? 1 : 0)),
-            streak: Value(correct ? (cur?.streak ?? 0) + 1 : 0),
+            streak: Value(streak),
             lastSeen: DateTime.now(),
           ),
         );
+    return streak;
   });
+
+  Stream<Map<int, ReviewStat>> watchStats() =>
+      db.select(db.reviewStats).watch().map((l) => {for (final r in l) r.itemId: r});
 
   Future<Map<String, String>> allSettings() async => {
     for (final r in await db.select(db.settings).get()) r.key: r.value,
@@ -60,15 +66,16 @@ class StudyRepository {
   Future<void> saveSetting(String key, String value) =>
       db.into(db.settings).insertOnConflictUpdate(SettingsCompanion.insert(key: key, value: value));
 
-  Future<void> addSeconds(String day, int seconds) => db.transaction(() async {
+  /// Suma segundos al dia y devuelve el total del dia.
+  Future<int> addSeconds(String day, int seconds) => db.transaction(() async {
     final cur = await (db.select(
       db.dailyActivity,
     )..where((d) => d.day.equals(day))).getSingleOrNull();
+    final total = (cur?.seconds ?? 0) + seconds;
     await db
         .into(db.dailyActivity)
-        .insertOnConflictUpdate(
-          DailyActivityCompanion.insert(day: day, seconds: Value((cur?.seconds ?? 0) + seconds)),
-        );
+        .insertOnConflictUpdate(DailyActivityCompanion.insert(day: day, seconds: Value(total)));
+    return total;
   });
 
   Stream<Map<String, int>> watchActivitySince(String day) =>

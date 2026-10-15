@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
 import '../audio/tts_service.dart';
+import '../data/app_settings.dart';
+import '../feedback/feedback.dart';
+import 'mascot.dart';
 
 class RoundIconButton extends StatelessWidget {
   const RoundIconButton({
@@ -185,7 +188,7 @@ class SessionProgress extends StatelessWidget {
   );
 }
 
-class SessionSummary extends StatelessWidget {
+class SessionSummary extends ConsumerStatefulWidget {
   const SessionSummary({
     super.key,
     required this.correct,
@@ -198,7 +201,20 @@ class SessionSummary extends StatelessWidget {
   final VoidCallback onAgain, onExit;
 
   @override
+  ConsumerState<SessionSummary> createState() => _SessionSummaryState();
+}
+
+class _SessionSummaryState extends ConsumerState<SessionSummary> {
+  @override
+  void initState() {
+    super.initState();
+    buzz(ref.read(settingsProvider).valueOrNull?.haptics ?? true, Buzz.heavy);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final correct = widget.correct, total = widget.total, bestCombo = widget.bestCombo;
+    final onAgain = widget.onAgain, onExit = widget.onExit;
     final pct = total == 0 ? 0 : (correct * 100 / total).round();
     Widget stat(String label, String value) => Expanded(
       child: SurfaceCard(
@@ -212,7 +228,8 @@ class SessionSummary extends StatelessWidget {
         ),
       ),
     );
-    return Center(
+    return Stack(children: [
+      Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: ConstrainedBox(
@@ -220,6 +237,15 @@ class SessionSummary extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Mascot(
+                pct >= 80
+                    ? MascotPose.celebrando
+                    : pct >= 50
+                        ? MascotPose.animando
+                        : MascotPose.tranquilo,
+                height: 150,
+              ),
+              const SizedBox(height: 8),
               const Text(
                 '¡Ronda completa!',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
@@ -258,6 +284,8 @@ class SessionSummary extends StatelessWidget {
           ),
         ),
       ),
-    );
+      ),
+      const Positioned.fill(child: ConfettiBurst(big: true)),
+    ]);
   }
 }

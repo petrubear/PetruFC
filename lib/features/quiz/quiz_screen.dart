@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/providers.dart';
+import '../../core/feedback/feedback.dart';
 import '../../core/layout/breakpoints.dart';
+import '../../core/widgets/mascot.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'quiz_engine.dart';
 import 'quiz_session.dart';
@@ -23,9 +25,18 @@ class QuizScreen extends ConsumerWidget {
     final multi = mode.kind == 'kana' && ref.read(multiSelectProvider);
     final args = (moduleId, mode, groupId, multi);
     final session = ref.watch(quizSessionProvider(args));
+    ref.listen(quizSessionProvider(args), (prev, next) {
+      final m = next.valueOrNull?.mastered ?? const [];
+      if (m.isNotEmpty && !identical(prev?.valueOrNull?.mastered, m)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('¡${m.join(' ')} dominado!'), duration: const Duration(seconds: 2)));
+      }
+    });
+    final celebrations = session.valueOrNull?.celebrations ?? 0;
     return ActivityScope(
       child: Scaffold(
-        body: SafeArea(
+        body: Stack(children: [
+          SafeArea(
           child: session.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text('$e')),
@@ -170,6 +181,23 @@ class QuizScreen extends ConsumerWidget {
             },
           ),
         ),
+          if (celebrations > 0)
+            Positioned.fill(child: ConfettiBurst(key: ValueKey(celebrations))),
+          if (celebrations > 0 && !(session.valueOrNull?.summary ?? false))
+            Positioned(
+              top: 76,
+              right: 12,
+              child: MascotPopup(
+                key: ValueKey(celebrations),
+                text: (session.valueOrNull?.mastered ?? const []).isNotEmpty
+                    ? '¡Dominado!'
+                    : '¡Combo x${session.valueOrNull?.combo ?? 0}!',
+                pose: (session.valueOrNull?.mastered ?? const []).isNotEmpty
+                    ? MascotPose.rockero
+                    : MascotPose.ninja,
+              ),
+            ),
+        ]),
       ),
     );
   }

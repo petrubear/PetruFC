@@ -7,6 +7,7 @@ import '../../core/audio/tts_service.dart';
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
+import '../../core/widgets/mastery.dart';
 import '../../core/widgets/ui_kit.dart';
 
 final _wordsProvider = FutureProvider.family<List<Item>, (String, String)>(
@@ -33,13 +34,16 @@ class VocabReferenceScreen extends ConsumerWidget {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(child: Text('$e')),
           data: (list) {
+            final stats = ref.watch(statsProvider).valueOrNull ?? {};
+            final mastered =
+                list.where((i) => Mastery.of(stats[i.id]) == Mastery.mastered).length;
             final heading = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Referencia · $name',
                     style: TextStyle(
                         fontSize: expanded ? 32 : 26, fontWeight: FontWeight.w700)),
-                Text('${list.length} palabras · toca una para escucharla',
+                Text('${list.length} palabras · $mastered dominadas',
                     style: const TextStyle(fontSize: 14, color: Pt.subtext)),
               ],
             );
@@ -53,7 +57,10 @@ class VocabReferenceScreen extends ConsumerWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(pad, expanded ? 24 : 12, pad, 20),
-                  child: top,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [top, const SizedBox(height: 14), const MasteryLegend()],
+                  ),
                 ),
                 Expanded(
                   child: expanded
@@ -89,11 +96,13 @@ class _WordRow extends ConsumerWidget {
   final Item item;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Material(
-        color: Pt.surface0,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final m = Mastery.of(ref.watch(statsProvider).valueOrNull?[item.id]);
+    return Material(
+        color: m.bg,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(22),
-          side: const BorderSide(color: Pt.surface1),
+          side: BorderSide(color: m.border),
         ),
         child: InkWell(
           customBorder:
@@ -133,4 +142,5 @@ class _WordRow extends ConsumerWidget {
           ),
         ),
       );
+  }
 }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
+import '../../core/feedback/feedback.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'practice_session.dart';
@@ -17,9 +18,17 @@ class PracticeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = practiceSessionProvider(moduleId);
     final session = ref.watch(provider);
+    ref.listen(masteredProvider, (prev, next) {
+      if (next.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('¡${next.join(' ')} dominado!'),
+            duration: const Duration(seconds: 2)));
+      }
+    });
     return ActivityScope(
       child: Scaffold(
-        body: SafeArea(
+        body: Stack(children: [
+          SafeArea(
           child: session.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text('$e')),
@@ -279,6 +288,10 @@ class PracticeScreen extends ConsumerWidget {
             },
           ),
         ),
+          if ((session.valueOrNull?.celebrations ?? 0) > 0)
+            Positioned.fill(
+                child: ConfettiBurst(key: ValueKey(session.valueOrNull!.celebrations))),
+        ]),
       ),
     );
   }

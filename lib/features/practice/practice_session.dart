@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/data/app_settings.dart';
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
+import '../../core/feedback/feedback.dart';
 import 'stroke_score.dart';
 
 class PracticeState {
@@ -20,8 +21,9 @@ class PracticeState {
     this.combo = 0,
     this.bestCombo = 0,
     this.summary = false,
+    this.celebrations = 0,
   });
-  final int size, graded, hits, combo, bestCombo;
+  final int size, graded, hits, combo, bestCombo, celebrations;
   final bool summary;
   final Item item;
   final List<List<Offset>> strokes; // coordenadas normalizadas 0..1
@@ -40,6 +42,7 @@ class PracticeState {
         combo: combo,
         bestCombo: bestCombo,
         summary: summary,
+        celebrations: celebrations,
       );
 }
 
@@ -101,9 +104,17 @@ class PracticeSession
 
   void grade(bool ok) {
     final s = state.requireValue;
-    ref.read(repoProvider).recordAnswer(s.item.id, ok);
+    final haptics = ref.read(settingsProvider).valueOrNull?.haptics ?? true;
+    ref.read(repoProvider).recordAnswer(s.item.id, ok).then((streak) {
+      if (ok && streak == 5) {
+        buzz(haptics, Buzz.heavy);
+        ref.read(masteredProvider.notifier).state = [s.item.japanese];
+      }
+    });
     final graded = s.graded + 1;
     final combo = ok ? s.combo + 1 : 0;
+    final milestone = ok && combo % 5 == 0;
+    buzz(haptics, !ok ? Buzz.soft : (milestone ? Buzz.medium : Buzz.light));
     final best = combo > s.bestCombo ? combo : s.bestCombo;
     final hits = s.hits + (ok ? 1 : 0);
     state = AsyncData(
@@ -115,6 +126,7 @@ class PracticeSession
         combo: combo,
         bestCombo: best,
         summary: graded >= s.size,
+        celebrations: s.celebrations + (milestone ? 1 : 0),
       ),
     );
   }

@@ -7,6 +7,7 @@ import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/app_settings.dart';
 import '../../core/data/repository.dart';
+import '../../core/widgets/mascot.dart';
 import '../../core/widgets/ui_kit.dart';
 
 const _weekdays = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -152,4 +153,32 @@ class _RingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_RingPainter old) => old.ratio != ratio || old.done != done;
+}
+
+/// Mascota con un globo que cambia segun el avance del dia.
+class MascotGreeting extends ConsumerWidget {
+  const MascotGreeting({super.key, this.height = 104});
+  final double height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goalMin = ref.watch(settingsProvider).valueOrNull?.goalMinutes ?? 20;
+    final days = ref.watch(recentActivityProvider).valueOrNull ?? {};
+    final min = (days[dayKey(DateTime.now())] ?? 0) ~/ 60;
+    final (pose, text) = min >= goalMin
+        ? (MascotPose.celebrando, '¡Meta cumplida! Hoy lo diste todo')
+        : min == 0
+            ? (MascotPose.kimono, '¡Hola! Empecemos con unos minutos de japonés')
+            : (MascotPose.animando, 'Vas muy bien, te faltan ${goalMin - min} min');
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Mascot(pose, height: height),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Padding(padding: const EdgeInsets.only(bottom: 14), child: SpeechBubble(text)),
+        ),
+      ],
+    );
+  }
 }

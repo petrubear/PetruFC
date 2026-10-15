@@ -1,14 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/database.dart';
+import '../../core/data/app_settings.dart';
 import '../../core/data/providers.dart';
+import '../../core/feedback/feedback.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 
@@ -120,7 +121,8 @@ class WordSearchGame
       if (s.found.containsKey(i)) continue;
       final w = s.words[i].japanese;
       if (s.selection.length > 1 && (w == text || w == reversed)) {
-        HapticFeedback.mediumImpact();
+        buzz(ref.read(settingsProvider).valueOrNull?.haptics ?? true,
+            s.found.length + 1 == s.words.length ? Buzz.heavy : Buzz.medium);
         state = AsyncData(s.copyWith(found: {...s.found, i: s.selection}, selection: []));
         return;
       }
@@ -144,7 +146,8 @@ class WordSearchScreen extends ConsumerWidget {
     final expanded = isExpanded(context);
     return ActivityScope(
       child: Scaffold(
-        body: SafeArea(
+        body: Stack(children: [
+          SafeArea(
           child: session.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text('$e')),
@@ -216,6 +219,9 @@ class WordSearchScreen extends ConsumerWidget {
             },
           ),
         ),
+          if (session.valueOrNull?.done ?? false)
+            const Positioned.fill(child: ConfettiBurst(big: true)),
+        ]),
       ),
     );
   }

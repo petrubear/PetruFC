@@ -80,7 +80,9 @@ class _Narrow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
       children: [
         const _Header(),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
+        const MascotGreeting(),
+        const SizedBox(height: 8),
         const DailyGoalCard(),
         const SizedBox(height: 20),
         for (final m in active) ...[_Hero(m), const SizedBox(height: 16)],
@@ -219,7 +221,9 @@ class _Wide extends ConsumerWidget {
           child: ListView(
             children: [
               const _Header(title: 36),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
+              const MascotGreeting(height: 84),
+              const SizedBox(height: 8),
               const DailyGoalCard(),
               const SizedBox(height: 20),
               for (final m in modules.where((m) => m.enabled)) ...[

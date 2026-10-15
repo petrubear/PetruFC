@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/data/app_settings.dart';
 import '../../core/data/providers.dart';
+import '../../core/feedback/feedback.dart';
 import 'quiz_engine.dart';
 
 typedef QuizArgs = (String moduleId, QuizMode mode, String? groupId, bool multi);
@@ -16,11 +17,15 @@ class QuizState {
     this.combo = 0,
     this.bestCombo = 0,
     this.summary = false,
+    this.celebrations = 0,
+    this.mastered = const [],
   });
   final QuizQuestion question;
   final String? selected;
   final int size, correct, wrong, combo, bestCombo;
   final bool summary;
+  final int celebrations; // sube con cada hito de combo (dispara el confeti)
+  final List<String> mastered; // caracteres que acaban de llegar a verde
 
   bool get answered => selected != null;
   int get done => correct + wrong;
@@ -47,25 +52,44 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
     return QuizState(question: _engine.next(), size: size);
   }
 
-  void answer(String option) {
+  Future<void> answer(String option) async {
     final s = state.requireValue;
     if (s.answered) return;
     final ok = option == s.question.correct;
-    for (final i in s.question.items) {
-      ref.read(repoProvider).recordAnswer(i.id, ok);
-    }
+    final haptics = ref.read(settingsProvider).valueOrNull?.haptics ?? true;
     final combo = ok ? s.combo + 1 : 0;
-    state = AsyncData(
-      QuizState(
-        question: s.question,
-        size: s.size,
-        selected: option,
-        correct: s.correct + (ok ? 1 : 0),
-        wrong: s.wrong + (ok ? 0 : 1),
-        combo: combo,
-        bestCombo: combo > s.bestCombo ? combo : s.bestCombo,
-      ),
-    );
+    final milestone = ok && combo % 5 == 0;
+    buzz(haptics, !ok ? Buzz.soft : (milestone ? Buzz.medium : Buzz.light));
+    state = AsyncData(QuizState(
+      question: s.question,
+      size: s.size,
+      selected: option,
+      correct: s.correct + (ok ? 1 : 0),
+      wrong: s.wrong + (ok ? 0 : 1),
+      combo: combo,
+      bestCombo: combo > s.bestCombo ? combo : s.bestCombo,
+      celebrations: s.celebrations + (milestone ? 1 : 0),
+    ));
+    final mastered = <String>[];
+    for (final i in s.question.items) {
+      final streak = await ref.read(repoProvider).recordAnswer(i.id, ok);
+      if (ok && streak == 5) mastered.add(i.japanese);
+    }
+    final cur = state.valueOrNull;
+    if (mastered.isNotEmpty && cur != null && cur.question == s.question) {
+      buzz(haptics, Buzz.heavy);
+      state = AsyncData(QuizState(
+        question: cur.question,
+        size: cur.size,
+        selected: cur.selected,
+        correct: cur.correct,
+        wrong: cur.wrong,
+        combo: cur.combo,
+        bestCombo: cur.bestCombo,
+        celebrations: cur.celebrations + 1,
+        mastered: mastered,
+      ));
+    }
   }
 
   void next() {

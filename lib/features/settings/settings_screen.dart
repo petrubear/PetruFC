@@ -83,6 +83,35 @@ class SettingsScreen extends ConsumerWidget {
                   'Cuántas tarjetas tiene cada ronda de Flashcards y Práctica.',
                   style: TextStyle(fontSize: 13, color: Pt.subtext),
                 ),
+                const SizedBox(height: 24),
+                const SizedBox(height: 24),
+                const SectionLabel('SENSACIONES'),
+                const SizedBox(height: 12),
+                SurfaceCard(
+                  radius: 28,
+                  child: Column(
+                    children: [
+                      SwitchListTile(
+                        title: const Text('Vibración'),
+                        subtitle: const Text('Al acertar, en combos y al dominar'),
+                        value: settings.haptics,
+                        onChanged: n.setHaptics,
+                      ),
+                      SwitchListTile(
+                        title: const Text('Festejos y animaciones'),
+                        subtitle: const Text('Confeti al completar rondas y metas'),
+                        value: settings.effects,
+                        onChanged: n.setEffects,
+                      ),
+                      SwitchListTile(
+                        title: const Text('Mostrar mascota'),
+                        subtitle: const Text('El gato que te acompaña y festeja'),
+                        value: settings.mascotOn,
+                        onChanged: n.setMascotOn,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

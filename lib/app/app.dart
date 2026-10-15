@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/activity/activity_tracker.dart';
+import '../core/feedback/feedback.dart';
 import 'router.dart';
 import 'theme.dart';
 
@@ -20,7 +21,10 @@ class PetruApp extends ConsumerWidget {
         behavior: HitTestBehavior.translucent,
         onPointerDown: (_) => tracker.touch(),
         onPointerMove: (_) => tracker.touch(),
-        child: child,
+        child: Stack(fit: StackFit.expand, children: [
+          if (child != null) child,
+          const GoalCelebrationOverlay(),
+        ]),
       ),
     );
   }

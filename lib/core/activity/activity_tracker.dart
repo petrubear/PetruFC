@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/providers.dart';
+import '../feedback/feedback.dart';
 import '../data/repository.dart';
 
 /// Cuenta el tiempo de estudio activo: solo mientras hay una pantalla de
@@ -14,6 +15,7 @@ class ActivityTracker with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
   }
   final StudyRepository _repo;
+  void Function()? onGoalReached;
   static const _idle = Duration(seconds: 30);
   int _scopes = 0, _pending = 0;
   bool _resumed = true;
@@ -46,7 +48,10 @@ class ActivityTracker with WidgetsBindingObserver {
     if (_pending == 0) return;
     final n = _pending;
     _pending = 0;
-    _repo.addSeconds(dayKey(DateTime.now()), n);
+    _repo.addSeconds(dayKey(DateTime.now()), n).then((total) async {
+      final goal = int.tryParse((await _repo.allSettings())['goal_minutes'] ?? '') ?? 20;
+      if (total - n < goal * 60 && total >= goal * 60) onGoalReached?.call();
+    });
   }
 
   @override
@@ -63,7 +68,8 @@ class ActivityTracker with WidgetsBindingObserver {
 }
 
 final activityTrackerProvider = Provider<ActivityTracker>((ref) {
-  final t = ActivityTracker(ref.watch(repoProvider));
+  final t = ActivityTracker(ref.watch(repoProvider))
+    ..onGoalReached = () => ref.read(goalReachedProvider.notifier).state++;
   ref.onDispose(t.dispose);
   return t;
 });

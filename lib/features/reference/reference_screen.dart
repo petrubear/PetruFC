@@ -7,6 +7,7 @@ import '../../core/audio/tts_service.dart';
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
+import '../../core/widgets/mastery.dart';
 import '../../core/widgets/ui_kit.dart';
 
 // Posicion de cada kana en la tabla, por romaji (null = hueco).
@@ -87,7 +88,12 @@ class ReferenceScreen extends ConsumerWidget {
     final heading = Text('Referencia',
         style: TextStyle(fontSize: expanded ? 38 : 32, fontWeight: FontWeight.w700));
     final total = _basic.count + _dakuten.count + _combined.count;
-    final subtitle = Text('$total caracteres · toca uno para escucharlo',
+    final stats = ref.watch(statsProvider).valueOrNull ?? {};
+    final mastered = items.valueOrNull?.values
+            .where((i) => Mastery.of(stats[i.id]) == Mastery.mastered)
+            .length ??
+        0;
+    final subtitle = Text('$total caracteres · $mastered dominados',
         style: const TextStyle(fontSize: 14, color: Pt.subtext));
 
     return Scaffold(
@@ -111,7 +117,9 @@ class ReferenceScreen extends ConsumerWidget {
                         children: [heading, subtitle],
                       ),
                     ]),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
+                    const Align(alignment: Alignment.centerLeft, child: MasteryLegend()),
+                    const SizedBox(height: 20),
                     Expanded(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +154,9 @@ class ReferenceScreen extends ConsumerWidget {
                 heading,
                 const SizedBox(height: 4),
                 subtitle,
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
+                const MasteryLegend(),
+                const SizedBox(height: 20),
                 table(_basic),
                 const SizedBox(height: 28),
                 table(_dakuten),
@@ -241,11 +251,13 @@ class _KanaCell extends ConsumerWidget {
   final Item item;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Material(
-        color: Pt.surface0,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final m = Mastery.of(ref.watch(statsProvider).valueOrNull?[item.id]);
+    return Material(
+        color: m.bg,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
-          side: const BorderSide(color: Pt.surface1),
+          side: BorderSide(color: m.border),
         ),
         child: InkWell(
           customBorder:
@@ -272,4 +284,5 @@ class _KanaCell extends ConsumerWidget {
           ),
         ),
       );
+  }
 }
