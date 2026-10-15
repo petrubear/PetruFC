@@ -43,7 +43,7 @@ class ModeSetupScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (_isKana) ...[
-                        Expanded(child: SingleChildScrollView(child: _SetList(moduleId))),
+                        Expanded(child: SingleChildScrollView(child: SetList(moduleId))),
                         const SizedBox(width: 32),
                       ],
                       Expanded(
@@ -81,7 +81,7 @@ class ModeSetupScreen extends StatelessWidget {
               const SizedBox(height: 22),
               heading,
               const SizedBox(height: 22),
-              if (_isKana) ...[_SetList(moduleId), const SizedBox(height: 22)],
+              if (_isKana) ...[SetList(moduleId), const SizedBox(height: 22)],
               const SectionLabel('MODO'),
               const SizedBox(height: 12),
               for (var i = 0; i < modes.length; i++) ...[
@@ -97,9 +97,10 @@ class ModeSetupScreen extends StatelessWidget {
   }
 }
 
-class _SetList extends ConsumerWidget {
-  const _SetList(this.moduleId);
+class SetList extends ConsumerWidget {
+  const SetList(this.moduleId, {super.key, this.showMultiSelect = true});
   final String moduleId;
+  final bool showMultiSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -138,6 +139,7 @@ class _SetList extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
         ],
+        if (showMultiSelect) ...[
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           decoration: BoxDecoration(
@@ -163,6 +165,7 @@ class _SetList extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 10),
+        ],
       ],
     );
   }

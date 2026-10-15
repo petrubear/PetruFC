@@ -81,6 +81,8 @@ class ModuleMenuBody extends ConsumerWidget {
           icon: Icons.edit_rounded),
       MenuEntry('Vocabulario', 'Palabras por tema', Pt.teal,
           '/m/$moduleId/vocabulary', glyph: wordGlyph),
+      MenuEntry('Juegos', 'Memorama y más', Pt.green,
+          '/m/$moduleId/games', icon: Icons.sports_esports_rounded),
       MenuEntry('Referencia', 'Tabla de caracteres', Pt.yellow,
           '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
     ];

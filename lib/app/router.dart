@@ -1,5 +1,10 @@
 import 'package:go_router/go_router.dart';
 
+import '../features/games/build_word_game.dart';
+import '../features/games/game_common.dart';
+import '../features/games/game_setup_screen.dart';
+import '../features/games/games_menu.dart';
+import '../features/games/memory_game.dart';
 import '../features/home/home_screen.dart';
 import '../features/home/module_menu.dart';
 import '../features/practice/practice_screen.dart';
@@ -73,6 +78,34 @@ final router = GoRouter(
                 mode: QuizMode.values.byName(s.pathParameters['mode']!),
                 groupId: s.uri.queryParameters['group'],
               ),
+            ),
+            GoRoute(
+              path: 'games',
+              builder: (c, s) => GamesMenuScreen(moduleId: s.pathParameters['module']!),
+              routes: [
+                GoRoute(
+                  path: ':game',
+                  builder: (c, s) => GameSetupScreen(
+                    moduleId: s.pathParameters['module']!,
+                    game: s.pathParameters['game']!,
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: 'play',
+                      builder: (c, s) {
+                        final GameArgs args = (
+                          s.pathParameters['module']!,
+                          s.uri.queryParameters['kind'] ?? 'kana',
+                          s.uri.queryParameters['group'],
+                        );
+                        return s.pathParameters['game'] == 'build'
+                            ? BuildWordScreen(args: args)
+                            : MemoryScreen(args: args);
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
             GoRoute(
               path: 'reference',
