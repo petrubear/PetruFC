@@ -162,9 +162,12 @@ class MascotGreeting extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final goalMin = ref.watch(settingsProvider).valueOrNull?.goalMinutes ?? 20;
-    final days = ref.watch(recentActivityProvider).valueOrNull ?? {};
-    final min = (days[dayKey(DateTime.now())] ?? 0) ~/ 60;
+    final settings = ref.watch(settingsProvider).valueOrNull;
+    final activity = ref.watch(recentActivityProvider).valueOrNull;
+    // Hasta tener los datos no se muestra nada, para no cambiar de pose de golpe.
+    if (settings == null || activity == null) return SizedBox(height: height);
+    final goalMin = settings.goalMinutes;
+    final min = (activity[dayKey(DateTime.now())] ?? 0) ~/ 60;
     final (pose, text) = min >= goalMin
         ? (MascotPose.celebrando, '¡Meta cumplida! Hoy lo diste todo')
         : min == 0

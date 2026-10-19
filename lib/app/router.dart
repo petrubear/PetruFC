@@ -7,6 +7,7 @@ import '../features/games/games_menu.dart';
 import '../features/games/memory_game.dart';
 import '../features/home/home_screen.dart';
 import '../features/home/module_menu.dart';
+import '../features/learn/learn_screen.dart';
 import '../features/practice/practice_screen.dart';
 import '../features/quiz/mode_setup_screen.dart';
 import '../features/settings/settings_screen.dart';
@@ -111,6 +112,10 @@ final router = GoRouter(
               path: 'reference',
               builder: (c, s) =>
                   ReferenceScreen(moduleId: s.pathParameters['module']!),
+            ),
+            GoRoute(
+              path: 'learn',
+              builder: (c, s) => LearnScreen(moduleId: s.pathParameters['module']!),
             ),
             GoRoute(
               path: 'practice',

@@ -6,11 +6,14 @@ App Flutter para Android para estudiar japonés con flashcards. Incluye **Hiraga
 
 ## Funciones
 
-Cada módulo (Hiragana y Katakana) ofrece las mismas cuatro funciones:
+Cada módulo (Hiragana y Katakana) ofrece las mismas funciones:
 
+- **Aprender**: cada carácter en el orden de la Referencia, con guía gris, trazos numerados y animación del orden de trazos; dibujas encima con el dedo, con Anterior, Siguiente y Borrar. Recuerda dónde te quedaste. Datos de trazos: [KanjiVG](http://kanjivg.tagaini.net) (CC BY-SA 3.0).
 - **Flashcards**: Kana → Romaji y Romaji → Kana, con 4 opciones al azar y botón de pronunciación. Los sets (Básicos, Dakuten/handakuten, Combinados) se activan o desactivan a gusto.
 - **Práctica**: se muestra el romaji, dibujas el carácter con el dedo y "Check" revela el correcto, muestra un porcentaje de parecido (comparación local con la fuente) y tú decides si lo lograste.
-- **Vocabulario**: por secciones (Hiragana: "Partes del cuerpo", "Órganos del cuerpo" y "Colores"; Katakana: "Comida y bebida" y "Colores", con palabras de origen extranjero; solo con su propia escritura). Cada sección tiene una **Referencia** (palabra y significado), una **Práctica** en ambos sentidos (Palabra → Español y Español → Palabra) y una **Sopa de letras** de 8x8 con 8 palabras al azar, en 8 direcciones (incluidas las diagonales).
+- **Vocabulario**: por secciones (Hiragana: "Partes del cuerpo", "Órganos del cuerpo", "Colores", "Profesiones" y "Sushi y acompañantes"; Katakana: "Comida y bebida", "Colores", "Profesiones" y "Sushi y acompañantes", con palabras de origen extranjero; solo con su propia escritura). Cada sección tiene una **Referencia** (palabra y significado), una **Práctica** en ambos sentidos (Palabra → Español y Español → Palabra) y una **Sopa de letras** de 8x8 con 8 palabras al azar, en 8 direcciones (incluidas las diagonales).
+- **Juegos**: Memorama, Arma la palabra y Sopa de letras, con el grupo que estás aprendiendo.
+- **Meta diaria y mascota**: tiempo activo de estudio con anillo y racha semanal, rondas finitas, colores de dominio (blanco, rojo, amarillo, verde), vibración y festejos, y un gato animado que te acompaña. Todo se ajusta en Configuración, donde también se ve la versión.
 - **Referencia**: tabla con los 104 caracteres (46 básicos, 25 con dakuten/handakuten y 33 combinados) organizados por consonante y vocal; al tocar uno suena su pronunciación.
 - Todas las respuestas se registran en SQLite (`review_stats`) para futuras estadísticas.
 

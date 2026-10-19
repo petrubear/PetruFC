@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
+import '../../core/app_version.dart';
 import '../../core/data/app_settings.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
@@ -111,6 +112,17 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
+                ),
+                const SizedBox(height: 20),
+                const Center(
+                  child: Text('Versión $appVersion',
+                      style: TextStyle(color: Pt.subtext, fontSize: 13)),
+                ),
+                const SizedBox(height: 6),
+                const Center(
+                  child: Text('Orden de trazos: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Pt.subtext, fontSize: 12)),
                 ),
               ],
             ),

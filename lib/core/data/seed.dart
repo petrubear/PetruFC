@@ -56,6 +56,59 @@ const _kColors = 'レッド:reddo:Rojo ブルー:buruu:Azul イエロー:ieroo:A
     'ベージュ:beeju:Beige ネイビー:neibii:Azul marino ターコイズ:taakoizu:Turquesa '
     'ラベンダー:rabendaa:Lavanda クリーム:kuriimu:Crema';
 
+// Profesiones (hiragana: palabras japonesas escritas sin kanji).
+const _hJobs = 'けいさつかん:keisatsukan:Policía しょうぼうし:shouboushi:Bombero '
+    'べんごし:bengoshi:Abogado しょうにかい:shounikai:Pediatra いしゃ:isha:Médico '
+    'かんごし:kangoshi:Enfermero はいしゃ:haisha:Dentista せんせい:sensei:Maestro '
+    'さいばんかん:saibankan:Juez やくざいし:yakuzaishi:Farmacéutico '
+    'じゅうい:juui:Veterinario かいけいし:kaikeishi:Contador '
+    'ぎんこういん:ginkouin:Empleado de banco かいしゃいん:kaishain:Empleado de oficina '
+    'てんいん:tenin:Vendedor うんてんしゅ:untenshu:Conductor ひこうし:hikoushi:Piloto '
+    'ちょうりし:chourishi:Cocinero さかなや:sakanaya:Pescadero だいく:daiku:Carpintero '
+    'でんきこう:denkikou:Electricista せいびし:seibishi:Mecánico '
+    'けんちくか:kenchikuka:Arquitecto かしゅ:kashu:Cantante がか:gaka:Pintor '
+    'さっか:sakka:Escritor きしゃ:kisha:Periodista のうか:nouka:Agricultor '
+    'りょうし:ryoushi:Pescador かがくしゃ:kagakusha:Científico';
+
+// Profesiones (katakana, palabras de origen extranjero).
+const _kJobs = 'プログラマー:puroguramaa:Programador エンジニア:enjinia:Ingeniero '
+    'デザイナー:dezainaa:Diseñador ナース:naasu:Enfermero ドクター:dokutaa:Doctor '
+    'パイロット:pairotto:Piloto シェフ:shefu:Chef コック:kokku:Cocinero '
+    'ウェイター:ueitaa:Mesero ウェイトレス:ueitoresu:Mesera バーテンダー:baatendaa:Bartender '
+    'パティシエ:patishie:Pastelero カメラマン:kameraman:Fotógrafo '
+    'ミュージシャン:myuujishan:Músico ピアニスト:pianisuto:Pianista '
+    'ギタリスト:gitarisuto:Guitarrista ダンサー:dansaa:Bailarín モデル:moderu:Modelo '
+    'アーティスト:aatisuto:Artista ジャーナリスト:jaanarisuto:Periodista '
+    'アナウンサー:anaunsaa:Locutor マネージャー:maneejaa:Gerente '
+    'コンサルタント:konsarutanto:Consultor セールスマン:seerusuman:Vendedor '
+    'ガードマン:gaadoman:Guardia de seguridad ドライバー:doraibaa:Conductor '
+    'スタイリスト:sutairisuto:Estilista カウンセラー:kaunseraa:Consejero '
+    'アスリート:asuriito:Atleta コーチ:koochi:Entrenador';
+
+// Sushi y lo que lo acompana (hiragana).
+const _hSushi = 'すし:sushi:Sushi さしみ:sashimi:Sashimi にぎりずし:nigirizushi:Sushi nigiri '
+    'まきずし:makizushi:Sushi en rollo ちらしずし:chirashizushi:Sushi chirashi '
+    'いなりずし:inarizushi:Sushi inari てんぷら:tenpura:Tempura えび:ebi:Camarón '
+    'さけ:sake:Salmón まぐろ:maguro:Atún とろ:toro:Atún graso たまご:tamago:Huevo '
+    'いか:ika:Calamar たこ:tako:Pulpo うに:uni:Erizo de mar いくら:ikura:Huevas de salmón '
+    'あなご:anago:Anguila de mar うなぎ:unagi:Anguila de río かに:kani:Cangrejo '
+    'たい:tai:Besugo ほたて:hotate:Vieira あじ:aji:Jurel さば:saba:Caballa '
+    'のり:nori:Alga nori ごはん:gohan:Arroz しょうゆ:shouyu:Salsa de soya '
+    'わさび:wasabi:Wasabi がり:gari:Jengibre encurtido おちゃ:ocha:Té '
+    'みそしる:misoshiru:Sopa de miso';
+
+// Sushi y lo que lo acompana (katakana).
+const _kSushi = 'スシ:sushi:Sushi サシミ:sashimi:Sashimi エビ:ebi:Camarón '
+    'テンプラ:tenpura:Tempura サーモン:saamon:Salmón ツナ:tsuna:Atún マグロ:maguro:Atún '
+    'トロ:toro:Atún graso イカ:ika:Calamar タコ:tako:Pulpo ウニ:uni:Erizo de mar '
+    'イクラ:ikura:Huevas de salmón アナゴ:anago:Anguila de mar ウナギ:unagi:Anguila de río '
+    'カニ:kani:Cangrejo ホタテ:hotate:Vieira アボカド:abokado:Aguacate '
+    'キュウリ:kyuuri:Pepino タマゴ:tamago:Huevo ネギ:negi:Cebollín ワサビ:wasabi:Wasabi '
+    'ガリ:gari:Jengibre encurtido ノリ:nori:Alga nori ソース:soosu:Salsa '
+    'マヨネーズ:mayoneezu:Mayonesa ビール:biiru:Cerveza ドリンク:dorinku:Bebida '
+    'サラダ:sarada:Ensalada デザート:dezaato:Postre '
+    'カリフォルニアロール:kariforuniarooru:Rollo California';
+
 const _kBasic =
     'ア:a イ:i ウ:u エ:e オ:o カ:ka キ:ki ク:ku ケ:ke コ:ko サ:sa シ:shi ス:su セ:se ソ:so '
     'タ:ta チ:chi ツ:tsu テ:te ト:to ナ:na ニ:ni ヌ:nu ネ:ne ノ:no ハ:ha ヒ:hi フ:fu ヘ:he ホ:ho '
@@ -190,6 +243,22 @@ void _addColors(Batch b, AppDatabase db) {
   }
 }
 
+void _addTopics(Batch b, AppDatabase db) {
+  for (final (module, suffix, name, data, order) in [
+    ('hiragana', 'jobs', 'Profesiones', _hJobs, 6),
+    ('hiragana', 'sushi', 'Sushi y acompañantes', _hSushi, 7),
+    ('katakana', 'jobs', 'Profesiones', _kJobs, 5),
+    ('katakana', 'sushi', 'Sushi y acompañantes', _kSushi, 6),
+  ]) {
+    final id = '${module}_$suffix';
+    final rows = _words(module, id, data);
+    assert(rows.length == 30, 'se esperaban 30 palabras en $id, hay ${rows.length}');
+    b.insert(db.itemGroups,
+        _group(module, id, 'word', name, '${rows.length} palabras', order));
+    b.insertAll(db.items, rows);
+  }
+}
+
 void _addKatakana(Batch b, AppDatabase db) => _addScript(b, db,
     module: 'katakana',
     basic: _kBasic,
@@ -215,6 +284,7 @@ Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
       _addHiraganaOrgans(b, db);
       _addKatakana(b, db);
       _addColors(b, db);
+      _addTopics(b, db);
     });
 
 /// Esquema v3: activa Katakana en bases creadas antes de que existiera.
@@ -228,3 +298,6 @@ Future<void> upgradeToV4(AppDatabase db) => db.batch((b) => _addHiraganaOrgans(b
 
 /// Esquema v5: seccion "Colores" en Hiragana y Katakana.
 Future<void> upgradeToV5(AppDatabase db) => db.batch((b) => _addColors(b, db));
+
+/// Esquema v7: secciones "Profesiones" y "Sushi y acompañantes" en Hiragana y Katakana.
+Future<void> upgradeToV7(AppDatabase db) => db.batch((b) => _addTopics(b, db));

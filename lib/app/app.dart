@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/activity/activity_tracker.dart';
 import '../core/feedback/feedback.dart';
+import '../core/widgets/mascot.dart';
 import 'router.dart';
 import 'theme.dart';
 
@@ -24,6 +25,7 @@ class PetruApp extends ConsumerWidget {
         child: Stack(fit: StackFit.expand, children: [
           if (child != null) child,
           const GoalCelebrationOverlay(),
+          const MascotPrecache(),
         ]),
       ),
     );

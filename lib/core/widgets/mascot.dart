@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,28 +8,35 @@ import '../data/app_settings.dart';
 
 enum MascotPose { celebrando, animando, pensando, tranquilo, doctor, kimono, ninja, rockero }
 
-/// La mascota en la pose pedida. El gato (siames o negro) se sortea cada vez que aparece.
-class Mascot extends ConsumerStatefulWidget {
+/// La mascota en la pose pedida: el siames hace las poses deportivas y el gato negro
+/// las de disfraz. Con los festejos apagados se muestra quieta.
+class Mascot extends ConsumerWidget {
   const Mascot(this.pose, {super.key, this.height = 120});
   final MascotPose pose;
   final double height;
 
   @override
-  ConsumerState<Mascot> createState() => _MascotState();
-}
-
-class _MascotState extends ConsumerState<Mascot> {
-  final _cat = Random().nextBool() ? 'siames' : 'negro';
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final s = ref.watch(settingsProvider).valueOrNull;
     if (s != null && !s.mascotOn) return const SizedBox.shrink();
-    return Image.asset(
-      'assets/mascot/${_cat}_${widget.pose.name}.webp',
-      height: widget.height,
-      fit: BoxFit.contain,
-      filterQuality: FilterQuality.medium,
+    final cat = pose.index < MascotPose.doctor.index ? 'siames' : 'negro';
+    final dir = (s?.effects ?? true) ? 'assets/mascot/anim' : 'assets/mascot';
+    return SizedBox(
+      height: height,
+      child: Image.asset(
+        '$dir/${cat}_${pose.name}.webp',
+        key: ValueKey('$dir/${cat}_${pose.name}'),
+        height: height,
+        fit: BoxFit.contain,
+        gaplessPlayback: true,
+        filterQuality: FilterQuality.medium,
+        // No se muestra nada hasta que el primer cuadro esta listo, y entra con un fundido.
+        frameBuilder: (context, child, frame, sync) => AnimatedOpacity(
+          opacity: frame == null ? 0 : 1,
+          duration: const Duration(milliseconds: 180),
+          child: child,
+        ),
+      ),
     );
   }
 }
@@ -96,4 +102,30 @@ class _MascotPopupState extends State<MascotPopup> {
           ),
         ),
       );
+}
+
+/// Decodifica las mascotas al abrir la app para que aparezcan sin retraso.
+class MascotPrecache extends StatefulWidget {
+  const MascotPrecache({super.key});
+
+  @override
+  State<MascotPrecache> createState() => _MascotPrecacheState();
+}
+
+class _MascotPrecacheState extends State<MascotPrecache> {
+  bool _done = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_done) return;
+    _done = true;
+    for (final pose in MascotPose.values) {
+      final cat = pose.index < MascotPose.doctor.index ? 'siames' : 'negro';
+      precacheImage(AssetImage('assets/mascot/anim/${cat}_${pose.name}.webp'), context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }

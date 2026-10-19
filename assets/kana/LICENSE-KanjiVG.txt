@@ -1,0 +1,4 @@
+strokes.json deriva de KanjiVG (http://kanjivg.tagaini.net), Copyright (C) 2009-2011 Ulrich Apel,
+distribuido bajo Creative Commons Attribution-Share Alike 3.0
+(http://creativecommons.org/licenses/by-sa/3.0/). Se extrajeron los trazos y la posicion de los
+numeros de los kana usados; este archivo se distribuye bajo la misma licencia.

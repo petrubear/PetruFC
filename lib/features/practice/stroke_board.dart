@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 
 class StrokeBoard extends StatelessWidget {
-  const StrokeBoard({super.key, required this.strokes, this.onStart, this.onMove});
+  const StrokeBoard(
+      {super.key, required this.strokes, this.onStart, this.onMove, this.underlay});
   final List<List<Offset>> strokes;
+  final CustomPainter? underlay;
   final ValueChanged<Offset>? onStart, onMove;
 
   @override
@@ -19,15 +21,16 @@ class StrokeBoard extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onPointerDown: onStart == null ? null : (e) => onStart!(norm(e.localPosition)),
             onPointerMove: onMove == null ? null : (e) => onMove!(norm(e.localPosition)),
-            child: CustomPaint(painter: _StrokePainter(strokes), size: Size.infinite),
+            child: CustomPaint(painter: _StrokePainter(strokes, underlay), size: Size.infinite),
           );
         }),
       );
 }
 
 class _StrokePainter extends CustomPainter {
-  _StrokePainter(this.strokes);
+  _StrokePainter(this.strokes, this.underlay);
   final List<List<Offset>> strokes;
+  final CustomPainter? underlay;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -39,6 +42,8 @@ class _StrokePainter extends CustomPainter {
         Offset(size.width / 2, size.height * 0.94), guide);
     canvas.drawLine(Offset(size.width * 0.07, size.height / 2),
         Offset(size.width * 0.93, size.height / 2), guide);
+
+    underlay?.paint(canvas, size);
 
     final width = (size.shortestSide * 0.03).clamp(3.0, 14.0).toDouble();
     final ink = Paint()
@@ -62,5 +67,5 @@ class _StrokePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_StrokePainter old) => old.strokes != strokes;
+  bool shouldRepaint(_StrokePainter old) => underlay != null || old.strokes != strokes;
 }

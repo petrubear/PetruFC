@@ -77,6 +77,8 @@ class ModuleMenuBody extends ConsumerWidget {
     final entries = [
       MenuEntry('Flashcards', 'Reconoce cada carácter', Pt.flamingo,
           '/m/$moduleId/flashcards', glyph: kanaGlyph),
+      MenuEntry('Aprender', 'Trazo paso a paso', Pt.red, '/m/$moduleId/learn',
+          icon: Icons.gesture_rounded),
       MenuEntry('Práctica', 'Dibuja con el dedo', Pt.pink, '/m/$moduleId/practice',
           icon: Icons.edit_rounded),
       MenuEntry('Vocabulario', 'Palabras por tema', Pt.teal,

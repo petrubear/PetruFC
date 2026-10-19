@@ -36,7 +36,7 @@ class WordSearchState {
 
 WordSearchState _generate(List<Item> all) {
   final rng = Random();
-  final usable = all.where((i) => i.japanese.runes.length >= 2).toList()..shuffle(rng);
+  final usable = all.where((i) => i.japanese.runes.length >= 2 && i.japanese.runes.length <= _n).toList()..shuffle(rng);
   final chosen = usable.take(_wordsPerGame).toList()
     ..sort((a, b) => b.japanese.length.compareTo(a.japanese.length));
   final grid = List.generate(_n, (_) => List.filled(_n, ''));
