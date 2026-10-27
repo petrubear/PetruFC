@@ -11,6 +11,7 @@ const _scripts = {
 enum QuizMode {
   kanaToRomaji('Hiragana → Romaji', 'kana', true),
   romajiToKana('Romaji → Hiragana', 'kana', false),
+  scriptSwap('Hiragana → Katakana', 'kana', true),
   wordToMeaning('Hiragana → Español', 'word', true),
   meaningToWord('Español → Hiragana', 'word', false);
 
@@ -21,23 +22,25 @@ enum QuizMode {
   (String, String, String, String) _script(String moduleId) =>
       _scripts[moduleId] ?? _scripts['hiragana']!;
 
-  String label(String moduleId) =>
-      _template.replaceAll('Hiragana', _script(moduleId).$1);
+  String label(String moduleId) => this == scriptSwap
+      ? (moduleId == 'katakana' ? 'Katakana → Hiragana' : 'Hiragana → Katakana')
+      : _template.replaceAll('Hiragana', _script(moduleId).$1);
 
   String badge(String moduleId) {
     final s = _script(moduleId);
     return switch (this) {
       kanaToRomaji => '${s.$2}→a',
       romajiToKana => 'a→${s.$2}',
+      scriptSwap => moduleId == 'katakana' ? 'ア→あ' : 'あ→ア',
       wordToMeaning => '${s.$3}→${s.$4}',
       meaningToWord => '${s.$4}→${s.$3}',
     };
   }
 
-  bool get answersAreJapanese => !promptIsJapanese;
+  bool get answersAreJapanese => this == scriptSwap || !promptIsJapanese;
 
   String prompt(Item i) => switch (this) {
-        kanaToRomaji || wordToMeaning => i.japanese,
+        kanaToRomaji || scriptSwap || wordToMeaning => i.japanese,
         romajiToKana => i.reading,
         meaningToWord => i.meaningEs!,
       };
@@ -45,8 +48,16 @@ enum QuizMode {
   String answer(Item i) => switch (this) {
         kanaToRomaji => i.reading,
         romajiToKana || meaningToWord => i.japanese,
+        scriptSwap => _swapScript(i),
         wordToMeaning => i.meaningEs!,
       };
+}
+
+// Hiragana (U+3041..) y katakana (U+30A1..) estan separados por 0x60 punto a punto.
+String _swapScript(Item i) {
+  final toHira = i.moduleId == 'katakana';
+  return String.fromCharCodes(
+      i.japanese.runes.map((r) => toHira ? r - 0x60 : r + 0x60));
 }
 
 class QuizQuestion {

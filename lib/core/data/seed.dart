@@ -109,6 +109,73 @@ const _kSushi = 'スシ:sushi:Sushi サシミ:sashimi:Sashimi エビ:ebi:Camaró
     'サラダ:sarada:Ensalada デザート:dezaato:Postre '
     'カリフォルニアロール:kariforuniarooru:Rollo California';
 
+// Ropa (hiragana: palabras japonesas).
+const _hClothes = 'ふく:fuku:Ropa ようふく:youfuku:Ropa occidental わふく:wafuku:Ropa japonesa '
+    'きもの:kimono:Kimono ゆかた:yukata:Yukata おび:obi:Faja obi はかま:hakama:Hakama '
+    'したぎ:shitagi:Ropa interior うわぎ:uwagi:Chaqueta ねまき:nemaki:Pijama '
+    'せいふく:seifuku:Uniforme みずぎ:mizugi:Traje de baño くつ:kutsu:Zapatos '
+    'くつした:kutsushita:Calcetines たび:tabi:Calcetín tabi ぞうり:zouri:Sandalia zori '
+    'げた:geta:Sandalia geta ぼうし:boushi:Sombrero てぶくろ:tebukuro:Guantes '
+    'えりまき:erimaki:Bufanda めがね:megane:Lentes ゆびわ:yubiwa:Anillo '
+    'かばん:kaban:Bolso さいふ:saifu:Billetera うでどけい:udedokei:Reloj de pulsera';
+
+// Ropa (katakana, palabras de origen extranjero).
+const _kClothes = 'シャツ:shatsu:Camisa ティーシャツ:tiishatsu:Camiseta ポロシャツ:poroshatsu:Polo '
+    'ブラウス:burausu:Blusa ドレス:doresu:Vestido ワンピース:wanpiisu:Vestido de una pieza '
+    'スカート:sukaato:Falda ズボン:zubon:Pantalón パンツ:pantsu:Pantalones '
+    'ジーンズ:jiinzu:Jeans ショートパンツ:shootopantsu:Pantalón corto セーター:seetaa:Suéter '
+    'カーディガン:kaadigan:Cárdigan パーカー:paakaa:Sudadera con capucha '
+    'ジャケット:jaketto:Chaqueta コート:kooto:Abrigo スーツ:suutsu:Traje '
+    'ネクタイ:nekutai:Corbata ベルト:beruto:Cinturón ベスト:besuto:Chaleco '
+    'パジャマ:pajama:Pijama エプロン:epuron:Delantal マフラー:mafuraa:Bufanda '
+    'スカーフ:sukaafu:Pañuelo de cuello ソックス:sokkusu:Calcetines '
+    'ストッキング:sutokkingu:Medias ブーツ:buutsu:Botas サンダル:sandaru:Sandalias '
+    'スニーカー:sunikaa:Zapatillas ハイヒール:haihiiru:Tacones ネックレス:nekkuresu:Collar '
+    'ハンカチ:hankachi:Pañuelo de mano';
+
+// Objetos de la casa (hiragana: palabras japonesas).
+const _hHome = 'れいぞうこ:reizouko:Refrigeradora だいどころ:daidokoro:Cocina へや:heya:Habitación '
+    'いえ:ie:Casa げんかん:genkan:Entrada まど:mado:Ventana かべ:kabe:Pared ゆか:yuka:Piso '
+    'てんじょう:tenjou:Techo やね:yane:Tejado にわ:niwa:Jardín かいだん:kaidan:Escalera '
+    'ふろ:furo:Bañera つくえ:tsukue:Escritorio いす:isu:Silla たな:tana:Estante '
+    'ほんだな:hondana:Librero ふとん:futon:Futón まくら:makura:Almohada '
+    'かがみ:kagami:Espejo とけい:tokei:Reloj でんわ:denwa:Teléfono '
+    'せんたくき:sentakuki:Lavadora そうじき:soujiki:Aspiradora ほうき:houki:Escoba '
+    'かぎ:kagi:Llave さら:sara:Plato ちゃわん:chawan:Tazón なべ:nabe:Olla '
+    'やかん:yakan:Tetera はし:hashi:Palillos せっけん:sekken:Jabón';
+
+// Objetos de la casa (katakana, palabras de origen extranjero).
+const _kHome = 'テレビ:terebi:Televisión ラジオ:rajio:Radio エアコン:eakon:Aire acondicionado '
+    'ヒーター:hiitaa:Calefactor ソファー:sofaa:Sofá ベッド:beddo:Cama テーブル:teeburu:Mesa '
+    'カーテン:kaaten:Cortina カーペット:kaapetto:Alfombra クッション:kusshon:Cojín '
+    'ブランケット:burankketto:Manta シーツ:shiitsu:Sábana ハンガー:hangaa:Percha '
+    'クローゼット:kuroozetto:Clóset ドア:doa:Puerta ベランダ:beranda:Balcón '
+    'キッチン:kicchin:Cocina リビング:ribingu:Sala トイレ:toire:Baño シャワー:shawaa:Ducha '
+    'タオル:taoru:Toalla ランプ:ranpu:Lámpara ライト:raito:Luz パソコン:pasokon:Computadora '
+    'コンロ:konro:Hornilla オーブン:oobun:Horno トースター:toosutaa:Tostadora '
+    'ミキサー:mikisaa:Licuadora ドライヤー:doraiyaa:Secador de cabello '
+    'アイロン:airon:Plancha エレベーター:erebeetaa:Ascensor コップ:koppu:Vaso';
+
+// Instrumentos musicales (hiragana: palabras japonesas).
+const _hMusic = 'がっき:gakki:Instrumento musical ふえ:fue:Flauta たいこ:taiko:Tambor '
+    'こと:koto:Koto しゃみせん:shamisen:Shamisen しゃくはち:shakuhachi:Shakuhachi '
+    'びわ:biwa:Biwa かね:kane:Campana すず:suzu:Cascabel ほらがい:horagai:Caracola '
+    'おんがく:ongaku:Música うた:uta:Canción がくふ:gakufu:Partitura おんぷ:onpu:Nota musical';
+
+// Instrumentos musicales (katakana, palabras de origen extranjero).
+const _kMusic = 'ピアノ:piano:Piano ギター:gitaa:Guitarra ベース:beesu:Bajo ドラム:doramu:Batería '
+    'バイオリン:baiorin:Violín ビオラ:biora:Viola チェロ:chero:Chelo '
+    'コントラバス:kontorabasu:Contrabajo ハープ:haapu:Arpa フルート:furuuto:Flauta '
+    'ピッコロ:pikkoro:Flautín クラリネット:kurarinetto:Clarinete オーボエ:ooboe:Oboe '
+    'ファゴット:fagotto:Fagot サックス:sakkusu:Saxofón トランペット:toranpetto:Trompeta '
+    'トロンボーン:toronboon:Trombón ホルン:horun:Corno チューバ:chuuba:Tuba '
+    'オルガン:orugan:Órgano アコーディオン:akoodion:Acordeón ハーモニカ:haamonika:Armónica '
+    'ウクレレ:ukurere:Ukelele マンドリン:mandorin:Mandolina バンジョー:banjoo:Banjo '
+    'キーボード:kiiboodo:Teclado シンセサイザー:shinsesaizaa:Sintetizador '
+    'タンバリン:tanbarin:Pandereta カスタネット:kasutanetto:Castañuelas '
+    'トライアングル:toraianguru:Triángulo シンバル:shinbaru:Platillos '
+    'マラカス:marakasu:Maracas リコーダー:rikoodaa:Flauta dulce オカリナ:okarina:Ocarina';
+
 const _kBasic =
     'ア:a イ:i ウ:u エ:e オ:o カ:ka キ:ki ク:ku ケ:ke コ:ko サ:sa シ:shi ス:su セ:se ソ:so '
     'タ:ta チ:chi ツ:tsu テ:te ト:to ナ:na ニ:ni ヌ:nu ネ:ne ノ:no ハ:ha ヒ:hi フ:fu ヘ:he ホ:ho '
@@ -259,6 +326,23 @@ void _addTopics(Batch b, AppDatabase db) {
   }
 }
 
+void _addTopics2(Batch b, AppDatabase db) {
+  for (final (module, suffix, name, data, order) in [
+    ('hiragana', 'clothes', 'Ropa', _hClothes, 8),
+    ('hiragana', 'home', 'Objetos de casa', _hHome, 9),
+    ('hiragana', 'music', 'Instrumentos musicales', _hMusic, 10),
+    ('katakana', 'clothes', 'Ropa', _kClothes, 7),
+    ('katakana', 'home', 'Objetos de casa', _kHome, 8),
+    ('katakana', 'music', 'Instrumentos musicales', _kMusic, 9),
+  ]) {
+    final id = '${module}_$suffix';
+    final rows = _words(module, id, data);
+    b.insert(db.itemGroups,
+        _group(module, id, 'word', name, '${rows.length} palabras', order));
+    b.insertAll(db.items, rows);
+  }
+}
+
 void _addKatakana(Batch b, AppDatabase db) => _addScript(b, db,
     module: 'katakana',
     basic: _kBasic,
@@ -285,6 +369,7 @@ Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
       _addKatakana(b, db);
       _addColors(b, db);
       _addTopics(b, db);
+      _addTopics2(b, db);
     });
 
 /// Esquema v3: activa Katakana en bases creadas antes de que existiera.
@@ -301,3 +386,6 @@ Future<void> upgradeToV5(AppDatabase db) => db.batch((b) => _addColors(b, db));
 
 /// Esquema v7: secciones "Profesiones" y "Sushi y acompañantes" en Hiragana y Katakana.
 Future<void> upgradeToV7(AppDatabase db) => db.batch((b) => _addTopics(b, db));
+
+/// Esquema v8: secciones "Ropa", "Objetos de casa" e "Instrumentos musicales".
+Future<void> upgradeToV8(AppDatabase db) => db.batch((b) => _addTopics2(b, db));

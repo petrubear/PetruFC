@@ -75,18 +75,18 @@ class ModuleMenuBody extends ConsumerWidget {
     if (module == null) return const SizedBox();
     final (eyebrow, kanaGlyph, wordGlyph) = scriptLabel(moduleId);
     final entries = [
-      MenuEntry('Flashcards', 'Reconoce cada carácter', Pt.flamingo,
-          '/m/$moduleId/flashcards', glyph: kanaGlyph),
+      MenuEntry('Referencia', 'Tabla de caracteres', Pt.yellow,
+          '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
       MenuEntry('Aprender', 'Trazo paso a paso', Pt.red, '/m/$moduleId/learn',
           icon: Icons.gesture_rounded),
       MenuEntry('Práctica', 'Dibuja con el dedo', Pt.pink, '/m/$moduleId/practice',
           icon: Icons.edit_rounded),
+      MenuEntry('Flashcards', 'Reconoce cada carácter', Pt.flamingo,
+          '/m/$moduleId/flashcards', glyph: kanaGlyph),
       MenuEntry('Vocabulario', 'Palabras por tema', Pt.teal,
           '/m/$moduleId/vocabulary', glyph: wordGlyph),
       MenuEntry('Juegos', 'Memorama y más', Pt.green,
           '/m/$moduleId/games', icon: Icons.sports_esports_rounded),
-      MenuEntry('Referencia', 'Tabla de caracteres', Pt.yellow,
-          '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
     ];
     final header = Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -115,7 +115,9 @@ class ModuleMenuBody extends ConsumerWidget {
                 color: Pt.flamingo)),
       ],
     );
-    final tiles = [for (final e in entries) MenuEntryTile(e, expanded: expanded)];
+    List<Widget> tilesFor(double? boxSize) =>
+        [for (final e in entries) MenuEntryTile(e, expanded: expanded, boxSize: boxSize)];
+    final tiles = tilesFor(null);
     if (expanded) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(40, 32, 40, 40),
@@ -123,13 +125,27 @@ class ModuleMenuBody extends ConsumerWidget {
           children: [
             header,
             const SizedBox(height: 28),
-            for (final t in tiles) ...[Expanded(child: t), const SizedBox(height: 18)],
-          ]..removeLast(),
+            // Los mosaicos se reparten el alto, pero nunca menos de lo que necesitan.
+            Expanded(
+              child: LayoutBuilder(builder: (context, c) {
+                const gap = 18.0;
+                final each = (c.maxHeight - gap * (tiles.length - 1)) / tiles.length;
+                final h = each < 104.0 ? 104.0 : each;
+                final boxed = tilesFor(null);
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      for (final t in boxed) ...[SizedBox(height: h, child: t), const SizedBox(height: gap)],
+                    ]..removeLast(),
+                  ),
+                );
+              }),
+            ),
+          ],
         ),
       );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ListView(
       children: [
         header,
         const SizedBox(height: 32),
@@ -140,13 +156,14 @@ class ModuleMenuBody extends ConsumerWidget {
 }
 
 class MenuEntryTile extends StatelessWidget {
-  const MenuEntryTile(this.e, {super.key, required this.expanded});
+  const MenuEntryTile(this.e, {super.key, required this.expanded, this.boxSize});
   final MenuEntry e;
   final bool expanded;
+  final double? boxSize;
 
   @override
   Widget build(BuildContext context) {
-    final box = expanded ? 84.0 : 64.0;
+    final box = boxSize ?? (expanded ? 72.0 : 64.0);
     return Material(
       color: Pt.surface0,
       shape: RoundedRectangleBorder(
@@ -158,7 +175,7 @@ class MenuEntryTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(expanded ? 32 : 28)),
         onTap: () => context.push(e.path),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: expanded ? 28 : 22, vertical: 22),
+          padding: EdgeInsets.symmetric(horizontal: expanded ? 28 : 22, vertical: expanded ? 12 : 22),
           child: Row(
             children: [
               Container(

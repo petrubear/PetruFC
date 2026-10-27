@@ -57,6 +57,7 @@ class QuizScreen extends ConsumerWidget {
               final base = switch (mode) {
                 QuizMode.kanaToRomaji => 150.0,
                 QuizMode.romajiToKana => 110.0,
+                QuizMode.scriptSwap => 150.0,
                 QuizMode.wordToMeaning => 96.0,
                 QuizMode.meaningToWord => 60.0,
               };
