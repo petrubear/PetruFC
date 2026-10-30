@@ -11,7 +11,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'petrufc'));
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -48,6 +48,7 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 7) await upgradeToV7(this);
       if (from < 8) await upgradeToV8(this);
+      if (from < 9) await upgradeToV9(this);
     },
   );
 }

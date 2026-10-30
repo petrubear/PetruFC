@@ -176,6 +176,46 @@ const _kMusic = 'ピアノ:piano:Piano ギター:gitaa:Guitarra ベース:beesu:
     'トライアングル:toraianguru:Triángulo シンバル:shinbaru:Platillos '
     'マラカス:marakasu:Maracas リコーダー:rikoodaa:Flauta dulce オカリナ:okarina:Ocarina';
 
+// Nombres famosos en katakana: cientificos, musicos y algunos artistas (solo katakana).
+const _kNames = 'ニュートン:nyuuton:Isaac Newton アインシュタイン:ainshutain:Albert Einstein '
+    'ガリレオ:garireo:Galileo Galilei コペルニクス:koperunikusu:Nicolás Copérnico '
+    'ケプラー:kepuraa:Johannes Kepler ダーウィン:daawin:Charles Darwin '
+    'メンデル:menderu:Gregor Mendel パスツール:pasutsuuru:Louis Pasteur '
+    'キュリー:kyurii:Marie Curie ボーア:booa:Niels Bohr '
+    'ハイゼンベルク:haizenberuku:Werner Heisenberg シュレディンガー:shuredingaa:Erwin Schrödinger '
+    'プランク:purankku:Max Planck ファラデー:faradee:Michael Faraday '
+    'マクスウェル:makusuweru:James Maxwell ホーキング:hookingu:Stephen Hawking '
+    'テスラ:tesura:Nikola Tesla エジソン:ejison:Thomas Edison パブロフ:paburofu:Iván Pavlov '
+    'メンデレーエフ:mendereefu:Dmitri Mendeléyev ラボアジエ:raboajie:Antoine Lavoisier '
+    'ハッブル:habburu:Edwin Hubble ガウス:gausu:Carl Gauss オイラー:oiraa:Leonhard Euler '
+    'ライプニッツ:raipunittsu:Gottfried Leibniz ピタゴラス:pitagorasu:Pitágoras '
+    'アルキメデス:arukimedesu:Arquímedes フロイト:furoito:Sigmund Freud '
+    'ファインマン:fainman:Richard Feynman フェルミ:ferumi:Enrico Fermi '
+    'ラザフォード:razafoodo:Ernest Rutherford レントゲン:rentogen:Wilhelm Röntgen '
+    'ジェンナー:jennaa:Edward Jenner ノーベル:nooberu:Alfred Nobel '
+    'リンネ:rinne:Carlos Linneo ボルタ:boruta:Alessandro Volta '
+    'アンペール:anpeeru:André-Marie Ampère '
+    'バッハ:bahha:Johann Sebastian Bach モーツァルト:mootsuaruto:Wolfgang Mozart '
+    'ベートーベン:beetooben:Ludwig van Beethoven ブラームス:buraamusu:Johannes Brahms '
+    'シューベルト:shuuberuto:Franz Schubert シューマン:shuuman:Robert Schumann '
+    'ショパン:shopan:Frédéric Chopin リスト:risuto:Franz Liszt '
+    'メンデルスゾーン:menderusuzoon:Felix Mendelssohn ワーグナー:waagunaa:Richard Wagner '
+    'ベルディ:berudi:Giuseppe Verdi ヘンデル:henderu:Georg Händel ハイドン:haidon:Joseph Haydn '
+    'ビバルディ:bibarudi:Antonio Vivaldi チャイコフスキー:chaikofusukii:Piotr Chaikovski '
+    'ラフマニノフ:rafumaninofu:Sergei Rajmáninov ストラビンスキー:sutorabinsukii:Ígor Stravinski '
+    'ムソルグスキー:musorugusukii:Modest Músorgski ドビュッシー:dobyusshii:Claude Debussy '
+    'ラベル:raberu:Maurice Ravel サティ:sati:Erik Satie ビゼー:bizee:Georges Bizet '
+    'ドボルザーク:doboruzaaku:Antonín Dvořák グリーグ:guriigu:Edvard Grieg '
+    'シベリウス:shiberiusu:Jean Sibelius マーラー:maaraa:Gustav Mahler '
+    'ブルックナー:burukkunaa:Anton Bruckner パガニーニ:paganiini:Niccolò Paganini '
+    'プッチーニ:pucchiini:Giacomo Puccini ロッシーニ:rosshiini:Gioachino Rossini '
+    'プロコフィエフ:purokofiefu:Serguéi Prokófiev バルトーク:barutooku:Béla Bartók '
+    'ガーシュウィン:gaashuwin:George Gershwin ピカソ:pikaso:Pablo Picasso '
+    'ダリ:dari:Salvador Dalí モネ:mone:Claude Monet レンブラント:renburanto:Rembrandt '
+    'ミケランジェロ:mikeranjero:Miguel Ángel シェークスピア:shiikusupia:William Shakespeare '
+    'セルバンテス:serubantesu:Miguel de Cervantes ナポレオン:naporeon:Napoleón Bonaparte '
+    'コロンブス:koronbusu:Cristóbal Colón';
+
 const _kBasic =
     'ア:a イ:i ウ:u エ:e オ:o カ:ka キ:ki ク:ku ケ:ke コ:ko サ:sa シ:shi ス:su セ:se ソ:so '
     'タ:ta チ:chi ツ:tsu テ:te ト:to ナ:na ニ:ni ヌ:nu ネ:ne ノ:no ハ:ha ヒ:hi フ:fu ヘ:he ホ:ho '
@@ -343,6 +383,13 @@ void _addTopics2(Batch b, AppDatabase db) {
   }
 }
 
+void _addNames(Batch b, AppDatabase db) {
+  final rows = _words('katakana', 'katakana_names', _kNames);
+  b.insert(db.itemGroups,
+      _group('katakana', 'katakana_names', 'word', 'Nombres famosos', '${rows.length} nombres', 10));
+  b.insertAll(db.items, rows);
+}
+
 void _addKatakana(Batch b, AppDatabase db) => _addScript(b, db,
     module: 'katakana',
     basic: _kBasic,
@@ -370,6 +417,7 @@ Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
       _addColors(b, db);
       _addTopics(b, db);
       _addTopics2(b, db);
+      _addNames(b, db);
     });
 
 /// Esquema v3: activa Katakana en bases creadas antes de que existiera.
@@ -389,3 +437,6 @@ Future<void> upgradeToV7(AppDatabase db) => db.batch((b) => _addTopics(b, db));
 
 /// Esquema v8: secciones "Ropa", "Objetos de casa" e "Instrumentos musicales".
 Future<void> upgradeToV8(AppDatabase db) => db.batch((b) => _addTopics2(b, db));
+
+/// Esquema v9: seccion "Nombres famosos" en Katakana.
+Future<void> upgradeToV9(AppDatabase db) => db.batch((b) => _addNames(b, db));
