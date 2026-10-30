@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/name_text.dart';
 import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/app_settings.dart';
@@ -277,7 +278,7 @@ class _CardView extends StatelessWidget {
               ? FittedBox(
                   key: const ValueKey('up'),
                   fit: BoxFit.scaleDown,
-                  child: Text(card.text,
+                  child: Text(card.japanese ? nameLines(card.text) : card.text,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: card.japanese ? Pt.kana : Pt.ui,

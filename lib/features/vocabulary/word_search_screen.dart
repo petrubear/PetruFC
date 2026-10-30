@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/name_text.dart';
 import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/database.dart';
@@ -36,15 +37,18 @@ class WordSearchState {
 
 WordSearchState _generate(List<Item> all) {
   final rng = Random();
-  final usable = all.where((i) => i.japanese.runes.length >= 2 && i.japanese.runes.length <= _n).toList()..shuffle(rng);
+  final usable = all
+      .where((i) => surname(i.japanese).runes.length >= 2 && surname(i.japanese).runes.length <= _n)
+      .toList()
+    ..shuffle(rng);
   final chosen = usable.take(_wordsPerGame).toList()
-    ..sort((a, b) => b.japanese.length.compareTo(a.japanese.length));
+    ..sort((a, b) => surname(b.japanese).length.compareTo(surname(a.japanese).length));
   final grid = List.generate(_n, (_) => List.filled(_n, ''));
   final placed = <Item>[];
   bool inside(int r, int c) => r >= 0 && c >= 0 && r < _n && c < _n;
 
   for (final w in chosen) {
-    final chars = w.japanese.runes.map(String.fromCharCode).toList();
+    final chars = surname(w.japanese).runes.map(String.fromCharCode).toList();
     for (var t = 0; t < 300; t++) {
       final (dr, dc) = _dirs[rng.nextInt(_dirs.length)];
       final r = rng.nextInt(_n), c = rng.nextInt(_n);
@@ -64,7 +68,7 @@ WordSearchState _generate(List<Item> all) {
   }
 
   final pool = {
-    for (final i in usable) ...i.japanese.runes.map(String.fromCharCode),
+    for (final i in usable) ...surname(i.japanese).runes.map(String.fromCharCode),
   }.where((ch) => !_noFill.contains(ch)).toList();
   for (final row in grid) {
     for (var c = 0; c < _n; c++) {
@@ -119,7 +123,7 @@ class WordSearchGame
     final reversed = text.runes.toList().reversed.map(String.fromCharCode).join();
     for (var i = 0; i < s.words.length; i++) {
       if (s.found.containsKey(i)) continue;
-      final w = s.words[i].japanese;
+      final w = surname(s.words[i].japanese);
       if (s.selection.length > 1 && (w == text || w == reversed)) {
         buzz(ref.read(settingsProvider).valueOrNull?.haptics ?? true,
             s.found.length + 1 == s.words.length ? Buzz.heavy : Buzz.medium);

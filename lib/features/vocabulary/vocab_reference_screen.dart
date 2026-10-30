@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/name_text.dart';
 import '../../app/theme.dart';
 import '../../core/audio/tts_service.dart';
 import '../../core/data/database.dart';
@@ -123,7 +124,7 @@ class _WordRow extends ConsumerWidget {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
-                    child: Text(item.japanese,
+                    child: Text(nameLines(item.japanese),
                         style: const TextStyle(
                             fontFamily: Pt.kana,
                             fontWeight: FontWeight.w700,

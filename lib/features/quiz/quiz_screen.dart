@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/name_text.dart';
 import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/providers.dart';
@@ -242,7 +243,7 @@ class _PromptCard extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(text,
+                  child: Text(japanese ? nameLines(text) : text,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: japanese ? Pt.kana : Pt.ui,
@@ -299,7 +300,7 @@ class _OptionTile extends StatelessWidget {
           child: Container(
             alignment: list ? Alignment.centerLeft : Alignment.center,
             padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 24),
-            child: Text('$mark$label',
+            child: Text('$mark${japanese ? nameLines(label) : label}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: japanese ? Pt.kana : Pt.ui,

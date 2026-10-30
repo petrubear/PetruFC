@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/name_text.dart';
 import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/app_settings.dart';
@@ -43,7 +44,7 @@ class BuildState {
   final int? wrongTile;
 
   Item get word => words[index];
-  List<String> get chars => word.japanese.runes.map(String.fromCharCode).toList();
+  List<String> get chars => surname(word.japanese).runes.map(String.fromCharCode).toList();
   bool get wordDone => placed.length == chars.length;
 
   BuildState copyWith({
@@ -79,12 +80,12 @@ class BuildWordGame extends AutoDisposeFamilyAsyncNotifier<BuildState, GameArgs>
   @override
   Future<BuildState> build(GameArgs arg) async {
     ref.onDispose(() => _alive = false);
-    _pool = (await loadGamePool(ref, arg)).where((i) => i.japanese.runes.length >= 2).toList();
+    _pool = (await loadGamePool(ref, arg)).where((i) => surname(i.japanese).runes.length >= 2).toList();
     return _deal();
   }
 
   List<WordTile> _tilesFor(Item w) {
-    final chars = w.japanese.runes.map(String.fromCharCode).toList();
+    final chars = surname(w.japanese).runes.map(String.fromCharCode).toList();
     var tiles = [for (var i = 0; i < chars.length; i++) WordTile(i, chars[i])];
     for (var t = 0; t < 5; t++) {
       tiles.shuffle(_rng);
