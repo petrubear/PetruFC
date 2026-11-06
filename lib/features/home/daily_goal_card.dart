@@ -7,6 +7,7 @@ import '../../app/theme.dart';
 import '../../core/activity/activity_tracker.dart';
 import '../../core/data/app_settings.dart';
 import '../../core/data/repository.dart';
+import '../../core/widgets/ink_ring.dart';
 import '../../core/widgets/mascot.dart';
 import '../../core/widgets/ui_kit.dart';
 import '../../core/l10n/language.dart';
@@ -23,51 +24,52 @@ class DailyGoalCard extends ConsumerWidget {
     final todaySec = days[dayKey(now)] ?? 0;
     final done = todaySec >= goalSec;
     final left = ((goalSec - todaySec) / 60).ceil();
+    final l = context.l10n;
+    final greeting = now.hour < 11
+        ? l.greetMorning
+        : now.hour < 17
+            ? l.greetDay
+            : l.greetEvening;
     return SurfaceCard(
-      radius: 28,
       padding: const EdgeInsets.all(18),
       child: Column(
         children: [
           Row(
             children: [
-              SizedBox(
-                width: 76,
-                height: 76,
-                child: CustomPaint(
-                  painter: _RingPainter(todaySec / goalSec, done, context.pt),
-                  child: Center(
-                    child: Text(
-                      '${todaySec ~/ 60}',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-                    ),
-                  ),
+              InkRing(
+                value: todaySec / goalSec,
+                size: 88,
+                color: done ? context.pt.green : null,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('${todaySec ~/ 60}', style: context.pt.display(26)),
+                    Text(l.minOfGoal(goalMin),
+                        style: TextStyle(fontSize: 10, color: context.pt.subtext)),
+                  ],
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SectionLabel(context.l10n.goalTodayLabel),
+                    Text(greeting, style: context.pt.display(24)),
                     const SizedBox(height: 4),
                     Text(
-                      done ? context.l10n.goalReached : context.l10n.goalMinutesLeft(left),
+                      done ? l.goalReached : l.goalMinutesLeft(left),
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: done ? context.pt.green : context.pt.text,
                       ),
-                    ),
-                    Text(
-                      context.l10n.goalOfMinutes(goalMin),
-                      style: TextStyle(fontSize: 13, color: context.pt.subtext),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           Row(
             children: [
               for (var i = 6; i >= 0; i--)
@@ -94,66 +96,42 @@ class _DayBar extends StatelessWidget {
   final bool today;
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      Container(
-        width: 14,
-        height: 36,
-        alignment: Alignment.bottomCenter,
-        decoration: BoxDecoration(color: context.pt.surface1, borderRadius: BorderRadius.circular(999)),
-        child: FractionallySizedBox(
-          heightFactor: ratio == 0 ? 0.08 : max(0.08, ratio),
-          child: Container(
-            decoration: BoxDecoration(
-              color: ratio >= 1
-                  ? context.pt.green
-                  : ratio == 0
-                  ? context.pt.surface2
-                  : context.pt.flamingo,
-              borderRadius: BorderRadius.circular(999),
-            ),
+  Widget build(BuildContext context) {
+    final c = context.pt;
+    final full = ratio >= 1;
+    return Column(
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: full ? c.green : (ratio > 0 ? c.flamingo.withValues(alpha: .18) : Colors.transparent),
+            border: Border.all(
+                color: full ? c.green : (today ? c.outline : c.surface2), width: c.shape.border),
+          ),
+          child: full
+              ? Icon(Icons.check_rounded, size: 18, color: c.crust)
+              : ratio > 0
+                  ? Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(color: c.flamingo, shape: BoxShape.circle))
+                  : null,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: today ? FontWeight.w700 : FontWeight.w500,
+            color: today ? c.text : c.subtext,
           ),
         ),
-      ),
-      const SizedBox(height: 6),
-      Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: today ? FontWeight.w700 : FontWeight.w500,
-          color: today ? context.pt.text : context.pt.subtext,
-        ),
-      ),
-    ],
-  );
-}
-
-class _RingPainter extends CustomPainter {
-  _RingPainter(this.ratio, this.done, this.colors);
-  final PtColors colors;
-  final double ratio;
-  final bool done;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    const w = 9.0;
-    final rect = Offset.zero & size;
-    final r = rect.deflate(w / 2);
-    final base = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w
-      ..color = colors.surface1;
-    canvas.drawArc(r, 0, 2 * pi, false, base);
-    final fill = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w
-      ..strokeCap = StrokeCap.round
-      ..color = done ? colors.green : colors.flamingo;
-    canvas.drawArc(r, -pi / 2, 2 * pi * ratio.clamp(0.0, 1.0), false, fill);
+      ],
+    );
   }
-
-  @override
-  bool shouldRepaint(_RingPainter old) => old.ratio != ratio || old.done != done || old.colors != colors;
 }
 
 /// Mascota con un globo que cambia segun el avance del dia.

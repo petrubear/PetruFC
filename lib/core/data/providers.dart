@@ -46,3 +46,15 @@ class ActiveGroups extends AutoDisposeFamilyAsyncNotifier<Set<String>, String> {
 
 final activeGroupsProvider = AsyncNotifierProvider.autoDispose
     .family<ActiveGroups, Set<String>, String>(ActiveGroups.new);
+
+/// Avance de un modulo kana: caracteres dominados (racha >= 5) sobre el total.
+final moduleProgressProvider =
+    FutureProvider.autoDispose.family<double, String>((ref, moduleId) async {
+  final repo = ref.watch(repoProvider);
+  final stats = ref.watch(statsProvider).valueOrNull ?? {};
+  final groups = await repo.groups(moduleId, 'kana');
+  final items = await repo.items(moduleId, groups.map((g) => g.id));
+  if (items.isEmpty) return 0;
+  final done = items.where((i) => (stats[i.id]?.streak ?? 0) >= 5).length;
+  return done / items.length;
+});

@@ -18,11 +18,11 @@ class StrokeBoard extends StatelessWidget {
   Widget build(BuildContext context) => DecoratedBox(
     position: DecorationPosition.foreground,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(32),
+      borderRadius: BorderRadius.circular(context.pt.shape.large),
       border: Border.all(color: context.pt.paperBorder),
     ),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(32),
+      borderRadius: BorderRadius.circular(context.pt.shape.large),
       child: LayoutBuilder(
         builder: (context, c) {
           Offset norm(Offset p) => Offset(
@@ -50,7 +50,7 @@ class StrokeBoard extends StatelessWidget {
 
 class _StrokePainter extends CustomPainter {
   _StrokePainter(this.strokes, this.underlay, this.colors);
-  final PtColors colors;
+  final PtStyle colors;
   final List<List<Offset>> strokes;
   final CustomPainter? underlay;
 

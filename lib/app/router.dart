@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 
+import 'study_observer.dart';
+
 import '../features/games/build_word_game.dart';
 import '../features/games/game_common.dart';
 import '../features/games/game_setup_screen.dart';
@@ -19,6 +21,7 @@ import '../features/vocabulary/vocab_reference_screen.dart';
 import '../features/vocabulary/word_search_screen.dart';
 
 final router = GoRouter(
+  observers: [StudyObserver()],
   routes: [
     GoRoute(
       path: '/',
@@ -133,3 +136,4 @@ final router = GoRouter(
     ),
   ],
 );
+

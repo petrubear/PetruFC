@@ -8,6 +8,7 @@ import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/feedback/feedback.dart';
 import 'stroke_score.dart';
+import '../../core/audio/sound_service.dart';
 
 class PracticeState {
   const PracticeState({
@@ -115,6 +116,7 @@ class PracticeSession
     final combo = ok ? s.combo + 1 : 0;
     final milestone = ok && combo % 5 == 0;
     buzz(haptics, !ok ? Buzz.soft : (milestone ? Buzz.medium : Buzz.light));
+    ref.read(soundProvider).play(!ok ? SoundCue.wrong : (milestone ? SoundCue.combo : SoundCue.correct));
     final best = combo > s.bestCombo ? combo : s.bestCombo;
     final hits = s.hits + (ok ? 1 : 0);
     state = AsyncData(

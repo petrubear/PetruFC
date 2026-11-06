@@ -103,7 +103,7 @@ class PracticeScreen extends ConsumerWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: context.pt.greenTint,
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(context.pt.shape.large),
                   border: Border.all(color: context.pt.green, width: 2),
                 ),
                 child: FittedBox(
@@ -314,7 +314,7 @@ class _ScoreBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(context.pt.shape.pill),
         border: Border.all(color: color),
       ),
       child: Text(context.l10n.similarity((score * 100).round(), label),

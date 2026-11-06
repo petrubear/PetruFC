@@ -100,6 +100,12 @@ class SettingsScreen extends ConsumerWidget {
                         onChanged: n.setHaptics,
                       ),
                       SwitchListTile(
+                        title: Text(context.l10n.settingsSound),
+                        subtitle: Text(context.l10n.settingsSoundSub),
+                        value: settings.soundOn,
+                        onChanged: n.setSoundOn,
+                      ),
+                      SwitchListTile(
                         title: Text(context.l10n.settingsEffects),
                         subtitle: Text(context.l10n.settingsEffectsSub),
                         value: settings.effects,

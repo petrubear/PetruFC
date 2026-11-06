@@ -18,14 +18,14 @@ enum Mastery {
         mastered => l.masteryMastered,
       };
 
-  Color bgOf(PtColors c) => switch (this) {
+  Color bgOf(PtStyle c) => switch (this) {
         unseen => c.surface0,
         weak => c.redTint,
         learning => c.yellowTint,
         mastered => c.greenTint,
       };
 
-  Color borderOf(PtColors c) => switch (this) {
+  Color borderOf(PtStyle c) => switch (this) {
         unseen => c.surface1,
         weak => c.red,
         learning => c.yellow,

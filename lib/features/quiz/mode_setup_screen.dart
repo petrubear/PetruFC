@@ -50,7 +50,7 @@ class ModeSetupScreen extends StatelessWidget {
                       ],
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             SectionLabel(context.l10n.modeSectionLabel),
                             const SizedBox(height: 12),
@@ -117,7 +117,9 @@ class SetList extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
-                color: context.pt.surface0, borderRadius: BorderRadius.circular(22)),
+                color: context.pt.surface0,
+                borderRadius: BorderRadius.circular(context.pt.shape.medium),
+                border: Border.all(color: context.pt.outline, width: context.pt.shape.border)),
             child: Row(
               children: [
                 Expanded(
@@ -145,7 +147,9 @@ class SetList extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           decoration: BoxDecoration(
-              color: context.pt.surface0, borderRadius: BorderRadius.circular(22)),
+              color: context.pt.surface0,
+                borderRadius: BorderRadius.circular(context.pt.shape.medium),
+                border: Border.all(color: context.pt.outline, width: context.pt.shape.border)),
           child: Row(
             children: [
               Expanded(
@@ -197,7 +201,7 @@ class _ModeTile extends StatelessWidget {
       color: primary ? context.pt.flamingo : context.pt.surface0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(tall ? 32 : 26),
-        side: primary ? BorderSide.none : BorderSide(color: context.pt.surface1),
+        side: primary ? BorderSide.none : BorderSide(color: context.pt.outline, width: context.pt.shape.border),
       ),
       child: InkWell(
         customBorder:

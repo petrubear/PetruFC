@@ -15,6 +15,7 @@ import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'game_common.dart';
 import '../../core/l10n/language.dart';
+import '../../core/audio/sound_service.dart';
 
 const _pairs = 6;
 
@@ -106,6 +107,7 @@ class MemoryGame extends AutoDisposeFamilyAsyncNotifier<MemoryState, GameArgs> {
     }
     final haptics = ref.read(settingsProvider).valueOrNull?.haptics ?? true;
     buzz(haptics, Buzz.soft);
+    ref.read(soundProvider).play(SoundCue.tap);
     final up = {...s.faceUp, i};
     if (up.length < 2) {
       state = AsyncData(s.copyWith(faceUp: up));
@@ -126,6 +128,7 @@ class MemoryGame extends AutoDisposeFamilyAsyncNotifier<MemoryState, GameArgs> {
       final combo = s.combo + 1;
       final matched = {...s.matched, a, b};
       buzz(haptics, Buzz.light);
+      ref.read(soundProvider).play(combo % 5 == 0 ? SoundCue.combo : SoundCue.correct);
       state = AsyncData(s.copyWith(
         faceUp: {},
         matched: matched,
@@ -140,6 +143,7 @@ class MemoryGame extends AutoDisposeFamilyAsyncNotifier<MemoryState, GameArgs> {
         });
       }
     } else {
+      ref.read(soundProvider).play(SoundCue.wrong);
       state = AsyncData(s.copyWith(
         faceUp: up,
         locked: true,
@@ -272,7 +276,7 @@ class _CardView extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: matched ? context.pt.greenTint : (up ? context.pt.surface1 : context.pt.surface0),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(context.pt.shape.medium),
           border: Border.all(color: color, width: shown ? 2 : 1),
         ),
         alignment: Alignment.center,
@@ -283,7 +287,7 @@ class _CardView extends StatelessWidget {
               ? FittedBox(
                   key: const ValueKey('up'),
                   fit: BoxFit.scaleDown,
-                  child: Text(card.japanese ? nameLines(card.text) : card.text,
+                  child: Text((matched ? '✓ ' : '') + (card.japanese ? nameLines(card.text) : card.text),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: card.japanese ? Pt.kana : Pt.ui,

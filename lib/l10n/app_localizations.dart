@@ -937,6 +937,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'CORRECT'**
   String get practiceCorrect;
+
+  /// settingsSound
+  ///
+  /// In en, this message translates to:
+  /// **'Shamisen sounds'**
+  String get settingsSound;
+
+  /// settingsSoundSub
+  ///
+  /// In en, this message translates to:
+  /// **'Soft plucks on taps, answers and goals'**
+  String get settingsSoundSub;
+
+  /// soundOnLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Sound on'**
+  String get soundOnLabel;
+
+  /// soundOffLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Sound off'**
+  String get soundOffLabel;
+
+  /// continueTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Continue where you left off'**
+  String get continueTitle;
+
+  /// continueStart
+  ///
+  /// In en, this message translates to:
+  /// **'Start studying'**
+  String get continueStart;
+
+  /// greetMorning
+  ///
+  /// In en, this message translates to:
+  /// **'おはよう'**
+  String get greetMorning;
+
+  /// greetDay
+  ///
+  /// In en, this message translates to:
+  /// **'こんにちは'**
+  String get greetDay;
+
+  /// greetEvening
+  ///
+  /// In en, this message translates to:
+  /// **'こんばんは'**
+  String get greetEvening;
+
+  /// minOfGoal
+  ///
+  /// In en, this message translates to:
+  /// **'of {goal} min'**
+  String minOfGoal(int goal);
+
+  /// modulesLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Modules'**
+  String get modulesLabel;
+
+  /// comingSoonShort
+  ///
+  /// In en, this message translates to:
+  /// **'SOON'**
+  String get comingSoonShort;
 }
 
 class _AppLocalizationsDelegate

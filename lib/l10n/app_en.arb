@@ -705,5 +705,58 @@
   "practiceCorrect": "CORRECT",
   "@practiceCorrect": {
     "description": "practiceCorrect"
+  },
+  "settingsSound": "Shamisen sounds",
+  "@settingsSound": {
+    "description": "settingsSound"
+  },
+  "settingsSoundSub": "Soft plucks on taps, answers and goals",
+  "@settingsSoundSub": {
+    "description": "settingsSoundSub"
+  },
+  "soundOnLabel": "Sound on",
+  "@soundOnLabel": {
+    "description": "soundOnLabel"
+  },
+  "soundOffLabel": "Sound off",
+  "@soundOffLabel": {
+    "description": "soundOffLabel"
+  },
+  "continueTitle": "Continue where you left off",
+  "@continueTitle": {
+    "description": "continueTitle"
+  },
+  "continueStart": "Start studying",
+  "@continueStart": {
+    "description": "continueStart"
+  },
+  "greetMorning": "おはよう",
+  "@greetMorning": {
+    "description": "greetMorning"
+  },
+  "greetDay": "こんにちは",
+  "@greetDay": {
+    "description": "greetDay"
+  },
+  "greetEvening": "こんばんは",
+  "@greetEvening": {
+    "description": "greetEvening"
+  },
+  "minOfGoal": "of {goal} min",
+  "@minOfGoal": {
+    "description": "minOfGoal",
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "modulesLabel": "Modules",
+  "@modulesLabel": {
+    "description": "modulesLabel"
+  },
+  "comingSoonShort": "SOON",
+  "@comingSoonShort": {
+    "description": "comingSoonShort"
   }
 }

@@ -5,6 +5,7 @@ import '../../core/data/providers.dart';
 import '../../core/feedback/feedback.dart';
 import 'quiz_engine.dart';
 import '../../core/l10n/language.dart';
+import '../../core/audio/sound_service.dart';
 
 typedef QuizArgs = (String moduleId, QuizMode mode, String? groupId, bool multi);
 
@@ -63,6 +64,7 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
     final combo = ok ? s.combo + 1 : 0;
     final milestone = ok && combo % 5 == 0;
     buzz(haptics, !ok ? Buzz.soft : (milestone ? Buzz.medium : Buzz.light));
+    ref.read(soundProvider).play(!ok ? SoundCue.wrong : (milestone ? SoundCue.combo : SoundCue.correct));
     state = AsyncData(QuizState(
       question: s.question,
       size: s.size,

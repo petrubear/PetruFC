@@ -261,12 +261,12 @@ class _KanaCell extends ConsumerWidget {
     return Material(
         color: m.bgOf(context.pt),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(context.pt.shape.small),
           side: BorderSide(color: m.borderOf(context.pt)),
         ),
         child: InkWell(
           customBorder:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.pt.shape.small)),
           onTap: () async {
             final error =
                 await ref.read(ttsProvider).speak(item.audioText ?? item.japanese);

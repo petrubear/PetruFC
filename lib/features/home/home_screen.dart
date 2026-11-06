@@ -3,10 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
+import '../../core/audio/sound_service.dart';
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
+import '../../core/data/app_settings.dart';
+import '../../core/widgets/seal_mark.dart';
+import 'continue_button.dart';
 import 'daily_goal_card.dart';
 import 'module_menu.dart';
 import '../../core/l10n/language.dart';
@@ -29,44 +33,34 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header({this.title = 38});
-  final double title;
+class _Header extends ConsumerWidget {
+  const _Header();
 
   @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Expanded(child: _titles(context)),
-      RoundIconButton(
-        icon: Icons.settings_rounded,
-        label: context.l10n.settings,
-        onTap: () => context.push('/settings'),
-      ),
-    ],
-  );
-
-  Widget _titles(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        '日本語 · NIHONGO',
-        style: TextStyle(
-          color: context.pt.flamingo,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 2,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final on = ref.watch(settingsProvider).valueOrNull?.soundOn ?? true;
+    return Row(
+      children: [
+        const SealMark(),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text('Petru FC',
+              maxLines: 1, overflow: TextOverflow.ellipsis, style: context.pt.display(21)),
         ),
-      ),
-      const SizedBox(height: 6),
-      Text(
-        'Petru FC',
-        style: TextStyle(fontSize: title, fontWeight: FontWeight.w700, height: 1.1),
-      ),
-      const SizedBox(height: 6),
-      Text(context.l10n.homeTagline, style: TextStyle(fontSize: 16, color: context.pt.subtext)),
-    ],
-  );
+        RoundIconButton(
+          icon: on ? Icons.volume_up_rounded : Icons.volume_off_rounded,
+          label: on ? context.l10n.soundOnLabel : context.l10n.soundOffLabel,
+          onTap: () => ref.read(settingsProvider.notifier).setSoundOn(!on),
+        ),
+        const SizedBox(width: 8),
+        RoundIconButton(
+          icon: Icons.settings_rounded,
+          label: context.l10n.settings,
+          onTap: () => context.push('/settings'),
+        ),
+      ],
+    );
+  }
 }
 
 class _Narrow extends StatelessWidget {
@@ -78,131 +72,85 @@ class _Narrow extends StatelessWidget {
     final active = modules.where((m) => m.enabled);
     final soon = modules.where((m) => !m.enabled).toList();
     return ListView(
-      padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
       children: [
         const _Header(),
-        const SizedBox(height: 16),
-        const MascotGreeting(),
-        const SizedBox(height: 8),
-        const DailyGoalCard(),
         const SizedBox(height: 20),
-        for (final m in active) ...[_Hero(m), SizedBox(height: 16)],
-        if (soon.isNotEmpty) ...[
-          SizedBox(height: 12),
-          SectionLabel(context.l10n.comingSoon),
-          const SizedBox(height: 14),
-          GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 14,
-            crossAxisSpacing: 14,
-            childAspectRatio: 1.5,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [for (final m in soon) _Soon(m)],
-          ),
-        ],
+        const DailyGoalCard(),
+        const SizedBox(height: 8),
+        const MascotGreeting(),
+        const SizedBox(height: 12),
+        const ContinueButton(),
+        const SizedBox(height: 24),
+        SectionLabel(context.l10n.modulesLabel),
+        const SizedBox(height: 12),
+        for (final m in active) ...[_ModuleCard(m), const SizedBox(height: 12)],
+        for (final m in soon) ...[_ModuleCard(m), const SizedBox(height: 12)],
       ],
     );
   }
 }
 
-class _Hero extends StatelessWidget {
-  const _Hero(this.m);
+class _ModuleCard extends ConsumerWidget {
+  const _ModuleCard(this.m);
   final StudyModule m;
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: context.pt.surface0,
-        clipBehavior: Clip.antiAlias,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.pt;
+    final color = m.id == 'katakana' ? c.indigo : (m.enabled ? c.flamingo : c.subtext);
+    return Opacity(
+      opacity: m.enabled ? 1 : 0.8,
+      child: Material(
+        color: m.enabled ? c.surface0 : Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32),
-          side: BorderSide(color: context.pt.surface1),
+          borderRadius: BorderRadius.circular(c.shape.large),
+          side: BorderSide(
+              color: m.enabled ? c.outline : c.surface2, width: c.shape.border),
         ),
         child: InkWell(
-          onTap: () => context.push('/m/${m.id}'),
-          child: SizedBox(
-            height: 300,
-            child: Stack(
-              children: [
-                Positioned(
-                  right: -6,
-                  top: -18,
-                  child: Text(m.glyph,
-                      style: TextStyle(
-                          fontFamily: Pt.kana,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 210,
-                          height: 1,
-                          color: context.pt.flamingo)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(28),
+          customBorder:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(c.shape.large)),
+          onTap: m.enabled
+              ? () {
+                  ref.read(soundProvider).play(SoundCue.tap);
+                  context.push('/m/${m.id}');
+                }
+              : null,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 88),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Row(children: [
+                SizedBox(
+                    width: 56, child: Center(child: Text(m.glyph, style: c.display(42, color: color)))),
+                const SizedBox(width: 14),
+                Expanded(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(m.name,
-                          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 6),
-                      SizedBox(
-                        width: 200,
-                        child: Text(context.l10n.moduleBlurb,
-                            style: TextStyle(fontSize: 15, color: context.pt.subtext)),
-                      ),
-                      const SizedBox(height: 14),
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                        decoration: BoxDecoration(
-                            color: context.pt.flamingo,
-                            borderRadius: BorderRadius.circular(999)),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(context.l10n.open,
-                                style: TextStyle(
-                                    color: context.pt.crust,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 15)),
-                            SizedBox(width: 8),
-                            Icon(Icons.arrow_forward_rounded, color: context.pt.crust, size: 18),
-                          ],
-                        ),
-                      ),
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                      Text(m.enabled ? context.l10n.moduleBlurb : context.l10n.comingSoonShort,
+                          style: TextStyle(fontSize: 13, color: c.subtext)),
+                      if (m.enabled) ...[
+                        const SizedBox(height: 8),
+                        _ProgressBar(m.id, color),
+                      ],
                     ],
                   ),
                 ),
-              ],
+                if (m.enabled) ...[
+                  _Percent(m.id),
+                  Icon(Icons.chevron_right_rounded, color: c.subtext),
+                ],
+              ]),
             ),
           ),
         ),
-      );
-}
-
-class _Soon extends StatelessWidget {
-  const _Soon(this.m);
-  final StudyModule m;
-
-  @override
-  Widget build(BuildContext context) => Opacity(
-        opacity: 0.7,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              color: context.pt.surface0, borderRadius: BorderRadius.circular(24)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(m.glyph,
-                  style: TextStyle(
-                      fontFamily: Pt.kana, fontSize: 40, height: 1.1, color: context.pt.pink)),
-              Text(m.name,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-            ],
-          ),
-        ),
-      );
+      ),
+    );
+  }
 }
 
 class _Wide extends ConsumerWidget {
@@ -212,35 +160,33 @@ class _Wide extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(selectedModuleProvider);
-    final soon = modules.where((m) => !m.enabled).toList();
+    final c = context.pt;
     return Row(
       children: [
         Container(
           width: 312,
-          color: context.pt.mantle,
-          padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
+          decoration: BoxDecoration(
+            color: c.mantle,
+            border: Border(right: BorderSide(color: c.outline, width: c.shape.border)),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
           child: ListView(
             children: [
-              const _Header(title: 36),
-              const SizedBox(height: 12),
-              const MascotGreeting(height: 84),
-              const SizedBox(height: 8),
-              const DailyGoalCard(),
+              const _Header(),
               const SizedBox(height: 20),
-              for (final m in modules.where((m) => m.enabled)) ...[
+              const DailyGoalCard(),
+              const SizedBox(height: 8),
+              const MascotGreeting(height: 72),
+              const SizedBox(height: 16),
+              SectionLabel(context.l10n.modulesLabel),
+              const SizedBox(height: 12),
+              for (final m in modules) ...[
                 _SideTile(m,
-                    selected: m.id == selected,
-                    onTap: () => ref.read(selectedModuleProvider.notifier).state = m.id),
-                SizedBox(height: 12),
-              ],
-              if (soon.isNotEmpty) ...[
-                SizedBox(height: 10),
-                SectionLabel(context.l10n.comingSoon),
+                    selected: m.enabled && m.id == selected,
+                    onTap: m.enabled
+                        ? () => ref.read(selectedModuleProvider.notifier).state = m.id
+                        : null),
                 const SizedBox(height: 12),
-                for (final m in soon) ...[
-                  Opacity(opacity: 0.7, child: _SideTile(m, selected: false, onTap: null)),
-                  const SizedBox(height: 12),
-                ],
               ],
             ],
           ),
@@ -251,41 +197,95 @@ class _Wide extends ConsumerWidget {
   }
 }
 
-class _SideTile extends StatelessWidget {
+class _SideTile extends ConsumerWidget {
   const _SideTile(this.m, {required this.selected, required this.onTap});
   final StudyModule m;
   final bool selected;
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: context.pt.surface0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-          side: BorderSide(
-              color: selected ? context.pt.flamingo : Colors.transparent, width: 2),
-        ),
-        child: InkWell(
-          customBorder:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          onTap: onTap,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.pt;
+    final color = m.id == 'katakana' ? c.indigo : (m.enabled ? c.flamingo : c.subtext);
+    return Material(
+      color: m.enabled ? c.surface0 : Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(c.shape.medium),
+        side: BorderSide(
+            color: selected ? c.flamingo : (m.enabled ? c.outline : c.surface2),
+            width: selected ? 2.5 : c.shape.border),
+      ),
+      child: InkWell(
+        customBorder:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(c.shape.medium)),
+        onTap: onTap == null
+            ? null
+            : () {
+                ref.read(soundProvider).play(SoundCue.tap);
+                onTap!();
+              },
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 64),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
-                Text(m.glyph,
-                    style: TextStyle(
-                        fontFamily: Pt.kana,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 44,
-                        height: 1,
-                        color: m.enabled ? context.pt.flamingo : context.pt.pink)),
-                const SizedBox(width: 14),
-                Text(m.name,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                SizedBox(
+                    width: 44, child: Center(child: Text(m.glyph, style: c.display(32, color: color)))),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(m.name,
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          color: m.enabled ? c.text : c.subtext)),
+                ),
+                if (!m.enabled)
+                  Text(context.l10n.comingSoonShort,
+                      style: TextStyle(fontSize: 11, letterSpacing: 1, color: c.subtext))
+                else
+                  _Percent(m.id),
               ],
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
+}
+
+class _Percent extends ConsumerWidget {
+  const _Percent(this.moduleId);
+  final String moduleId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final v = ref.watch(moduleProgressProvider(moduleId)).valueOrNull ?? 0;
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Text('${(v * 100).round()}%',
+          style: TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w700, color: context.pt.subtext)),
+    );
+  }
+}
+
+class _ProgressBar extends ConsumerWidget {
+  const _ProgressBar(this.moduleId, this.color);
+  final String moduleId;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final v = ref.watch(moduleProgressProvider(moduleId)).valueOrNull ?? 0;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(context.pt.shape.pill),
+      child: LinearProgressIndicator(
+        value: v,
+        minHeight: 6,
+        backgroundColor: context.pt.surface1,
+        color: color,
+      ),
+    );
+  }
 }

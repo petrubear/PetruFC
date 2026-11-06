@@ -1,6 +1,9 @@
 <!--
 SYNC IMPACT REPORT
-Version change: 1.0.0 -> 1.1.0
+Version change: 1.1.0 -> 1.2.0
+Amendment 1.2.0 (2026-11-06): style system (washi) and optional sounds. Principle III now says
+  every style MUST keep principles II to IV; Technology adds audioplayers; sounds are original,
+  offline and switchable. Minor bump: nothing that complied with 1.1.0 stops complying.
 Amendment 1.1.0 (2026-11-06): Principle IV no longer requires a Japanese interface; it is
   deferred to the Kanji module. Minor bump: nothing that complied with 1.0.0 stops complying.
 Modified principles: IV. English, Spanish and Japanese -> IV. English and Spanish;
@@ -52,7 +55,9 @@ The visual design MUST be modern and consistent, and MUST support both light and
 following the system setting. Colors, typography and shapes MUST come from the shared theme
 tokens (`lib/app/theme.dart`); widgets MUST NOT hard-code colors that break in one theme.
 Text and controls MUST keep readable contrast in both themes, and mascot, confetti, mastery
-colors and the stroke board MUST remain legible in both.
+colors and the stroke board MUST remain legible in both. Visual styles are named sets of
+tokens (`AppStyle`); any additional style MUST keep principles II to IV (foldable, light/dark,
+languages) and screens MUST NOT depend on a specific style.
 Rationale: one visual language, comfortable in any lighting, without per-screen exceptions.
 
 ### IV. English and Spanish
@@ -94,7 +99,9 @@ Rationale: a lean workflow that still catches the layout and theme regressions t
 ## Technology and Content Constraints
 
 - Stack: Flutter 3.35 / Dart 3.9, flutter_riverpod 2.6, go_router, Drift 2.31 with
-  drift_flutter, flutter_tts (Japanese voice), Gradle 9.1 / AGP 8.13 / Kotlin 2.2. Dependency
+  drift_flutter, flutter_tts (Japanese voice), audioplayers (interface sounds), Gradle 9.1 / AGP 8.13 / Kotlin 2.2. Interface sounds
+  MUST be original or properly licensed, work offline, and be switchable in Settings.
+  Dependency
   additions MUST be justified in the plan and MUST work offline on Android.
 - Hiragana vocabulary MUST contain only words written entirely in hiragana; Katakana
   vocabulary MUST contain only katakana words. Readings are lowercase romaji and each list
@@ -124,4 +131,4 @@ justification. Known compliance gaps listed in the Sync Impact Report MUST be cl
 their own specs, and no new feature may widen them (new screens MUST already support both
 themes and both languages once the supporting infrastructure exists).
 
-**Version**: 1.1.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06
+**Version**: 1.2.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06

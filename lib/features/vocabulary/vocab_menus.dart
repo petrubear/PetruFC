@@ -24,8 +24,7 @@ class VocabSectionsScreen extends ConsumerWidget {
       glyph: wordGlyph,
       entries: [
         for (final g in groups)
-          MenuEntry(groupName(context.l10n, g), groupSubtitle(context.l10n, g), context.pt.teal, '/m/$moduleId/vocabulary/${g.id}',
-              glyph: wordGlyph),
+          MenuEntry(groupName(context.l10n, g), groupSubtitle(context.l10n, g), '語', '/m/$moduleId/vocabulary/${g.id}'),
       ],
     );
   }
@@ -47,12 +46,9 @@ class VocabSectionMenuScreen extends ConsumerWidget {
       title: name,
       glyph: wordGlyph,
       entries: [
-        MenuEntry(context.l10n.menuReference, context.l10n.vocabMenuReferenceSub, context.pt.yellow, '$base/reference',
-            icon: Icons.grid_view_rounded),
-        MenuEntry(context.l10n.menuPractice, context.l10n.vocabMenuPracticeSub, context.pt.flamingo, '$base/practice',
-            glyph: kanaGlyph),
-        MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, context.pt.pink, '$base/wordsearch',
-            icon: Icons.search_rounded),
+        MenuEntry(context.l10n.menuReference, context.l10n.vocabMenuReferenceSub, '表', '$base/reference'),
+        MenuEntry(context.l10n.menuPractice, context.l10n.vocabMenuPracticeSub, '練', '$base/practice'),
+        MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, '探', '$base/wordsearch'),
       ],
     );
   }
@@ -116,7 +112,7 @@ class _MenuPage extends StatelessWidget {
                 child: ListView(
                   children: [
                     for (final e in entries) ...[
-                      MenuEntryTile(e, expanded: expanded),
+                      MenuEntryTile(e),
                       const SizedBox(height: 14),
                     ],
                   ],

@@ -105,12 +105,12 @@ class _WordRow extends ConsumerWidget {
     return Material(
         color: m.bgOf(context.pt),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(context.pt.shape.medium),
           side: BorderSide(color: m.borderOf(context.pt)),
         ),
         child: InkWell(
           customBorder:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.pt.shape.medium)),
           onTap: () async {
             final error =
                 await ref.read(ttsProvider).speak(item.audioText ?? item.japanese);

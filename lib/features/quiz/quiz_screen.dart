@@ -291,12 +291,12 @@ class _OptionTile extends StatelessWidget {
       child: Material(
         color: bg,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(context.pt.shape.medium),
           side: BorderSide(color: border, width: highlighted ? 2 : 1),
         ),
         child: InkWell(
           customBorder:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.pt.shape.medium)),
           onTap: state == _Opt.idle ? onTap : null,
           child: Container(
             alignment: list ? Alignment.centerLeft : Alignment.center,

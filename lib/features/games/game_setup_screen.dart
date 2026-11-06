@@ -153,7 +153,7 @@ class _SectionTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           decoration: BoxDecoration(
             color: selected ? context.pt.surface1 : context.pt.surface0,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(context.pt.shape.medium),
             border: Border.all(color: selected ? context.pt.flamingo : context.pt.surface1, width: selected ? 2 : 1),
           ),
           child: Row(

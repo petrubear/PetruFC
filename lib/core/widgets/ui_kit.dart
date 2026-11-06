@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
+import '../audio/sound_service.dart';
 import '../audio/tts_service.dart';
 import '../data/app_settings.dart';
 import '../feedback/feedback.dart';
 import 'mascot.dart';
 import '../l10n/language.dart';
 
-class RoundIconButton extends StatelessWidget {
+class RoundIconButton extends ConsumerWidget {
   const RoundIconButton({
     super.key,
     required this.icon,
     required this.label,
     required this.onTap,
-    this.size = 44,
+    this.size = 48,
     this.bg,
     this.fg,
   });
@@ -25,25 +26,34 @@ class RoundIconButton extends StatelessWidget {
   final Color? bg, fg;
 
   @override
-  Widget build(BuildContext context) => Tooltip(
-        message: label,
-        child: Material(
-          color: bg ?? context.pt.surface0,
-          shape: const CircleBorder(),
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: onTap,
-            child: SizedBox(
-              width: size,
-              height: size,
-              child: Icon(icon, color: fg ?? context.pt.text, size: size * 0.5),
-            ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final d = size < context.pt.shape.minTap ? context.pt.shape.minTap : size;
+    return Tooltip(
+      message: label,
+      child: Material(
+        color: bg ?? Colors.transparent,
+        shape: CircleBorder(
+            side: bg == null
+                ? BorderSide(color: context.pt.outline, width: context.pt.shape.border)
+                : BorderSide.none),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () {
+            ref.read(soundProvider).play(SoundCue.tap);
+            onTap();
+          },
+          child: SizedBox(
+            width: d,
+            height: d,
+            child: Icon(icon, color: fg ?? context.pt.text, size: d * 0.45),
           ),
         ),
-      );
+      ),
+    );
+  }
 }
 
-class PillButton extends StatelessWidget {
+class PillButton extends ConsumerWidget {
   const PillButton(
     this.label, {
     super.key,
@@ -54,36 +64,57 @@ class PillButton extends StatelessWidget {
   });
   final String label;
   final VoidCallback? onTap;
-  final Color? bg, fg, border;
+  final Color? bg, fg;
+  final Color? border;
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: bg ?? context.pt.flamingo,
-        shape: StadiumBorder(
-            side: border == null ? BorderSide.none : BorderSide(color: border!)),
-        child: InkWell(
-          customBorder: const StadiumBorder(),
-          onTap: onTap,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final primary = bg == null;
+    return Material(
+      color: bg ?? context.pt.flamingo,
+      shape: StadiumBorder(
+          side: border == null
+              ? BorderSide.none
+              : BorderSide(color: context.pt.outline, width: context.pt.shape.border)),
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: onTap == null
+            ? null
+            : () {
+                ref.read(soundProvider).play(SoundCue.tap);
+                onTap!();
+              },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: primary ? context.pt.shape.primaryTap : context.pt.shape.minTap),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
             child: Center(
-              child: Text(label,
-                  style: TextStyle(
-                      color: fg ?? context.pt.crust, fontSize: 18, fontWeight: FontWeight.w700)),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(label,
+                    maxLines: 1,
+                    style: TextStyle(
+                        color: fg ?? context.pt.crust, fontSize: 18, fontWeight: FontWeight.w700)),
+              ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 }
 
 class ScoreChips extends StatelessWidget {
   const ScoreChips({super.key, required this.correct, required this.wrong});
   final int correct, wrong;
 
-  Widget _chip(String text, Color fg, Color bg) => Container(
+  Widget _chip(BuildContext context, String text, Color fg, Color bg) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration:
-            BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
+            BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(context.pt.shape.pill),
+            border: Border.all(color: fg.withValues(alpha: .6))),
         child: Text(text,
             style: TextStyle(color: fg, fontSize: 15, fontWeight: FontWeight.w700)),
       );
@@ -92,9 +123,9 @@ class ScoreChips extends StatelessWidget {
   Widget build(BuildContext context) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _chip('✓ $correct', context.pt.green, context.pt.greenTint),
+          _chip(context, '✓ $correct', context.pt.green, context.pt.greenTint),
           const SizedBox(width: 8),
-          _chip('✗ $wrong', context.pt.red, context.pt.redTint),
+          _chip(context, '✗ $wrong', context.pt.red, context.pt.redTint),
         ],
       );
 }
@@ -105,39 +136,46 @@ class SectionLabel extends StatelessWidget {
   final Color? color;
 
   @override
-  Widget build(BuildContext context) => Text(text,
-      style: TextStyle(
-          color: color ?? context.pt.subtext,
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 1.4));
+  Widget build(BuildContext context) => Text(text.toUpperCase(),
+      style: context.pt.label.copyWith(color: color ?? context.pt.subtext));
 }
 
 class SurfaceCard extends StatelessWidget {
   const SurfaceCard({
     super.key,
     required this.child,
-    this.radius = 36,
+    this.radius,
     this.color,
     this.borderColor,
-    this.borderWidth = 1,
+    this.borderWidth,
     this.padding,
+    this.hero = false,
   });
   final Widget child;
-  final double radius, borderWidth;
+  final double? radius, borderWidth;
   final Color? color, borderColor;
   final EdgeInsetsGeometry? padding;
 
+  /// Tarjeta destacada con sombra plana de tinta.
+  final bool hero;
+
   @override
-  Widget build(BuildContext context) => Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          color: color ?? context.pt.surface0,
-          borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: borderColor ?? context.pt.surface1, width: borderWidth),
-        ),
-        child: child,
-      );
+  Widget build(BuildContext context) {
+    final sh = context.pt.shape;
+    final r = BorderRadius.circular(radius ?? sh.large);
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: color ?? context.pt.surface0,
+        borderRadius: r,
+        border: Border.all(color: borderColor ?? context.pt.outline, width: borderWidth ?? sh.border),
+        boxShadow: hero
+            ? [BoxShadow(color: context.pt.shadow, offset: const Offset(0, 8), blurRadius: 0, spreadRadius: -2)]
+            : null,
+      ),
+      child: child,
+    );
+  }
 }
 
 class SpeakerButton extends ConsumerWidget {
@@ -171,10 +209,10 @@ class SessionProgress extends StatelessWidget {
     children: [
       Expanded(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(context.pt.shape.pill),
           child: LinearProgressIndicator(
             value: (done / size).clamp(0, 1).toDouble(),
-            minHeight: 8,
+            minHeight: 10,
             backgroundColor: context.pt.surface1,
             color: context.pt.flamingo,
           ),
@@ -219,11 +257,11 @@ class _SessionSummaryState extends ConsumerState<SessionSummary> {
     final pct = total == 0 ? 0 : (correct * 100 / total).round();
     Widget stat(String label, String value) => Expanded(
       child: SurfaceCard(
-        radius: 24,
+        radius: context.pt.shape.medium,
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
-            Text(value, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
+            Text(value, style: context.pt.display(28)),
             Text(label, style: TextStyle(fontSize: 13, color: context.pt.subtext)),
           ],
         ),
@@ -249,12 +287,12 @@ class _SessionSummaryState extends ConsumerState<SessionSummary> {
               const SizedBox(height: 8),
               Text(
                 context.l10n.summaryTitle,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                style: context.pt.display(32),
               ),
               const SizedBox(height: 16),
               Text(
                 '$correct / $total',
-                style: TextStyle(fontSize: 72, fontWeight: FontWeight.w700, color: context.pt.green),
+                style: context.pt.display(72, color: context.pt.green),
               ),
               Text(context.l10n.summaryCorrectLabel, style: TextStyle(fontSize: 16, color: context.pt.subtext)),
               const SizedBox(height: 24),
@@ -278,7 +316,7 @@ class _SessionSummaryState extends ConsumerState<SessionSummary> {
                   onTap: onExit,
                   bg: context.pt.surface0,
                   fg: context.pt.text,
-                  border: context.pt.surface1,
+                  border: context.pt.outline,
                 ),
               ),
             ],

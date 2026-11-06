@@ -15,6 +15,7 @@ import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'game_common.dart';
 import '../../core/l10n/language.dart';
+import '../../core/audio/sound_service.dart';
 
 const _wordsPerRound = 10;
 
@@ -113,11 +114,13 @@ class BuildWordGame extends AutoDisposeFamilyAsyncNotifier<BuildState, GameArgs>
       final done = placed.length == s.chars.length;
       if (!done) {
         buzz(haptics, Buzz.light);
+        ref.read(soundProvider).play(SoundCue.tap);
         state = AsyncData(s.copyWith(placed: placed));
         return;
       }
       final combo = s.dirty ? 0 : s.combo + 1;
       buzz(haptics, Buzz.medium);
+      ref.read(soundProvider).play(!s.dirty && combo % 5 == 0 ? SoundCue.combo : SoundCue.correct);
       if (!s.dirty) {
         ref.read(repoProvider).recordAnswer(s.word.id, true).then((streak) {
           if (streak == 5 && _alive) {
@@ -133,6 +136,7 @@ class BuildWordGame extends AutoDisposeFamilyAsyncNotifier<BuildState, GameArgs>
       ));
     } else {
       buzz(haptics, Buzz.soft);
+      ref.read(soundProvider).play(SoundCue.wrong);
       // El primer error de la palabra cuenta como fallo; despues solo se corrige.
       if (!s.dirty) ref.read(repoProvider).recordAnswer(s.word.id, false);
       state = AsyncData(s.copyWith(dirty: true, combo: 0, wrongTile: () => tileId));
@@ -321,7 +325,7 @@ class _Slot extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: done ? context.pt.greenTint : context.pt.surface0,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(context.pt.shape.small),
           border: Border.all(
               color: done ? context.pt.green : (char.isEmpty ? context.pt.surface1 : context.pt.flamingo),
               width: char.isEmpty ? 1 : 2),
@@ -347,23 +351,28 @@ class _TileButton extends StatelessWidget {
         child: Material(
           color: wrong ? context.pt.redTint : context.pt.surface0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-            side: BorderSide(color: wrong ? context.pt.red : context.pt.surface1, width: wrong ? 2 : 1),
+            borderRadius: BorderRadius.circular(context.pt.shape.small),
+            side: BorderSide(color: wrong ? context.pt.red : context.pt.outline, width: wrong ? 2 : context.pt.shape.border),
           ),
           child: InkWell(
-            customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.pt.shape.small)),
             onTap: used ? null : onTap,
             child: SizedBox(
               width: 64,
               height: 64,
-              child: Center(
-                child: Text(char,
+              child: Stack(alignment: Alignment.center, children: [
+                Text(char,
                     style: TextStyle(
                         fontFamily: Pt.kana,
                         fontWeight: FontWeight.w700,
                         fontSize: 32,
                         color: wrong ? context.pt.red : context.pt.text)),
-              ),
+                if (wrong)
+                  Positioned(
+                      top: 4,
+                      right: 6,
+                      child: Icon(Icons.close_rounded, size: 16, color: context.pt.red)),
+              ]),
             ),
           ),
         ),

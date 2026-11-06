@@ -82,8 +82,8 @@ class ScopeChip extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
         color: context.pt.surface0,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: context.pt.surface1),
+        borderRadius: BorderRadius.circular(context.pt.shape.pill),
+        border: Border.all(color: context.pt.outline, width: context.pt.shape.border),
       ),
       child: Text(label,
           maxLines: 1,

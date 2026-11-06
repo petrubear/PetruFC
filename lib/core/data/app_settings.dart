@@ -9,9 +9,13 @@ class AppSettings {
     this.haptics = true,
     this.effects = true,
     this.mascotOn = true,
+    this.soundOn = true,
+    this.styleId = 'washi',
+    this.lastRoute = '',
   });
   final int goalMinutes, sessionSize;
-  final bool haptics, effects, mascotOn;
+  final bool haptics, effects, mascotOn, soundOn;
+  final String styleId, lastRoute;
 
   AppSettings copyWith({
     int? goalMinutes,
@@ -19,6 +23,9 @@ class AppSettings {
     bool? haptics,
     bool? effects,
     bool? mascotOn,
+    bool? soundOn,
+    String? styleId,
+    String? lastRoute,
   }) =>
       AppSettings(
         goalMinutes: goalMinutes ?? this.goalMinutes,
@@ -26,6 +33,9 @@ class AppSettings {
         haptics: haptics ?? this.haptics,
         effects: effects ?? this.effects,
         mascotOn: mascotOn ?? this.mascotOn,
+        soundOn: soundOn ?? this.soundOn,
+        styleId: styleId ?? this.styleId,
+        lastRoute: lastRoute ?? this.lastRoute,
       );
 }
 
@@ -39,6 +49,9 @@ class AppSettingsNotifier extends AsyncNotifier<AppSettings> {
       haptics: m['haptics'] != '0',
       effects: m['effects'] != '0',
       mascotOn: m['mascot_on'] != '0',
+      soundOn: m['sound'] != '0',
+      styleId: m['style'] ?? 'washi',
+      lastRoute: m['last_route'] ?? '',
     );
   }
 
@@ -60,6 +73,23 @@ class AppSettingsNotifier extends AsyncNotifier<AppSettings> {
   Future<void> setMascotOn(bool v) async {
     await ref.read(repoProvider).saveSetting('mascot_on', v ? '1' : '0');
     state = AsyncData(state.requireValue.copyWith(mascotOn: v));
+  }
+
+  Future<void> setSoundOn(bool v) async {
+    await ref.read(repoProvider).saveSetting('sound', v ? '1' : '0');
+    state = AsyncData(state.requireValue.copyWith(soundOn: v));
+  }
+
+  Future<void> setLastRoute(String v) async {
+    final cur = state.valueOrNull;
+    if (cur == null || cur.lastRoute == v) return;
+    state = AsyncData(cur.copyWith(lastRoute: v));
+    await ref.read(repoProvider).saveSetting('last_route', v);
+  }
+
+  Future<void> setStyle(String v) async {
+    await ref.read(repoProvider).saveSetting('style', v);
+    state = AsyncData(state.requireValue.copyWith(styleId: v));
   }
 
   Future<void> setEffects(bool v) async {

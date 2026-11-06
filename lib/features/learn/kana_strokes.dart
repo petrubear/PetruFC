@@ -57,7 +57,7 @@ Path _parsePath(String d) {
 /// los trazos que ya se dibujaron en color. Los combinados (kya) usan dos cuadros.
 class GuidePainter extends CustomPainter {
   GuidePainter(this.glyphs, this.colors, {this.showGuide = true, this.progress});
-  final PtColors colors;
+  final PtStyle colors;
   final List<KanaGlyph> glyphs;
   final bool showGuide;
 

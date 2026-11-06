@@ -139,5 +139,17 @@
   "settingsMascotSub": "El gato que te acompaña y festeja",
   "settingsVersion": "Versión {v}",
   "settingsCredit": "Orden de trazos: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net",
-  "practiceCorrect": "CORRECTO"
+  "practiceCorrect": "CORRECTO",
+  "settingsSound": "Sonidos de shamisen",
+  "settingsSoundSub": "Notas suaves al tocar, responder y cumplir metas",
+  "soundOnLabel": "Sonido activado",
+  "soundOffLabel": "Sonido desactivado",
+  "continueTitle": "Continúa donde quedaste",
+  "continueStart": "Empezar a estudiar",
+  "greetMorning": "おはよう",
+  "greetDay": "こんにちは",
+  "greetEvening": "こんばんは",
+  "minOfGoal": "de {goal} min",
+  "modulesLabel": "Módulos",
+  "comingSoonShort": "PRONTO"
 }

@@ -23,12 +23,9 @@ class GamesMenuScreen extends ConsumerWidget {
         .firstOrNull;
     final base = '/m/$moduleId/games';
     final entries = [
-      MenuEntry(context.l10n.memoryName, context.l10n.memorySub, context.pt.teal, '$base/memory',
-          icon: Icons.extension_rounded),
-      MenuEntry(context.l10n.buildName, context.l10n.buildSub, context.pt.flamingo, '$base/build',
-          icon: Icons.abc_rounded),
-      MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, context.pt.pink, '$base/wordsearch',
-          icon: Icons.search_rounded),
+      MenuEntry(context.l10n.memoryName, context.l10n.memorySub, '記', '$base/memory'),
+      MenuEntry(context.l10n.buildName, context.l10n.buildSub, '組', '$base/build'),
+      MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, '探', '$base/wordsearch'),
     ];
     return Scaffold(
       body: SafeArea(
@@ -62,7 +59,7 @@ class GamesMenuScreen extends ConsumerWidget {
                     child: ListView(
                       children: [
                         for (final e in entries) ...[
-                          MenuEntryTile(e, expanded: expanded),
+                          MenuEntryTile(e),
                           const SizedBox(height: 14),
                         ],
                       ],

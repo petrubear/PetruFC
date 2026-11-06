@@ -14,6 +14,7 @@ import '../../core/feedback/feedback.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import '../../core/l10n/language.dart';
+import '../../core/audio/sound_service.dart';
 
 const _n = 8;
 const _wordsPerGame = 8;
@@ -128,6 +129,7 @@ class WordSearchGame
       if (s.selection.length > 1 && (w == text || w == reversed)) {
         buzz(ref.read(settingsProvider).valueOrNull?.haptics ?? true,
             s.found.length + 1 == s.words.length ? Buzz.heavy : Buzz.medium);
+        ref.read(soundProvider).play(s.found.length + 1 == s.words.length ? SoundCue.combo : SoundCue.correct);
         state = AsyncData(s.copyWith(found: {...s.found, i: s.selection}, selection: []));
         return;
       }
@@ -256,8 +258,8 @@ class _Board extends StatelessWidget {
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: context.pt.surface0,
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: context.pt.surface1),
+                borderRadius: BorderRadius.circular(context.pt.shape.large),
+                border: Border.all(color: context.pt.outline, width: context.pt.shape.border),
               ),
               child: Column(
                 children: [
@@ -297,7 +299,7 @@ class _CellView extends StatelessWidget {
               : found
                   ? context.pt.greenTint
                   : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(context.pt.shape.small),
           border: selected ? Border.all(color: context.pt.flamingo) : null,
         ),
         child: FittedBox(
@@ -352,7 +354,7 @@ class _Clue extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: found ? context.pt.greenTint : context.pt.surface0,
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(context.pt.shape.pill),
           border: Border.all(color: found ? context.pt.green : context.pt.surface1),
         ),
         child: Text(found ? '${item.meaning(context.lang)} · ${item.japanese}' : item.meaning(context.lang) ?? '',

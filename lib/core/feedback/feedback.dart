@@ -9,6 +9,7 @@ import '../../app/theme.dart';
 import '../data/app_settings.dart';
 import '../widgets/mascot.dart';
 import '../l10n/language.dart';
+import '../audio/sound_service.dart';
 
 enum Buzz { soft, light, medium, heavy }
 
@@ -60,7 +61,7 @@ class _ConfettiBurstState extends ConsumerState<ConfettiBurst>
   )..forward();
   late final List<_Piece> _pieces = () {
     final r = Random();
-    final c = Theme.of(context).extension<PtColors>() ?? PtColors.dark;
+    final c = Theme.of(context).extension<PtStyle>() ?? PtStyle.washiDark;
     return List.generate(widget.big ? 90 : 42, (_) => _Piece(r, [c.flamingo, c.pink, c.teal, c.yellow, c.green]));
   }();
 
@@ -150,7 +151,10 @@ class _GoalCelebrationState extends ConsumerState<GoalCelebrationOverlay> {
   @override
   Widget build(BuildContext context) {
     ref.listen(goalReachedProvider, (prev, next) {
-      if (next != prev) _show();
+      if (next != prev) {
+        ref.read(soundProvider).play(SoundCue.goal);
+        _show();
+      }
     });
     if (_shown == 0) return const SizedBox.shrink();
     return Stack(children: [
@@ -167,7 +171,7 @@ class _GoalCelebrationState extends ConsumerState<GoalCelebrationOverlay> {
               child: Material(
                 color: context.pt.surface1,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(context.pt.shape.medium),
                   side: BorderSide(color: context.pt.green, width: 2),
                 ),
                 child: Padding(

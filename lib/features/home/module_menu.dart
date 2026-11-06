@@ -6,6 +6,8 @@ import '../../app/theme.dart';
 import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
+import '../../core/audio/sound_service.dart';
+import 'continue_button.dart';
 import 'home_screen.dart';
 import '../../core/l10n/language.dart';
 
@@ -43,7 +45,7 @@ class ModuleMenuScreen extends ConsumerWidget {
                   icon: Icons.arrow_back_ios_new_rounded,
                   label: context.l10n.back,
                   onTap: () => context.pop()),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               Expanded(child: ModuleMenuBody(moduleId: moduleId, expanded: false)),
             ],
           ),
@@ -54,11 +56,8 @@ class ModuleMenuScreen extends ConsumerWidget {
 }
 
 class MenuEntry {
-  const MenuEntry(this.title, this.subtitle, this.color, this.path, {this.glyph, this.icon});
-  final String title, subtitle, path;
-  final Color color;
-  final String? glyph;
-  final IconData? icon;
+  const MenuEntry(this.title, this.subtitle, this.kanji, this.path);
+  final String title, subtitle, kanji, path;
 }
 
 class ModuleMenuBody extends ConsumerWidget {
@@ -74,74 +73,50 @@ class ModuleMenuBody extends ConsumerWidget {
         ?.where((m) => m.id == moduleId)
         .firstOrNull;
     if (module == null) return const SizedBox();
-    final (eyebrow, kanaGlyph, wordGlyph) = scriptLabel(moduleId);
+    final l = context.l10n;
+    final (eyebrow, _, _) = scriptLabel(moduleId);
     final entries = [
-      MenuEntry(context.l10n.menuReference, context.l10n.menuReferenceSub, context.pt.yellow,
-          '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
-      MenuEntry(context.l10n.menuLearn, context.l10n.menuLearnSub, context.pt.red, '/m/$moduleId/learn',
-          icon: Icons.gesture_rounded),
-      MenuEntry(context.l10n.menuPractice, context.l10n.menuPracticeSub, context.pt.pink, '/m/$moduleId/practice',
-          icon: Icons.edit_rounded),
-      MenuEntry(context.l10n.menuFlashcards, context.l10n.menuFlashcardsSub, context.pt.flamingo,
-          '/m/$moduleId/flashcards', glyph: kanaGlyph),
-      MenuEntry(context.l10n.menuVocabulary, context.l10n.menuVocabularySub, context.pt.teal,
-          '/m/$moduleId/vocabulary', glyph: wordGlyph),
-      MenuEntry(context.l10n.menuGames, context.l10n.menuGamesSub, context.pt.green,
-          '/m/$moduleId/games', icon: Icons.sports_esports_rounded),
+      MenuEntry(l.menuReference, l.menuReferenceSub, '表', '/m/$moduleId/reference'),
+      MenuEntry(l.menuLearn, l.menuLearnSub, '筆', '/m/$moduleId/learn'),
+      MenuEntry(l.menuPractice, l.menuPracticeSub, '練', '/m/$moduleId/practice'),
+      MenuEntry(l.menuFlashcards, l.menuFlashcardsSub, '札', '/m/$moduleId/flashcards'),
+      MenuEntry(l.menuVocabulary, l.menuVocabularySub, '語', '/m/$moduleId/vocabulary'),
+      MenuEntry(l.menuGames, l.menuGamesSub, '遊', '/m/$moduleId/games'),
     ];
     final header = Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(eyebrow,
-                style: TextStyle(
-                    color: context.pt.flamingo,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 2)),
-            Text(module.name,
-                style: TextStyle(
-                    fontSize: expanded ? 44 : 36, fontWeight: FontWeight.w700)),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(eyebrow,
+                  style: TextStyle(
+                      color: context.pt.flamingo,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 3.5)),
+              const SizedBox(height: 4),
+              Text(module.name, style: context.pt.display(expanded ? 46 : 38)),
+            ],
+          ),
         ),
         Text(module.glyph,
-            style: TextStyle(
-                fontFamily: Pt.kana,
-                fontWeight: FontWeight.w700,
-                fontSize: expanded ? 120 : 84,
-                height: 0.9,
-                color: context.pt.flamingo)),
+            style: context.pt.display(expanded ? 110 : 80, color: context.pt.flamingo)
+                .copyWith(height: 0.9)),
       ],
     );
-    List<Widget> tilesFor(double? boxSize) =>
-        [for (final e in entries) MenuEntryTile(e, expanded: expanded, boxSize: boxSize)];
-    final tiles = tilesFor(null);
     if (expanded) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(40, 32, 40, 40),
+        padding: const EdgeInsets.fromLTRB(40, 36, 40, 32),
         child: Column(
           children: [
             header,
-            const SizedBox(height: 28),
-            // Los mosaicos se reparten el alto, pero nunca menos de lo que necesitan.
-            Expanded(
-              child: LayoutBuilder(builder: (context, c) {
-                const gap = 18.0;
-                final each = (c.maxHeight - gap * (tiles.length - 1)) / tiles.length;
-                final h = each < 104.0 ? 104.0 : each;
-                final boxed = tilesFor(null);
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (final t in boxed) ...[SizedBox(height: h, child: t), const SizedBox(height: gap)],
-                    ]..removeLast(),
-                  ),
-                );
-              }),
-            ),
+            const SizedBox(height: 22),
+            ContinueButton(moduleId: moduleId),
+            const SizedBox(height: 22),
+            Expanded(child: SingleChildScrollView(child: FunctionGrid(entries))),
           ],
         ),
       );
@@ -149,68 +124,121 @@ class ModuleMenuBody extends ConsumerWidget {
     return ListView(
       children: [
         header,
-        const SizedBox(height: 32),
-        for (final t in tiles) ...[t, const SizedBox(height: 14)],
+        const SizedBox(height: 24),
+        for (final e in entries) ...[MenuEntryTile(e), const SizedBox(height: 12)],
       ],
     );
   }
 }
 
-class MenuEntryTile extends StatelessWidget {
-  const MenuEntryTile(this.e, {super.key, required this.expanded, this.boxSize});
-  final MenuEntry e;
-  final bool expanded;
-  final double? boxSize;
+/// Cuadricula 2 x 3 de funciones con su kanji (Fold abierto).
+class FunctionGrid extends ConsumerWidget {
+  const FunctionGrid(this.entries, {super.key});
+  final List<MenuEntry> entries;
 
   @override
-  Widget build(BuildContext context) {
-    final box = boxSize ?? (expanded ? 72.0 : 64.0);
-    return Material(
-      color: context.pt.surface0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(expanded ? 32 : 28),
-        side: BorderSide(color: context.pt.surface1),
-      ),
-      child: InkWell(
-        customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(expanded ? 32 : 28)),
-        onTap: () => context.push(e.path),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: expanded ? 28 : 22, vertical: expanded ? 12 : 22),
-          child: Row(
-            children: [
-              Container(
-                width: box,
-                height: box,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: e.color,
-                    borderRadius: BorderRadius.circular(expanded ? 26 : 20)),
-                child: e.glyph != null
-                    ? Text(e.glyph!,
-                        style: TextStyle(
-                            fontFamily: Pt.kana,
-                            fontWeight: FontWeight.w700,
-                            fontSize: box * 0.52,
-                            color: context.pt.crust))
-                    : Icon(e.icon, color: context.pt.crust, size: box * 0.5),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.pt;
+    return GridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      childAspectRatio: 1.5,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        for (final e in entries)
+          Semantics(
+            button: true,
+            label: '${e.title}. ${e.subtitle}',
+            child: Material(
+              color: c.surface0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(c.shape.large),
+                side: BorderSide(color: c.outline, width: c.shape.border),
               ),
-              const SizedBox(width: 18),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(e.title,
-                        style: TextStyle(
-                            fontSize: expanded ? 26 : 21, fontWeight: FontWeight.w700)),
-                    Text(e.subtitle,
-                        style: TextStyle(
-                            fontSize: expanded ? 16 : 14, color: context.pt.subtext)),
-                  ],
+              child: InkWell(
+                customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(c.shape.large)),
+                onTap: () {
+                  ref.read(soundProvider).play(SoundCue.tap);
+                  context.push(e.path);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(e.kanji, style: c.display(44, color: c.flamingo)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(e.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                          Text(e.subtitle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 13, color: c.subtext)),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Icon(Icons.chevron_right_rounded, color: context.pt.subtext),
-            ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class MenuEntryTile extends ConsumerWidget {
+  const MenuEntryTile(this.e, {super.key});
+  final MenuEntry e;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.pt;
+    return Material(
+      color: c.surface0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(c.shape.large),
+        side: BorderSide(color: c.outline, width: c.shape.border),
+      ),
+      child: InkWell(
+        customBorder:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(c.shape.large)),
+        onTap: () {
+          ref.read(soundProvider).play(SoundCue.tap);
+          context.push(e.path);
+        },
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 88),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 52,
+                  child: Center(child: Text(e.kanji, style: c.display(38, color: c.flamingo))),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(e.title,
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                      Text(e.subtitle, style: TextStyle(fontSize: 14, color: c.subtext)),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right_rounded, color: c.subtext),
+              ],
+            ),
           ),
         ),
       ),

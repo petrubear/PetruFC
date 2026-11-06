@@ -499,4 +499,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get practiceCorrect => 'CORRECT';
+
+  @override
+  String get settingsSound => 'Shamisen sounds';
+
+  @override
+  String get settingsSoundSub => 'Soft plucks on taps, answers and goals';
+
+  @override
+  String get soundOnLabel => 'Sound on';
+
+  @override
+  String get soundOffLabel => 'Sound off';
+
+  @override
+  String get continueTitle => 'Continue where you left off';
+
+  @override
+  String get continueStart => 'Start studying';
+
+  @override
+  String get greetMorning => 'おはよう';
+
+  @override
+  String get greetDay => 'こんにちは';
+
+  @override
+  String get greetEvening => 'こんばんは';
+
+  @override
+  String minOfGoal(int goal) {
+    return 'of $goal min';
+  }
+
+  @override
+  String get modulesLabel => 'Modules';
+
+  @override
+  String get comingSoonShort => 'SOON';
 }
