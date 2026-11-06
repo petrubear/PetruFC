@@ -44,8 +44,11 @@ class _Header extends ConsumerWidget {
         const SealMark(),
         const SizedBox(width: 10),
         Expanded(
-          child: Text('Petru FC',
-              maxLines: 1, overflow: TextOverflow.ellipsis, style: context.pt.display(21)),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text('Petru FC', maxLines: 1, style: context.pt.display(21)),
+          ),
         ),
         RoundIconButton(
           icon: on ? Icons.volume_up_rounded : Icons.volume_off_rounded,
@@ -164,7 +167,7 @@ class _Wide extends ConsumerWidget {
     return Row(
       children: [
         Container(
-          width: 312,
+          width: MediaQuery.sizeOf(context).width < 800 ? 280 : 312,
           decoration: BoxDecoration(
             color: c.mantle,
             border: Border(right: BorderSide(color: c.outline, width: c.shape.border)),

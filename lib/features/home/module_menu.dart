@@ -98,7 +98,10 @@ class ModuleMenuBody extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                       letterSpacing: 3.5)),
               const SizedBox(height: 4),
-              Text(module.name, style: context.pt.display(expanded ? 46 : 38)),
+              FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(module.name, maxLines: 1, style: context.pt.display(expanded ? 46 : 38))),
             ],
           ),
         ),
@@ -108,8 +111,9 @@ class ModuleMenuBody extends ConsumerWidget {
       ],
     );
     if (expanded) {
+      final narrow = MediaQuery.sizeOf(context).width < 800;
       return Padding(
-        padding: const EdgeInsets.fromLTRB(40, 36, 40, 32),
+        padding: EdgeInsets.fromLTRB(narrow ? 20 : 40, 36, narrow ? 20 : 40, 32),
         child: Column(
           children: [
             header,
@@ -138,59 +142,78 @@ class FunctionGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.pt;
-    return GridView.count(
-      crossAxisCount: 2,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      childAspectRatio: 1.5,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    // Cada fila crece con su contenido (fuente grande, textos largos): nada se sale del boton.
+    Widget tile(MenuEntry e) => Expanded(child: _FunctionTile(e));
+    return Column(
       children: [
-        for (final e in entries)
-          Semantics(
-            button: true,
-            label: '${e.title}. ${e.subtitle}',
-            child: Material(
-              color: c.surface0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(c.shape.large),
-                side: BorderSide(color: c.outline, width: c.shape.border),
-              ),
-              child: InkWell(
-                customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(c.shape.large)),
-                onTap: () {
-                  ref.read(soundProvider).play(SoundCue.tap);
-                  context.push(e.path);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(e.kanji, style: c.display(44, color: c.flamingo)),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(e.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                          Text(e.subtitle,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 13, color: c.subtext)),
-                        ],
-                      ),
-                    ],
+        for (var i = 0; i < entries.length; i += 2) ...[
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                tile(entries[i]),
+                const SizedBox(width: 12),
+                if (i + 1 < entries.length) tile(entries[i + 1]) else const Spacer(),
+              ],
+            ),
+          ),
+          if (i + 2 < entries.length) const SizedBox(height: 16),
+        ],
+      ],
+    );
+  }
+}
+
+class _FunctionTile extends ConsumerWidget {
+  const _FunctionTile(this.e);
+  final MenuEntry e;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.pt;
+    return Semantics(
+      button: true,
+      label: '${e.title}. ${e.subtitle}',
+      child: Material(
+        color: c.surface0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(c.shape.large),
+          side: BorderSide(color: c.outline, width: c.shape.border),
+        ),
+        child: InkWell(
+          customBorder:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(c.shape.large)),
+          onTap: () {
+            ref.read(soundProvider).play(SoundCue.tap);
+            context.push(e.path);
+          },
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 150),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(e.kanji, style: c.display(44, color: c.flamingo)),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(e.title,
+                          maxLines: 1,
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 2),
+                  Text(e.subtitle, style: TextStyle(fontSize: 13, color: c.subtext)),
+                ],
               ),
             ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }
