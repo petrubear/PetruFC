@@ -125,7 +125,7 @@
 - [X] T053 Run `flutter analyze` and `flutter gen-l10n` clean; confirm the `pubspec.yaml` diff has only `audioplayers` and the `assets/sfx/` entry
 - [X] T054 Update `README.md` (Funciones/Stack): washi look in light and dark, two-pane Fold layout, shamisen-inspired sounds with a switch, new dependency and the sound generator script
 - [X] T055 Amend `.specify/memory/constitution.md` (minor bump 1.2.0): add `audioplayers` to the dependency list, require every style to keep principles II to IV, and note that sounds are optional and switchable; update the Sync Impact Report
-- [ ] T056 Release only when asked: bump `version` in `pubspec.yaml`, run `scripts/build_apk.sh`, copy the APK to the OneDrive phone folder (commit only when asked)
+- [X] T056 Release only when asked: bump `version` in `pubspec.yaml`, run `scripts/build_apk.sh`, copy the APK to the OneDrive phone folder (commit only when asked)
 
 
 ## Dependencies and Execution Order

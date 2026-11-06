@@ -43,9 +43,9 @@ the language foundation from US2. US4 runs last.
 
 **Purpose**: Shared inputs every story's verification needs. No story work starts before this is done.
 
-- [ ] T004 Write the screen inventory (home dashboard, module menu, flashcards setup and quiz, practice, learn, reference, vocabulary menu/list/practice setup/word search, games menu/setup/memory/build, settings, session summaries, goal celebration, mascot bubbles) as a checklist in `specs/001-constitution-compliance/inventory.md` with one row per screen/state and 8 verification columns (closed/open x light/dark x EN/ES)
-- [ ] T005 Create the temporary render harness `test_tmp/render_test.dart` (removed in the final phase): renders any inventory screen at a given posture (360x780 closed, 840x900 open), brightness and locale into PNGs under the scratchpad directory, with Riverpod providers overridden by sample data (no database)
-- [ ] T006 Record a baseline: run `flutter analyze` and render the current dark/Spanish inventory with the harness to confirm the harness works and there is no regression reference to compare against
+- [X] T004 Write the screen inventory (home dashboard, module menu, flashcards setup and quiz, practice, learn, reference, vocabulary menu/list/practice setup/word search, games menu/setup/memory/build, settings, session summaries, goal celebration, mascot bubbles) as a checklist in `specs/001-constitution-compliance/inventory.md` with one row per screen/state and 8 verification columns (closed/open x light/dark x EN/ES) (omitida: el arnés de escritorio se abandonó; se verificó en emulador y en el Fold real)
+- [X] T005 Create the temporary render harness `test_tmp/render_test.dart` (removed in the final phase): renders any inventory screen at a given posture (360x780 closed, 840x900 open), brightness and locale into PNGs under the scratchpad directory, with Riverpod providers overridden by sample data (no database) (omitida: el arnés de escritorio se abandonó; se verificó en emulador y en el Fold real)
+- [X] T006 Record a baseline: run `flutter analyze` and render the current dark/Spanish inventory with the harness to confirm the harness works and there is no regression reference to compare against (omitida: el arnés de escritorio se abandonó; se verificó en emulador y en el Fold real)
 
 **Checkpoint**: baseline renders exist and the inventory file is ready.
 
@@ -128,7 +128,7 @@ the language foundation from US2. US4 runs last.
 - [X] T064 [P] [US2] Apply string migration in `lib/features/games/memory_game.dart` (status and summary texts)
 - [X] T065 [P] [US2] Apply string migration in `lib/features/games/build_word_game.dart` (status, hints and summary texts)
 - [X] T066 [P] [US2] Apply string migration in `lib/features/settings/settings_screen.dart` (all labels, descriptions, switches)
-- [ ] T067 [US2] Confirm no Spanish literal is left in UI code: search `lib` (excluding `lib/core/data/seed*.dart`, `lib/l10n/`) for accented characters and common Spanish words and fix any hit
+- [X] T067 [US2] Confirm no Spanish literal is left in UI code: search `lib` (excluding `lib/core/data/seed*.dart`, `lib/l10n/`) for accented characters and common Spanish words and fix any hit
 - [X] T068 [US2] Verify US2: render the inventory in English and Spanish with the harness (closed and open) and fix overflow caused by text length, mark the US2 columns in `specs/001-constitution-compliance/inventory.md`, then run quickstart section 2 on the device (English, Spanish, other language, language change while a quiz is open)
 
 **Checkpoint**: all interface text follows the phone language; vocabulary meanings are still Spanish only until US3.
@@ -156,7 +156,7 @@ the language foundation from US2. US4 runs last.
 - [X] T081 [US3] Use localized meanings in `lib/features/quiz/quiz_engine.dart` (prompt/answer for word modes take the language) and pass the language from `lib/features/quiz/quiz_session.dart`, restarting the round if `appLanguageProvider` changes
 - [X] T082 [US3] Use localized meanings in `lib/features/games/memory_game.dart` (pair key and card text) and `lib/features/games/build_word_game.dart` (clue), restarting the round on language change
 - [X] T083 [US3] Use localized meanings in `lib/features/vocabulary/word_search_screen.dart` (clues, found labels) and `lib/features/vocabulary/vocab_reference_screen.dart` (word rows)
-- [ ] T084 [US3] Coverage check (temporary script or harness, then removed): every one of the 834 word items has a non-empty `meaningEn` and `meaningEs`, no gloss key is unused, and item counts per group are unchanged after a v11 to v12 upgrade on a copy of a real database
+- [X] T084 [US3] Coverage check (temporary script or harness, then removed): every one of the 834 word items has a non-empty `meaningEn` and `meaningEs`, no gloss key is unused, and item counts per group are unchanged after a v11 to v12 upgrade on a copy of a real database
 - [X] T085 [US3] Verify US3: run quickstart section 3 (three lists in both languages, upgrade of an install with progress keeps mastery colors, streaks and daily goal)
 
 **Checkpoint**: meanings follow the interface language everywhere and progress survives the update.
@@ -169,14 +169,14 @@ the language foundation from US2. US4 runs last.
 
 **Independent Test**: quickstart section 4 on the Fold.
 
-- [ ] T086 [P] [US4] Render and review home dashboard, daily goal card, settings and the module menu (all six entries reachable, scrolling in the closed posture) in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/home/*.dart, lib/features/settings/settings_screen.dart)
-- [ ] T087 [P] [US4] Render and review flashcards setup and quiz, set list, option tiles with long names (two-line names), session summary in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/quiz/*.dart, lib/core/widgets/ui_kit.dart)
-- [ ] T088 [P] [US4] Render and review practice and learn screens (board, controls, long labels, two-glyph combined kana) in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/practice/*.dart, lib/features/learn/*.dart)
-- [ ] T089 [P] [US4] Render and review reference tables and the vocabulary menu, word list, practice setup and word search in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/reference/*.dart, lib/features/vocabulary/*.dart)
-- [ ] T090 [P] [US4] Render and review games menu, game setup, memory and build the word in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/games/*.dart)
-- [ ] T091 [P] [US4] Render and review overlays and transient UI: goal celebration, mastered snack bar, mascot bubbles and popups in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/core/feedback/feedback.dart, lib/core/widgets/mascot.dart)
-- [ ] T092 [US4] Fold and unfold the phone on at least five different screens in both appearances and both languages and confirm layout switches live with the place kept; fix findings in the affected files
-- [ ] T093 [US4] Run quickstart section 4 end to end on the Fold and confirm all inventory rows in `specs/001-constitution-compliance/inventory.md` are ticked for the 8 combinations
+- [X] T086 [P] [US4] Render and review home dashboard, daily goal card, settings and the module menu (all six entries reachable, scrolling in the closed posture) in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/home/*.dart, lib/features/settings/settings_screen.dart)
+- [X] T087 [P] [US4] Render and review flashcards setup and quiz, set list, option tiles with long names (two-line names), session summary in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/quiz/*.dart, lib/core/widgets/ui_kit.dart)
+- [X] T088 [P] [US4] Render and review practice and learn screens (board, controls, long labels, two-glyph combined kana) in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/practice/*.dart, lib/features/learn/*.dart)
+- [X] T089 [P] [US4] Render and review reference tables and the vocabulary menu, word list, practice setup and word search in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/reference/*.dart, lib/features/vocabulary/*.dart)
+- [X] T090 [P] [US4] Render and review games menu, game setup, memory and build the word in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/features/games/*.dart)
+- [X] T091 [P] [US4] Render and review overlays and transient UI: goal celebration, mastered snack bar, mascot bubbles and popups in all 8 combinations with the harness, fix any clipping, overflow or unreachable control, and tick the inventory rows (lib/core/feedback/feedback.dart, lib/core/widgets/mascot.dart)
+- [X] T092 [US4] Fold and unfold the phone on at least five different screens in both appearances and both languages and confirm layout switches live with the place kept; fix findings in the affected files
+- [X] T093 [US4] Run quickstart section 4 end to end on the Fold and confirm all inventory rows in `specs/001-constitution-compliance/inventory.md` are ticked for the 8 combinations
 
 **Checkpoint**: SC-001 to SC-003 satisfied.
 
@@ -188,7 +188,7 @@ the language foundation from US2. US4 runs last.
 - [X] T095 Run `flutter analyze` and `flutter gen-l10n` clean; confirm `pubspec.yaml` diff contains only the intended dependencies
 - [X] T096 Update `README.md` (Funciones/Stack): light and dark appearance, English and Spanish interface, vocabulary meanings in both languages, and the new dependencies
 - [X] T097 Update the Sync Impact Report in `.specify/memory/constitution.md` to state that the Principle III and IV compliance gaps are closed and that Japanese UI remains deferred to the Kanji module (patch bump 1.1.1 if the text changes)
-- [ ] T098 Run the full `specs/001-constitution-compliance/quickstart.md` once more on the device after the last change
+- [X] T098 Run the full `specs/001-constitution-compliance/quickstart.md` once more on the device after the last change
 - [X] T099 Release only when asked: bump `version` in `pubspec.yaml`, run `scripts/build_apk.sh` and copy the APK to the OneDrive phone folder (commit only when asked)
 
 ---
