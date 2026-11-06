@@ -14,6 +14,7 @@ import '../../core/feedback/feedback.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'game_common.dart';
+import '../../core/l10n/language.dart';
 
 const _wordsPerRound = 10;
 
@@ -174,7 +175,7 @@ class BuildWordScreen extends ConsumerWidget {
     ref.listen(masteredProvider, (prev, next) {
       if (next.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('¡${next.join(' ')} dominado!'),
+            content: Text(context.l10n.masteredToast(next.join(' '))),
             duration: const Duration(seconds: 2)));
       }
     });
@@ -207,14 +208,14 @@ class BuildWordScreen extends ConsumerWidget {
                         Row(children: [
                           RoundIconButton(
                               icon: Icons.close_rounded,
-                              label: 'Cerrar',
+                              label: context.l10n.close,
                               size: expanded ? 48 : 44,
                               onTap: () => context.pop()),
-                          const Expanded(
-                            child: Text('ARMA LA PALABRA',
+                          Expanded(
+                            child: Text(context.l10n.buildTag,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Pt.subtext,
+                                    color: context.pt.subtext,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                     letterSpacing: 1.4)),
@@ -236,12 +237,12 @@ class BuildWordScreen extends ConsumerWidget {
                                     padding: const EdgeInsets.all(24),
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
-                                      child: Text(s.word.meaningEs ?? '',
+                                      child: Text(s.word.meaning(context.lang) ?? '',
                                           textAlign: TextAlign.center,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               fontSize: 44,
                                               fontWeight: FontWeight.w700,
-                                              color: Pt.flamingo)),
+                                              color: context.pt.flamingo)),
                                     ),
                                   ),
                                 ),
@@ -291,7 +292,7 @@ class BuildWordScreen extends ConsumerWidget {
                             ignoring: !s.wordDone,
                             child: SizedBox(
                               width: double.infinity,
-                              child: PillButton(last ? 'Ver resumen' : 'Siguiente', onTap: n.next),
+                              child: PillButton(last ? context.l10n.viewSummary : context.l10n.next, onTap: n.next),
                             ),
                           ),
                         ),
@@ -319,10 +320,10 @@ class _Slot extends StatelessWidget {
         height: 62,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: done ? Pt.greenTint : Pt.surface0,
+          color: done ? context.pt.greenTint : context.pt.surface0,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-              color: done ? Pt.green : (char.isEmpty ? Pt.surface1 : Pt.flamingo),
+              color: done ? context.pt.green : (char.isEmpty ? context.pt.surface1 : context.pt.flamingo),
               width: char.isEmpty ? 1 : 2),
         ),
         child: Text(char,
@@ -330,7 +331,7 @@ class _Slot extends StatelessWidget {
                 fontFamily: Pt.kana,
                 fontWeight: FontWeight.w700,
                 fontSize: 32,
-                color: done ? Pt.green : Pt.text)),
+                color: done ? context.pt.green : context.pt.text)),
       );
 }
 
@@ -344,10 +345,10 @@ class _TileButton extends StatelessWidget {
   Widget build(BuildContext context) => Opacity(
         opacity: used ? 0.15 : 1,
         child: Material(
-          color: wrong ? Pt.redTint : Pt.surface0,
+          color: wrong ? context.pt.redTint : context.pt.surface0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
-            side: BorderSide(color: wrong ? Pt.red : Pt.surface1, width: wrong ? 2 : 1),
+            side: BorderSide(color: wrong ? context.pt.red : context.pt.surface1, width: wrong ? 2 : 1),
           ),
           child: InkWell(
             customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
@@ -361,7 +362,7 @@ class _TileButton extends StatelessWidget {
                         fontFamily: Pt.kana,
                         fontWeight: FontWeight.w700,
                         fontSize: 32,
-                        color: wrong ? Pt.red : Pt.text)),
+                        color: wrong ? context.pt.red : context.pt.text)),
               ),
             ),
           ),

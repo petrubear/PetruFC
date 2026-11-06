@@ -1,0 +1,709 @@
+{
+  "@@locale": "en",
+  "appTitle": "Petru FC",
+  "@appTitle": {
+    "description": "App name"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Back button tooltip"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close button tooltip"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings title and tooltip"
+  },
+  "listenPronunciation": "Listen to pronunciation",
+  "@listenPronunciation": {
+    "description": "Speaker button tooltip"
+  },
+  "next": "Next",
+  "@next": {
+    "description": "Next button"
+  },
+  "previous": "Previous",
+  "@previous": {
+    "description": "Previous button"
+  },
+  "erase": "Clear",
+  "@erase": {
+    "description": "Clear canvas button"
+  },
+  "viewSummary": "See summary",
+  "@viewSummary": {
+    "description": "Finish round button"
+  },
+  "open": "Open",
+  "@open": {
+    "description": "Enter a module button"
+  },
+  "play": "Play",
+  "@play": {
+    "description": "Start game button"
+  },
+  "ttsNoVoice": "Japanese voice missing. Install it in Settings > Text-to-speech output.",
+  "@ttsNoVoice": {
+    "description": "Shown when no Japanese TTS voice"
+  },
+  "ttsFailed": "Could not play the audio.",
+  "@ttsFailed": {
+    "description": "Shown when speech fails"
+  },
+  "summaryTitle": "Round complete!",
+  "@summaryTitle": {
+    "description": "summaryTitle"
+  },
+  "summaryCorrectLabel": "correct",
+  "@summaryCorrectLabel": {
+    "description": "Under the score, lowercase"
+  },
+  "summaryBestCombo": "Best combo",
+  "@summaryBestCombo": {
+    "description": "summaryBestCombo"
+  },
+  "summaryAccuracy": "Accuracy",
+  "@summaryAccuracy": {
+    "description": "summaryAccuracy"
+  },
+  "summaryAgain": "Another round",
+  "@summaryAgain": {
+    "description": "summaryAgain"
+  },
+  "summaryExit": "Exit",
+  "@summaryExit": {
+    "description": "summaryExit"
+  },
+  "masteryUnseen": "Unseen",
+  "@masteryUnseen": {
+    "description": "masteryUnseen"
+  },
+  "masteryWeak": "Missed",
+  "@masteryWeak": {
+    "description": "masteryWeak"
+  },
+  "masteryLearning": "Learning",
+  "@masteryLearning": {
+    "description": "masteryLearning"
+  },
+  "masteryMastered": "Mastered",
+  "@masteryMastered": {
+    "description": "masteryMastered"
+  },
+  "masteredToast": "{chars} mastered!",
+  "@masteredToast": {
+    "description": "Snack bar when characters reach mastery",
+    "placeholders": {
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "goalCelebrationTitle": "Daily goal reached!",
+  "@goalCelebrationTitle": {
+    "description": "goalCelebrationTitle"
+  },
+  "goalCelebrationBody": "You did it, keep going if you like",
+  "@goalCelebrationBody": {
+    "description": "goalCelebrationBody"
+  },
+  "homeTagline": "Study Japanese at your own pace",
+  "@homeTagline": {
+    "description": "homeTagline"
+  },
+  "comingSoon": "COMING SOON",
+  "@comingSoon": {
+    "description": "comingSoon"
+  },
+  "moduleBlurb": "Flashcards, practice and vocabulary",
+  "@moduleBlurb": {
+    "description": "moduleBlurb"
+  },
+  "goalTodayLabel": "TODAY'S GOAL",
+  "@goalTodayLabel": {
+    "description": "goalTodayLabel"
+  },
+  "goalReached": "Goal reached!",
+  "@goalReached": {
+    "description": "goalReached"
+  },
+  "goalMinutesLeft": "{left} min to go",
+  "@goalMinutesLeft": {
+    "description": "goalMinutesLeft",
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "goalOfMinutes": "of {goal} min of practice",
+  "@goalOfMinutes": {
+    "description": "goalOfMinutes",
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "mascotGoalDone": "Goal reached! You gave it your all today",
+  "@mascotGoalDone": {
+    "description": "mascotGoalDone"
+  },
+  "mascotHello": "Hi! Let's start with a few minutes of Japanese",
+  "@mascotHello": {
+    "description": "mascotHello"
+  },
+  "mascotKeepGoing": "You're doing great, {left} min to go",
+  "@mascotKeepGoing": {
+    "description": "mascotKeepGoing",
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "menuReference": "Reference",
+  "@menuReference": {
+    "description": "menuReference"
+  },
+  "menuReferenceSub": "Character chart",
+  "@menuReferenceSub": {
+    "description": "menuReferenceSub"
+  },
+  "menuLearn": "Learn",
+  "@menuLearn": {
+    "description": "menuLearn"
+  },
+  "menuLearnSub": "Stroke by stroke",
+  "@menuLearnSub": {
+    "description": "menuLearnSub"
+  },
+  "menuPractice": "Practice",
+  "@menuPractice": {
+    "description": "menuPractice"
+  },
+  "menuPracticeSub": "Draw with your finger",
+  "@menuPracticeSub": {
+    "description": "menuPracticeSub"
+  },
+  "menuFlashcards": "Flashcards",
+  "@menuFlashcards": {
+    "description": "menuFlashcards"
+  },
+  "menuFlashcardsSub": "Recognize each character",
+  "@menuFlashcardsSub": {
+    "description": "menuFlashcardsSub"
+  },
+  "menuVocabulary": "Vocabulary",
+  "@menuVocabulary": {
+    "description": "menuVocabulary"
+  },
+  "menuVocabularySub": "Words by topic",
+  "@menuVocabularySub": {
+    "description": "menuVocabularySub"
+  },
+  "menuGames": "Games",
+  "@menuGames": {
+    "description": "menuGames"
+  },
+  "menuGamesSub": "Memory and more",
+  "@menuGamesSub": {
+    "description": "menuGamesSub"
+  },
+  "groupBasic": "Basic",
+  "@groupBasic": {
+    "description": "groupBasic"
+  },
+  "groupDakuten": "Dakuten and handakuten",
+  "@groupDakuten": {
+    "description": "groupDakuten"
+  },
+  "groupCombined": "Combined",
+  "@groupCombined": {
+    "description": "groupCombined"
+  },
+  "groupBody": "Body parts",
+  "@groupBody": {
+    "description": "groupBody"
+  },
+  "groupFood": "Food and drinks",
+  "@groupFood": {
+    "description": "groupFood"
+  },
+  "groupOrgans": "Body organs",
+  "@groupOrgans": {
+    "description": "groupOrgans"
+  },
+  "groupColors": "Colors",
+  "@groupColors": {
+    "description": "groupColors"
+  },
+  "groupJobs": "Jobs",
+  "@groupJobs": {
+    "description": "groupJobs"
+  },
+  "groupSushi": "Sushi and sides",
+  "@groupSushi": {
+    "description": "groupSushi"
+  },
+  "groupClothes": "Clothes",
+  "@groupClothes": {
+    "description": "groupClothes"
+  },
+  "groupHome": "Home objects",
+  "@groupHome": {
+    "description": "groupHome"
+  },
+  "groupMusic": "Musical instruments",
+  "@groupMusic": {
+    "description": "groupMusic"
+  },
+  "groupNames": "Famous names",
+  "@groupNames": {
+    "description": "groupNames"
+  },
+  "groupFruits": "Fruits",
+  "@groupFruits": {
+    "description": "groupFruits"
+  },
+  "groupVeggies": "Vegetables",
+  "@groupVeggies": {
+    "description": "groupVeggies"
+  },
+  "groupTravel": "Travel and luggage",
+  "@groupTravel": {
+    "description": "groupTravel"
+  },
+  "groupMedicine": "Basic medicine",
+  "@groupMedicine": {
+    "description": "groupMedicine"
+  },
+  "groupComputing": "Computing and programming",
+  "@groupComputing": {
+    "description": "groupComputing"
+  },
+  "groupAi": "Artificial intelligence",
+  "@groupAi": {
+    "description": "groupAi"
+  },
+  "groupKanaSubtitle": "{count} characters · {examples}",
+  "@groupKanaSubtitle": {
+    "description": "groupKanaSubtitle",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "examples": {
+        "type": "String"
+      }
+    }
+  },
+  "groupWordsSubtitle": "{count, plural, =1{1 word} other{{count} words}}",
+  "@groupWordsSubtitle": {
+    "description": "groupWordsSubtitle",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupNamesSubtitle": "{count, plural, =1{1 name} other{{count} names}}",
+  "@groupNamesSubtitle": {
+    "description": "groupNamesSubtitle",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "referenceTitle": "Reference",
+  "@referenceTitle": {
+    "description": "referenceTitle"
+  },
+  "referenceCounts": "{total} characters · {mastered} mastered",
+  "@referenceCounts": {
+    "description": "referenceCounts",
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "mastered": {
+        "type": "int"
+      }
+    }
+  },
+  "vocabularyTitle": "Vocabulary",
+  "@vocabularyTitle": {
+    "description": "vocabularyTitle"
+  },
+  "vocabReferenceHeading": "Reference · {name}",
+  "@vocabReferenceHeading": {
+    "description": "vocabReferenceHeading",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vocabCounts": "{count, plural, =1{1 word} other{{count} words}} · {mastered} mastered",
+  "@vocabCounts": {
+    "description": "vocabCounts",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "mastered": {
+        "type": "int"
+      }
+    }
+  },
+  "vocabMenuReferenceSub": "Words and meanings",
+  "@vocabMenuReferenceSub": {
+    "description": "vocabMenuReferenceSub"
+  },
+  "vocabMenuPracticeSub": "Pick the right answer",
+  "@vocabMenuPracticeSub": {
+    "description": "vocabMenuPracticeSub"
+  },
+  "wordSearchName": "Word search",
+  "@wordSearchName": {
+    "description": "wordSearchName"
+  },
+  "wordSearchSub": "Find the words",
+  "@wordSearchSub": {
+    "description": "wordSearchSub"
+  },
+  "modeKanaToRomaji": "{script} → Romaji",
+  "@modeKanaToRomaji": {
+    "description": "modeKanaToRomaji",
+    "placeholders": {
+      "script": {
+        "type": "String"
+      }
+    }
+  },
+  "modeRomajiToKana": "Romaji → {script}",
+  "@modeRomajiToKana": {
+    "description": "modeRomajiToKana",
+    "placeholders": {
+      "script": {
+        "type": "String"
+      }
+    }
+  },
+  "modeScriptSwap": "{from} → {to}",
+  "@modeScriptSwap": {
+    "description": "modeScriptSwap",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "modeWordToMeaning": "{script} → English",
+  "@modeWordToMeaning": {
+    "description": "modeWordToMeaning",
+    "placeholders": {
+      "script": {
+        "type": "String"
+      }
+    }
+  },
+  "modeMeaningToWord": "English → {script}",
+  "@modeMeaningToWord": {
+    "description": "modeMeaningToWord",
+    "placeholders": {
+      "script": {
+        "type": "String"
+      }
+    }
+  },
+  "setupFlashcards": "Flashcards",
+  "@setupFlashcards": {
+    "description": "setupFlashcards"
+  },
+  "setupPractice": "Practice",
+  "@setupPractice": {
+    "description": "setupPractice"
+  },
+  "setupWhatToPractice": "WHAT DO YOU WANT TO PRACTICE",
+  "@setupWhatToPractice": {
+    "description": "setupWhatToPractice"
+  },
+  "multiSelect": "Multiple selection",
+  "@multiSelect": {
+    "description": "multiSelect"
+  },
+  "multiSelectSub": "9 characters in 3 blocks of 3",
+  "@multiSelectSub": {
+    "description": "multiSelectSub"
+  },
+  "comboBang": "Combo x{n}!",
+  "@comboBang": {
+    "description": "comboBang",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "masteredBang": "Mastered!",
+  "@masteredBang": {
+    "description": "masteredBang"
+  },
+  "modeSectionLabel": "MODE",
+  "@modeSectionLabel": {
+    "description": "modeSectionLabel"
+  },
+  "practiceTag": "PRACTICE · STROKES",
+  "@practiceTag": {
+    "description": "practiceTag"
+  },
+  "practiceDrawPrompt": "Draw the {script} for",
+  "@practiceDrawPrompt": {
+    "description": "practiceDrawPrompt",
+    "placeholders": {
+      "script": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceCheck": "Check",
+  "@practiceCheck": {
+    "description": "practiceCheck"
+  },
+  "practiceHowDidYouDo": "How did you do?",
+  "@practiceHowDidYouDo": {
+    "description": "practiceHowDidYouDo"
+  },
+  "practiceReview": "Review",
+  "@practiceReview": {
+    "description": "practiceReview"
+  },
+  "practiceGotIt": "Got it",
+  "@practiceGotIt": {
+    "description": "practiceGotIt"
+  },
+  "practiceYourStroke": "YOUR STROKES",
+  "@practiceYourStroke": {
+    "description": "practiceYourStroke"
+  },
+  "practiceCompare": "Compare the order and shape of the strokes",
+  "@practiceCompare": {
+    "description": "practiceCompare"
+  },
+  "verdictGreat": "Very good",
+  "@verdictGreat": {
+    "description": "verdictGreat"
+  },
+  "verdictClose": "Almost, check the shape",
+  "@verdictClose": {
+    "description": "verdictClose"
+  },
+  "verdictReview": "Review the strokes",
+  "@verdictReview": {
+    "description": "verdictReview"
+  },
+  "similarity": "{pct}% match · {label}",
+  "@similarity": {
+    "description": "similarity",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "learnTag": "LEARN · {i}/{n}",
+  "@learnTag": {
+    "description": "learnTag",
+    "placeholders": {
+      "i": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hideGuide": "Hide guide",
+  "@hideGuide": {
+    "description": "hideGuide"
+  },
+  "showGuide": "Show guide",
+  "@showGuide": {
+    "description": "showGuide"
+  },
+  "viewStrokes": "Show strokes",
+  "@viewStrokes": {
+    "description": "viewStrokes"
+  },
+  "gamesTitle": "Games",
+  "@gamesTitle": {
+    "description": "gamesTitle"
+  },
+  "gamesTitleModule": "Games · {module}",
+  "@gamesTitleModule": {
+    "description": "gamesTitleModule",
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
+  "memoryName": "Memory",
+  "@memoryName": {
+    "description": "memoryName"
+  },
+  "memorySub": "Find the pairs",
+  "@memorySub": {
+    "description": "memorySub"
+  },
+  "buildName": "Build the word",
+  "@buildName": {
+    "description": "buildName"
+  },
+  "buildSub": "Put the characters in order",
+  "@buildSub": {
+    "description": "buildSub"
+  },
+  "memoryTag": "MEMORY",
+  "@memoryTag": {
+    "description": "memoryTag"
+  },
+  "buildTag": "BUILD THE WORD",
+  "@buildTag": {
+    "description": "buildTag"
+  },
+  "wordSearchTag": "WORD SEARCH",
+  "@wordSearchTag": {
+    "description": "wordSearchTag"
+  },
+  "gameKindCharacters": "Characters",
+  "@gameKindCharacters": {
+    "description": "gameKindCharacters"
+  },
+  "gameKindVocabulary": "Vocabulary",
+  "@gameKindVocabulary": {
+    "description": "gameKindVocabulary"
+  },
+  "gameSection": "SECTION",
+  "@gameSection": {
+    "description": "gameSection"
+  },
+  "newWordSearch": "New search",
+  "@newWordSearch": {
+    "description": "newWordSearch"
+  },
+  "findLabel": "FIND · {found}/{total}",
+  "@findLabel": {
+    "description": "findLabel",
+    "placeholders": {
+      "found": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "foundAll": "You found them all!",
+  "@foundAll": {
+    "description": "foundAll"
+  },
+  "settingsDailyGoal": "DAILY GOAL",
+  "@settingsDailyGoal": {
+    "description": "settingsDailyGoal"
+  },
+  "settingsGoalMinutes": "{n} minutes a day",
+  "@settingsGoalMinutes": {
+    "description": "settingsGoalMinutes",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGoalHint": "The ring on Home fills with your practice time.",
+  "@settingsGoalHint": {
+    "description": "settingsGoalHint"
+  },
+  "settingsGoalSlider": "{n} min",
+  "@settingsGoalSlider": {
+    "description": "settingsGoalSlider",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRoundSize": "ROUND SIZE",
+  "@settingsRoundSize": {
+    "description": "settingsRoundSize"
+  },
+  "settingsCards": "{n} cards",
+  "@settingsCards": {
+    "description": "settingsCards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRoundHint": "How many cards each Flashcards and Practice round has.",
+  "@settingsRoundHint": {
+    "description": "settingsRoundHint"
+  },
+  "settingsFeedback": "FEEDBACK",
+  "@settingsFeedback": {
+    "description": "settingsFeedback"
+  },
+  "settingsVibration": "Vibration",
+  "@settingsVibration": {
+    "description": "settingsVibration"
+  },
+  "settingsVibrationSub": "On correct answers, combos and mastery",
+  "@settingsVibrationSub": {
+    "description": "settingsVibrationSub"
+  },
+  "settingsEffects": "Celebrations and animations",
+  "@settingsEffects": {
+    "description": "settingsEffects"
+  },
+  "settingsEffectsSub": "Confetti when you finish rounds and goals",
+  "@settingsEffectsSub": {
+    "description": "settingsEffectsSub"
+  },
+  "settingsMascot": "Show mascot",
+  "@settingsMascot": {
+    "description": "settingsMascot"
+  },
+  "settingsMascotSub": "The cat that keeps you company and cheers",
+  "@settingsMascotSub": {
+    "description": "settingsMascotSub"
+  },
+  "settingsVersion": "Version {v}",
+  "@settingsVersion": {
+    "description": "settingsVersion",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsCredit": "Stroke order data: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net",
+  "@settingsCredit": {
+    "description": "settingsCredit"
+  },
+  "practiceCorrect": "CORRECT",
+  "@practiceCorrect": {
+    "description": "practiceCorrect"
+  }
+}

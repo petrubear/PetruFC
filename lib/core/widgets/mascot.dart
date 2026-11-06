@@ -49,9 +49,9 @@ class SpeechBubble extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Pt.surface0,
+          color: context.pt.surface0,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Pt.surface1),
+          border: Border.all(color: context.pt.surface1),
         ),
         child: Text(text,
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, height: 1.3)),

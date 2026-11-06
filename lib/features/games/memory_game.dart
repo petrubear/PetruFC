@@ -14,6 +14,7 @@ import '../../core/feedback/feedback.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'game_common.dart';
+import '../../core/l10n/language.dart';
 
 const _pairs = 6;
 
@@ -71,11 +72,15 @@ class MemoryGame extends AutoDisposeFamilyAsyncNotifier<MemoryState, GameArgs> {
   late List<Item> _pool;
   bool _alive = true;
 
-  String _key(Item i) => arg.$2 == 'kana' ? i.reading : (i.meaningEs ?? i.reading);
+  late AppLanguage _lang;
+
+  String _key(Item i) => arg.$2 == 'kana' ? i.reading : (i.meaning(_lang) ?? i.reading);
 
   @override
   Future<MemoryState> build(GameArgs arg) async {
     ref.onDispose(() => _alive = false);
+    // Si el telefono cambia de idioma la ronda se reinicia con los textos nuevos.
+    _lang = ref.watch(appLanguageProvider);
     _pool = await loadGamePool(ref, arg);
     return _deal();
   }
@@ -163,7 +168,7 @@ class MemoryScreen extends ConsumerWidget {
     ref.listen(masteredProvider, (prev, next) {
       if (next.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('¡${next.join(' ')} dominado!'),
+            content: Text(context.l10n.masteredToast(next.join(' '))),
             duration: const Duration(seconds: 2)));
       }
     });
@@ -194,14 +199,14 @@ class MemoryScreen extends ConsumerWidget {
                     Row(children: [
                       RoundIconButton(
                           icon: Icons.close_rounded,
-                          label: 'Cerrar',
+                          label: context.l10n.close,
                           size: expanded ? 48 : 44,
                           onTap: () => context.pop()),
-                      const Expanded(
-                        child: Text('MEMORAMA',
+                      Expanded(
+                        child: Text(context.l10n.memoryTag,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                color: Pt.subtext,
+                                color: context.pt.subtext,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 1.4)),
@@ -260,13 +265,13 @@ class _CardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shown = up || matched;
-    final color = matched ? Pt.green : (up ? Pt.flamingo : Pt.surface1);
+    final color = matched ? context.pt.green : (up ? context.pt.flamingo : context.pt.surface1);
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: matched ? Pt.greenTint : (up ? Pt.surface1 : Pt.surface0),
+          color: matched ? context.pt.greenTint : (up ? context.pt.surface1 : context.pt.surface0),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: color, width: shown ? 2 : 1),
         ),
@@ -284,11 +289,11 @@ class _CardView extends StatelessWidget {
                           fontFamily: card.japanese ? Pt.kana : Pt.ui,
                           fontWeight: FontWeight.w700,
                           fontSize: card.japanese ? 40 : 22,
-                          color: matched ? Pt.green : Pt.text)),
+                          color: matched ? context.pt.green : context.pt.text)),
                 )
               : Icon(Icons.pets_rounded,
                   key: const ValueKey('down'),
-                  color: Pt.flamingo.withValues(alpha: 0.55),
+                  color: context.pt.flamingo.withValues(alpha: 0.55),
                   size: 30),
         ),
       ),

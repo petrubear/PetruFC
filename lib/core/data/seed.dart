@@ -1,3 +1,4 @@
+import 'seed_glosses_en.dart';
 import 'seed_topics.dart';
 import 'package:drift/drift.dart';
 
@@ -286,6 +287,7 @@ List<ItemsCompanion> _words(String module, String group, String data) {
         japanese: m.group(1)!,
         reading: m.group(2)!,
         meaningEs: Value(m.group(3)),
+        meaningEn: Value(glossEn(group, m.group(1)!)),
       ),
   ];
 }
@@ -494,3 +496,15 @@ Future<void> upgradeToV10(AppDatabase db) async {
 
 /// Esquema v11: frutas, verduras, viajes, medicina, computacion e inteligencia artificial.
 Future<void> upgradeToV11(AppDatabase db) => db.batch((b) => _addMoreTopics(b, db));
+
+/// Esquema v12: significados en ingles para las palabras que ya existen.
+Future<void> upgradeToV12(AppDatabase db) => db.batch((b) {
+      allGlossesEn.forEach((group, words) {
+        words.forEach((japanese, en) {
+          b.customStatement(
+            'UPDATE items SET meaning_en = ? WHERE group_id = ? AND japanese = ?',
+            [en, group, japanese],
+          );
+        });
+      });
+    });

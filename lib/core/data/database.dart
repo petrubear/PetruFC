@@ -8,10 +8,10 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [Modules, ItemGroups, Items, Settings, ReviewStats, DailyActivity])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(driftDatabase(name: 'petrufc'));
+  AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'petrufc'));
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -20,6 +20,8 @@ class AppDatabase extends _$AppDatabase {
       await seedDatabase(this);
     },
     onUpgrade: (m, from, to) async {
+      // La columna nueva debe existir antes de que las migraciones antiguas inserten palabras.
+      if (from < 12) await m.addColumn(items, items.meaningEn);
       if (from < 2) {
         await customStatement(
           "UPDATE item_groups SET name = 'Partes del cuerpo' WHERE id = 'hiragana_body'",
@@ -51,6 +53,7 @@ class AppDatabase extends _$AppDatabase {
       if (from < 9) await upgradeToV9(this);
       if (from < 10) await upgradeToV10(this);
       if (from < 11) await upgradeToV11(this);
+      if (from < 12) await upgradeToV12(this);
     },
   );
 }

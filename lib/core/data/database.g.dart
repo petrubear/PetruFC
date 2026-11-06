@@ -845,6 +845,17 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, Item> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _meaningEnMeta = const VerificationMeta(
+    'meaningEn',
+  );
+  @override
+  late final GeneratedColumn<String> meaningEn = GeneratedColumn<String>(
+    'meaning_en',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _audioTextMeta = const VerificationMeta(
     'audioText',
   );
@@ -865,6 +876,7 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, Item> {
     japanese,
     reading,
     meaningEs,
+    meaningEn,
     audioText,
   ];
   @override
@@ -928,6 +940,12 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, Item> {
         meaningEs.isAcceptableOrUnknown(data['meaning_es']!, _meaningEsMeta),
       );
     }
+    if (data.containsKey('meaning_en')) {
+      context.handle(
+        _meaningEnMeta,
+        meaningEn.isAcceptableOrUnknown(data['meaning_en']!, _meaningEnMeta),
+      );
+    }
     if (data.containsKey('audio_text')) {
       context.handle(
         _audioTextMeta,
@@ -971,6 +989,10 @@ class $ItemsTable extends Items with TableInfo<$ItemsTable, Item> {
         DriftSqlType.string,
         data['${effectivePrefix}meaning_es'],
       ),
+      meaningEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}meaning_en'],
+      ),
       audioText: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}audio_text'],
@@ -992,6 +1014,7 @@ class Item extends DataClass implements Insertable<Item> {
   final String japanese;
   final String reading;
   final String? meaningEs;
+  final String? meaningEn;
   final String? audioText;
   const Item({
     required this.id,
@@ -1001,6 +1024,7 @@ class Item extends DataClass implements Insertable<Item> {
     required this.japanese,
     required this.reading,
     this.meaningEs,
+    this.meaningEn,
     this.audioText,
   });
   @override
@@ -1014,6 +1038,9 @@ class Item extends DataClass implements Insertable<Item> {
     map['reading'] = Variable<String>(reading);
     if (!nullToAbsent || meaningEs != null) {
       map['meaning_es'] = Variable<String>(meaningEs);
+    }
+    if (!nullToAbsent || meaningEn != null) {
+      map['meaning_en'] = Variable<String>(meaningEn);
     }
     if (!nullToAbsent || audioText != null) {
       map['audio_text'] = Variable<String>(audioText);
@@ -1032,6 +1059,9 @@ class Item extends DataClass implements Insertable<Item> {
       meaningEs: meaningEs == null && nullToAbsent
           ? const Value.absent()
           : Value(meaningEs),
+      meaningEn: meaningEn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(meaningEn),
       audioText: audioText == null && nullToAbsent
           ? const Value.absent()
           : Value(audioText),
@@ -1051,6 +1081,7 @@ class Item extends DataClass implements Insertable<Item> {
       japanese: serializer.fromJson<String>(json['japanese']),
       reading: serializer.fromJson<String>(json['reading']),
       meaningEs: serializer.fromJson<String?>(json['meaningEs']),
+      meaningEn: serializer.fromJson<String?>(json['meaningEn']),
       audioText: serializer.fromJson<String?>(json['audioText']),
     );
   }
@@ -1065,6 +1096,7 @@ class Item extends DataClass implements Insertable<Item> {
       'japanese': serializer.toJson<String>(japanese),
       'reading': serializer.toJson<String>(reading),
       'meaningEs': serializer.toJson<String?>(meaningEs),
+      'meaningEn': serializer.toJson<String?>(meaningEn),
       'audioText': serializer.toJson<String?>(audioText),
     };
   }
@@ -1077,6 +1109,7 @@ class Item extends DataClass implements Insertable<Item> {
     String? japanese,
     String? reading,
     Value<String?> meaningEs = const Value.absent(),
+    Value<String?> meaningEn = const Value.absent(),
     Value<String?> audioText = const Value.absent(),
   }) => Item(
     id: id ?? this.id,
@@ -1086,6 +1119,7 @@ class Item extends DataClass implements Insertable<Item> {
     japanese: japanese ?? this.japanese,
     reading: reading ?? this.reading,
     meaningEs: meaningEs.present ? meaningEs.value : this.meaningEs,
+    meaningEn: meaningEn.present ? meaningEn.value : this.meaningEn,
     audioText: audioText.present ? audioText.value : this.audioText,
   );
   Item copyWithCompanion(ItemsCompanion data) {
@@ -1097,6 +1131,7 @@ class Item extends DataClass implements Insertable<Item> {
       japanese: data.japanese.present ? data.japanese.value : this.japanese,
       reading: data.reading.present ? data.reading.value : this.reading,
       meaningEs: data.meaningEs.present ? data.meaningEs.value : this.meaningEs,
+      meaningEn: data.meaningEn.present ? data.meaningEn.value : this.meaningEn,
       audioText: data.audioText.present ? data.audioText.value : this.audioText,
     );
   }
@@ -1111,6 +1146,7 @@ class Item extends DataClass implements Insertable<Item> {
           ..write('japanese: $japanese, ')
           ..write('reading: $reading, ')
           ..write('meaningEs: $meaningEs, ')
+          ..write('meaningEn: $meaningEn, ')
           ..write('audioText: $audioText')
           ..write(')'))
         .toString();
@@ -1125,6 +1161,7 @@ class Item extends DataClass implements Insertable<Item> {
     japanese,
     reading,
     meaningEs,
+    meaningEn,
     audioText,
   );
   @override
@@ -1138,6 +1175,7 @@ class Item extends DataClass implements Insertable<Item> {
           other.japanese == this.japanese &&
           other.reading == this.reading &&
           other.meaningEs == this.meaningEs &&
+          other.meaningEn == this.meaningEn &&
           other.audioText == this.audioText);
 }
 
@@ -1149,6 +1187,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
   final Value<String> japanese;
   final Value<String> reading;
   final Value<String?> meaningEs;
+  final Value<String?> meaningEn;
   final Value<String?> audioText;
   const ItemsCompanion({
     this.id = const Value.absent(),
@@ -1158,6 +1197,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
     this.japanese = const Value.absent(),
     this.reading = const Value.absent(),
     this.meaningEs = const Value.absent(),
+    this.meaningEn = const Value.absent(),
     this.audioText = const Value.absent(),
   });
   ItemsCompanion.insert({
@@ -1168,6 +1208,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
     required String japanese,
     required String reading,
     this.meaningEs = const Value.absent(),
+    this.meaningEn = const Value.absent(),
     this.audioText = const Value.absent(),
   }) : moduleId = Value(moduleId),
        groupId = Value(groupId),
@@ -1182,6 +1223,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
     Expression<String>? japanese,
     Expression<String>? reading,
     Expression<String>? meaningEs,
+    Expression<String>? meaningEn,
     Expression<String>? audioText,
   }) {
     return RawValuesInsertable({
@@ -1192,6 +1234,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
       if (japanese != null) 'japanese': japanese,
       if (reading != null) 'reading': reading,
       if (meaningEs != null) 'meaning_es': meaningEs,
+      if (meaningEn != null) 'meaning_en': meaningEn,
       if (audioText != null) 'audio_text': audioText,
     });
   }
@@ -1204,6 +1247,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
     Value<String>? japanese,
     Value<String>? reading,
     Value<String?>? meaningEs,
+    Value<String?>? meaningEn,
     Value<String?>? audioText,
   }) {
     return ItemsCompanion(
@@ -1214,6 +1258,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
       japanese: japanese ?? this.japanese,
       reading: reading ?? this.reading,
       meaningEs: meaningEs ?? this.meaningEs,
+      meaningEn: meaningEn ?? this.meaningEn,
       audioText: audioText ?? this.audioText,
     );
   }
@@ -1242,6 +1287,9 @@ class ItemsCompanion extends UpdateCompanion<Item> {
     if (meaningEs.present) {
       map['meaning_es'] = Variable<String>(meaningEs.value);
     }
+    if (meaningEn.present) {
+      map['meaning_en'] = Variable<String>(meaningEn.value);
+    }
     if (audioText.present) {
       map['audio_text'] = Variable<String>(audioText.value);
     }
@@ -1258,6 +1306,7 @@ class ItemsCompanion extends UpdateCompanion<Item> {
           ..write('japanese: $japanese, ')
           ..write('reading: $reading, ')
           ..write('meaningEs: $meaningEs, ')
+          ..write('meaningEn: $meaningEn, ')
           ..write('audioText: $audioText')
           ..write(')'))
         .toString();
@@ -2465,6 +2514,7 @@ typedef $$ItemsTableCreateCompanionBuilder =
       required String japanese,
       required String reading,
       Value<String?> meaningEs,
+      Value<String?> meaningEn,
       Value<String?> audioText,
     });
 typedef $$ItemsTableUpdateCompanionBuilder =
@@ -2476,6 +2526,7 @@ typedef $$ItemsTableUpdateCompanionBuilder =
       Value<String> japanese,
       Value<String> reading,
       Value<String?> meaningEs,
+      Value<String?> meaningEn,
       Value<String?> audioText,
     });
 
@@ -2519,6 +2570,11 @@ class $$ItemsTableFilterComposer extends Composer<_$AppDatabase, $ItemsTable> {
 
   ColumnFilters<String> get meaningEs => $composableBuilder(
     column: $table.meaningEs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get meaningEn => $composableBuilder(
+    column: $table.meaningEn,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2572,6 +2628,11 @@ class $$ItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get meaningEn => $composableBuilder(
+    column: $table.meaningEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get audioText => $composableBuilder(
     column: $table.audioText,
     builder: (column) => ColumnOrderings(column),
@@ -2607,6 +2668,9 @@ class $$ItemsTableAnnotationComposer
 
   GeneratedColumn<String> get meaningEs =>
       $composableBuilder(column: $table.meaningEs, builder: (column) => column);
+
+  GeneratedColumn<String> get meaningEn =>
+      $composableBuilder(column: $table.meaningEn, builder: (column) => column);
 
   GeneratedColumn<String> get audioText =>
       $composableBuilder(column: $table.audioText, builder: (column) => column);
@@ -2647,6 +2711,7 @@ class $$ItemsTableTableManager
                 Value<String> japanese = const Value.absent(),
                 Value<String> reading = const Value.absent(),
                 Value<String?> meaningEs = const Value.absent(),
+                Value<String?> meaningEn = const Value.absent(),
                 Value<String?> audioText = const Value.absent(),
               }) => ItemsCompanion(
                 id: id,
@@ -2656,6 +2721,7 @@ class $$ItemsTableTableManager
                 japanese: japanese,
                 reading: reading,
                 meaningEs: meaningEs,
+                meaningEn: meaningEn,
                 audioText: audioText,
               ),
           createCompanionCallback:
@@ -2667,6 +2733,7 @@ class $$ItemsTableTableManager
                 required String japanese,
                 required String reading,
                 Value<String?> meaningEs = const Value.absent(),
+                Value<String?> meaningEn = const Value.absent(),
                 Value<String?> audioText = const Value.absent(),
               }) => ItemsCompanion.insert(
                 id: id,
@@ -2676,6 +2743,7 @@ class $$ItemsTableTableManager
                 japanese: japanese,
                 reading: reading,
                 meaningEs: meaningEs,
+                meaningEn: meaningEn,
                 audioText: audioText,
               ),
           withReferenceMapper: (p0) => p0

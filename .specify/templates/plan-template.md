@@ -48,8 +48,8 @@ Each gate MUST be answered Pass, Fail (justify in Complexity Tracking) or N/A:
 - [ ] **II. Foldable**: slab and extended layouts defined (`isExpanded`, 600 dp); no clipping;
   scrolling where content can exceed the viewport.
 - [ ] **III. Look**: uses theme tokens only; works in light and dark.
-- [ ] **IV. Languages**: strings localized for English, Spanish and Japanese; glosses for all
-  three languages; layouts tolerate longer text.
+- [ ] **IV. Languages**: strings localized for English and Spanish; glosses in both;
+  layouts tolerate longer text.
 - [ ] **V. Offline**: no network, accounts or telemetry; licenses and attribution kept.
 - [ ] **VI. Low friction**: finite rounds, immediate feedback, no unnecessary user choices.
 - [ ] **VII. Verification**: `flutter analyze` clean; checked in both postures and both themes.

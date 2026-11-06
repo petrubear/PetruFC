@@ -9,11 +9,12 @@ import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/mastery.dart';
 import '../../core/widgets/ui_kit.dart';
+import '../../core/l10n/language.dart';
 
 // Posicion de cada kana en la tabla, por romaji (null = hueco).
 class _Section {
   const _Section(this.title, this.cols, this.labels, this.rows);
-  final String title;
+  final String Function(AppLocalizations) title;
   final List<String> cols;
   final List<String> labels;
   final List<List<String?>> rows;
@@ -23,7 +24,11 @@ class _Section {
 const _vowels = ['a', 'i', 'u', 'e', 'o'];
 const _ya = ['ya', 'yu', 'yo'];
 
-const _basic = _Section('Básicos', _vowels, [
+String _tBasic(AppLocalizations l) => l.groupBasic;
+String _tDakuten(AppLocalizations l) => l.groupDakuten;
+String _tCombined(AppLocalizations l) => l.groupCombined;
+
+const _basic = _Section(_tBasic, _vowels, [
   '', 'k', 's', 't', 'n', 'h', 'm', 'y', 'r', 'w', 'n'
 ], [
   ['a', 'i', 'u', 'e', 'o'],
@@ -39,7 +44,7 @@ const _basic = _Section('Básicos', _vowels, [
   ['n', null, null, null, null],
 ]);
 
-const _dakuten = _Section('Dakuten y handakuten', _vowels, [
+const _dakuten = _Section(_tDakuten, _vowels, [
   'g', 'z', 'd', 'b', 'p'
 ], [
   ['ga', 'gi', 'gu', 'ge', 'go'],
@@ -49,7 +54,7 @@ const _dakuten = _Section('Dakuten y handakuten', _vowels, [
   ['pa', 'pi', 'pu', 'pe', 'po'],
 ]);
 
-const _combined = _Section('Combinados', _ya, [
+const _combined = _Section(_tCombined, _ya, [
   'ky', 'sh', 'ch', 'ny', 'hy', 'my', 'ry', 'gy', 'j', 'by', 'py'
 ], [
   ['kya', 'kyu', 'kyo'],
@@ -82,10 +87,10 @@ class ReferenceScreen extends ConsumerWidget {
     final items = ref.watch(_byReadingProvider(moduleId));
     final back = RoundIconButton(
         icon: Icons.arrow_back_ios_new_rounded,
-        label: 'Volver',
+        label: context.l10n.back,
         size: expanded ? 48 : 44,
         onTap: () => context.pop());
-    final heading = Text('Referencia',
+    final heading = Text(context.l10n.referenceTitle,
         style: TextStyle(fontSize: expanded ? 38 : 32, fontWeight: FontWeight.w700));
     final total = _basic.count + _dakuten.count + _combined.count;
     final stats = ref.watch(statsProvider).valueOrNull ?? {};
@@ -93,8 +98,8 @@ class ReferenceScreen extends ConsumerWidget {
             .where((i) => Mastery.of(stats[i.id]) == Mastery.mastered)
             .length ??
         0;
-    final subtitle = Text('$total caracteres · $mastered dominados',
-        style: const TextStyle(fontSize: 14, color: Pt.subtext));
+    final subtitle = Text(context.l10n.referenceCounts(total, mastered),
+        style: TextStyle(fontSize: 14, color: context.pt.subtext));
 
     return Scaffold(
       body: SafeArea(
@@ -186,11 +191,11 @@ class _Table extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(section.title,
+            Text(section.title(context.l10n),
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
             const SizedBox(width: 10),
             Text('${section.count}',
-                style: const TextStyle(fontSize: 14, color: Pt.subtext)),
+                style: TextStyle(fontSize: 14, color: context.pt.subtext)),
           ],
         ),
         const SizedBox(height: 12),
@@ -201,11 +206,11 @@ class _Table extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: Text(c,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1.2,
-                          color: Pt.flamingo)),
+                          color: context.pt.flamingo)),
                 ),
               ),
           ],
@@ -221,11 +226,11 @@ class _Table extends StatelessWidget {
                   SizedBox(
                     width: 30,
                     child: Text(section.labels[r],
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 1.2,
-                            color: Pt.flamingo)),
+                            color: context.pt.flamingo)),
                   ),
                   for (var c = 0; c < section.cols.length; c++) ...[
                     if (c > 0) const SizedBox(width: gap),
@@ -254,10 +259,10 @@ class _KanaCell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final m = Mastery.of(ref.watch(statsProvider).valueOrNull?[item.id]);
     return Material(
-        color: m.bg,
+        color: m.bgOf(context.pt),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: m.border),
+          side: BorderSide(color: m.borderOf(context.pt)),
         ),
         child: InkWell(
           customBorder:
@@ -266,7 +271,8 @@ class _KanaCell extends ConsumerWidget {
             final error =
                 await ref.read(ttsProvider).speak(item.audioText ?? item.japanese);
             if (error != null && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(error.message(context.l10n))));
             }
           },
           child: Column(
@@ -279,7 +285,7 @@ class _KanaCell extends ConsumerWidget {
                       fontSize: 26,
                       height: 1.1)),
               Text(item.reading,
-                  style: const TextStyle(fontSize: 11, color: Pt.subtext)),
+                  style: TextStyle(fontSize: 11, color: context.pt.subtext)),
             ],
           ),
         ),

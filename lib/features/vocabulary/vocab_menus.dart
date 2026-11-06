@@ -7,6 +7,8 @@ import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import '../home/module_menu.dart';
+import '../../core/l10n/group_names.dart';
+import '../../core/l10n/language.dart';
 
 /// Lista de secciones de vocabulario (un grupo `word` por seccion).
 class VocabSectionsScreen extends ConsumerWidget {
@@ -18,11 +20,11 @@ class VocabSectionsScreen extends ConsumerWidget {
     final groups = ref.watch(groupsProvider((moduleId, 'word'))).valueOrNull ?? [];
     final wordGlyph = scriptLabel(moduleId).$3;
     return _MenuPage(
-      title: 'Vocabulario',
+      title: context.l10n.vocabularyTitle,
       glyph: wordGlyph,
       entries: [
         for (final g in groups)
-          MenuEntry(g.name, g.subtitle, Pt.teal, '/m/$moduleId/vocabulary/${g.id}',
+          MenuEntry(groupName(context.l10n, g), groupSubtitle(context.l10n, g), context.pt.teal, '/m/$moduleId/vocabulary/${g.id}',
               glyph: wordGlyph),
       ],
     );
@@ -37,18 +39,19 @@ class VocabSectionMenuScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groups = ref.watch(groupsProvider((moduleId, 'word'))).valueOrNull ?? [];
-    final name = groups.where((g) => g.id == groupId).firstOrNull?.name ?? '';
+    final group = groups.where((g) => g.id == groupId).firstOrNull;
+    final name = group == null ? '' : groupName(context.l10n, group);
     final base = '/m/$moduleId/vocabulary/$groupId';
     final (_, kanaGlyph, wordGlyph) = scriptLabel(moduleId);
     return _MenuPage(
       title: name,
       glyph: wordGlyph,
       entries: [
-        MenuEntry('Referencia', 'Palabras y significados', Pt.yellow, '$base/reference',
+        MenuEntry(context.l10n.menuReference, context.l10n.vocabMenuReferenceSub, context.pt.yellow, '$base/reference',
             icon: Icons.grid_view_rounded),
-        MenuEntry('Práctica', 'Elige la respuesta correcta', Pt.flamingo, '$base/practice',
+        MenuEntry(context.l10n.menuPractice, context.l10n.vocabMenuPracticeSub, context.pt.flamingo, '$base/practice',
             glyph: kanaGlyph),
-        MenuEntry('Sopa de letras', 'Encuentra las palabras', Pt.pink, '$base/wordsearch',
+        MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, context.pt.pink, '$base/wordsearch',
             icon: Icons.search_rounded),
       ],
     );
@@ -71,9 +74,9 @@ class _MenuPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('たんご',
+              Text('たんご',
                   style: TextStyle(
-                      color: Pt.teal,
+                      color: context.pt.teal,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 2)),
@@ -89,7 +92,7 @@ class _MenuPage extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 fontSize: expanded ? 120 : 84,
                 height: 0.9,
-                color: Pt.teal)),
+                color: context.pt.teal)),
       ],
     );
     return Scaffold(
@@ -103,7 +106,7 @@ class _MenuPage extends StatelessWidget {
             children: [
               RoundIconButton(
                   icon: Icons.arrow_back_ios_new_rounded,
-                  label: 'Volver',
+                  label: context.l10n.back,
                   size: expanded ? 48 : 44,
                   onTap: () => context.pop()),
               SizedBox(height: expanded ? 28 : 24),

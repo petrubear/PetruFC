@@ -1,21 +1,25 @@
 <!--
 SYNC IMPACT REPORT
-Version change: (template, unversioned) -> 1.0.0
-Modified principles: none (first ratification)
-Added principles: I. Preserve the Existing Architecture; II. Foldable Support Is Mandatory;
+Version change: 1.0.0 -> 1.1.0
+Amendment 1.1.0 (2026-11-06): Principle IV no longer requires a Japanese interface; it is
+  deferred to the Kanji module. Minor bump: nothing that complied with 1.0.0 stops complying.
+Modified principles: IV. English, Spanish and Japanese -> IV. English and Spanish;
+  VII. Verification (languages narrowed to English and Spanish)
+Principles at first ratification (1.0.0): I. Preserve the Existing Architecture; II. Foldable Support Is Mandatory;
   III. Modern Look, Light and Dark; IV. English, Spanish and Japanese; V. Offline and Private;
   VI. Low-Friction, Attention-Friendly Study; VII. Verification Without Unit-Test Overhead
 Added sections: Technology and Content Constraints; Development Workflow; Governance
 Removed sections: none
 Templates:
-  - .specify/templates/plan-template.md: updated (Constitution Check gates)
-  - .specify/templates/tasks-template.md: updated (Polish phase verification tasks)
+  - .specify/templates/plan-template.md: updated (Constitution Check gates; gate IV in 1.1.0)
+  - .specify/templates/tasks-template.md: updated (Polish phase; languages in 1.1.0)
+  - specs/001-constitution-compliance/spec.md: updated to drop the Japanese interface scope
   - .specify/templates/spec-template.md: reviewed, no change needed
   - .specify/templates/checklist-template.md: reviewed, no change needed
   - .claude/skills/speckit-*/SKILL.md: reviewed, no agent-specific references to fix
-Known compliance gaps at ratification (deferred, not fixed by this amendment):
-  - Principle III: the app ships a dark theme only (buildTheme in lib/app/theme.dart).
-  - Principle IV: all UI strings are hard-coded in Spanish; vocabulary glosses exist only in Spanish.
+Compliance gaps recorded at 1.1.0 are closed by specs/001-constitution-compliance
+  (light/dark theme following the phone; English/Spanish UI and vocabulary meanings). Japanese UI
+  remains deferred to the Kanji module.
 Follow-up TODOs: none (placeholders all resolved)
 -->
 # Petru FC Constitution
@@ -51,15 +55,18 @@ Text and controls MUST keep readable contrast in both themes, and mascot, confet
 colors and the stroke board MUST remain legible in both.
 Rationale: one visual language, comfortable in any lighting, without per-screen exceptions.
 
-### IV. English, Spanish and Japanese
-The user interface MUST be available in English, Spanish and Japanese, selected from the
-device language with a defined fallback. User-visible strings MUST go through the Flutter
+### IV. English and Spanish
+The user interface MUST be available in English and Spanish, selected from the device
+language, with English as the fallback. User-visible strings MUST go through the Flutter
 localization mechanism and MUST NOT be hard-coded in widgets. Spanish MUST be neutral Latin
-American Spanish with no regional dialects. Vocabulary glosses MUST be available in all three
+American Spanish with no regional dialects. Vocabulary glosses MUST be available in both
 languages, and any new vocabulary list MUST ship with them. Study content (kana, readings and
 the Japanese words themselves) is not translated. Layouts MUST tolerate the longer strings of
-any of the three languages.
-Rationale: the app serves learners across these languages and text length varies widely.
+either language. A Japanese-language interface is deliberately out of scope for now: the Kanji
+module's feature MUST amend this principle to add it (including what a gloss means for a
+Japanese reader) before any Japanese UI work starts.
+Rationale: the app serves English and Spanish learners; text length varies between languages,
+and Japanese UI needs decisions that belong with the Kanji module.
 
 ### V. Offline and Private
 The app MUST work fully offline: all data, fonts, stroke data and media are bundled, and the
@@ -79,7 +86,7 @@ Rationale: every extra decision or distraction costs the learner focus.
 ### VII. Verification Without Unit-Test Overhead
 Automated unit tests are not required for this project. Every change MUST pass
 `flutter analyze` with no issues and MUST be checked in both foldable postures and in both
-themes, and in all three languages once Principle IV is in place. Release builds MUST use
+themes, and in both languages once Principle IV is in place. Release builds MUST use
 `scripts/build_apk.sh`. Temporary test code used for verification MUST be removed before
 finishing.
 Rationale: a lean workflow that still catches the layout and theme regressions that matter.
@@ -115,6 +122,6 @@ templates. Plans MUST pass the Constitution Check in `plan-template.md` before r
 again after design; unavoidable violations MUST be recorded in Complexity Tracking with a
 justification. Known compliance gaps listed in the Sync Impact Report MUST be closed through
 their own specs, and no new feature may widen them (new screens MUST already support both
-themes and all three languages once the supporting infrastructure exists).
+themes and both languages once the supporting infrastructure exists).
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06
+**Version**: 1.1.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06

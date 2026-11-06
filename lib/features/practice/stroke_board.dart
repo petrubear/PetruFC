@@ -3,51 +3,79 @@ import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 
 class StrokeBoard extends StatelessWidget {
-  const StrokeBoard(
-      {super.key, required this.strokes, this.onStart, this.onMove, this.underlay});
+  const StrokeBoard({
+    super.key,
+    required this.strokes,
+    this.onStart,
+    this.onMove,
+    this.underlay,
+  });
   final List<List<Offset>> strokes;
   final CustomPainter? underlay;
   final ValueChanged<Offset>? onStart, onMove;
 
   @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(32),
-        child: LayoutBuilder(builder: (context, c) {
+  Widget build(BuildContext context) => DecoratedBox(
+    position: DecorationPosition.foreground,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(32),
+      border: Border.all(color: context.pt.paperBorder),
+    ),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(32),
+      child: LayoutBuilder(
+        builder: (context, c) {
           Offset norm(Offset p) => Offset(
-                (p.dx / c.maxWidth).clamp(0.0, 1.0).toDouble(),
-                (p.dy / c.maxHeight).clamp(0.0, 1.0).toDouble(),
-              );
+            (p.dx / c.maxWidth).clamp(0.0, 1.0).toDouble(),
+            (p.dy / c.maxHeight).clamp(0.0, 1.0).toDouble(),
+          );
           return Listener(
             behavior: HitTestBehavior.opaque,
-            onPointerDown: onStart == null ? null : (e) => onStart!(norm(e.localPosition)),
-            onPointerMove: onMove == null ? null : (e) => onMove!(norm(e.localPosition)),
-            child: CustomPaint(painter: _StrokePainter(strokes, underlay), size: Size.infinite),
+            onPointerDown: onStart == null
+                ? null
+                : (e) => onStart!(norm(e.localPosition)),
+            onPointerMove: onMove == null
+                ? null
+                : (e) => onMove!(norm(e.localPosition)),
+            child: CustomPaint(
+              painter: _StrokePainter(strokes, underlay, context.pt),
+              size: Size.infinite,
+            ),
           );
-        }),
-      );
+        },
+      ),
+    ),
+  );
 }
 
 class _StrokePainter extends CustomPainter {
-  _StrokePainter(this.strokes, this.underlay);
+  _StrokePainter(this.strokes, this.underlay, this.colors);
+  final PtColors colors;
   final List<List<Offset>> strokes;
   final CustomPainter? underlay;
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = Pt.paper);
+    canvas.drawRect(Offset.zero & size, Paint()..color = colors.paper);
     final guide = Paint()
-      ..color = Pt.paperLine
+      ..color = colors.paperLine
       ..strokeWidth = 1.5;
-    canvas.drawLine(Offset(size.width / 2, size.height * 0.06),
-        Offset(size.width / 2, size.height * 0.94), guide);
-    canvas.drawLine(Offset(size.width * 0.07, size.height / 2),
-        Offset(size.width * 0.93, size.height / 2), guide);
+    canvas.drawLine(
+      Offset(size.width / 2, size.height * 0.06),
+      Offset(size.width / 2, size.height * 0.94),
+      guide,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.07, size.height / 2),
+      Offset(size.width * 0.93, size.height / 2),
+      guide,
+    );
 
     underlay?.paint(canvas, size);
 
     final width = (size.shortestSide * 0.03).clamp(3.0, 14.0).toDouble();
     final ink = Paint()
-      ..color = Pt.ink
+      ..color = colors.ink
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
@@ -55,7 +83,7 @@ class _StrokePainter extends CustomPainter {
     Offset at(Offset p) => Offset(p.dx * size.width, p.dy * size.height);
     for (final s in strokes) {
       if (s.length == 1) {
-        canvas.drawCircle(at(s.first), width / 2, Paint()..color = Pt.ink);
+        canvas.drawCircle(at(s.first), width / 2, Paint()..color = colors.ink);
         continue;
       }
       final path = Path()..moveTo(at(s.first).dx, at(s.first).dy);
@@ -67,5 +95,6 @@ class _StrokePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_StrokePainter old) => underlay != null || old.strokes != strokes;
+  bool shouldRepaint(_StrokePainter old) =>
+      underlay != null || old.strokes != strokes;
 }

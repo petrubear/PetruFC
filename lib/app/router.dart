@@ -27,12 +27,15 @@ final router = GoRouter(
         GoRoute(path: 'settings', builder: (c, s) => const SettingsScreen()),
         GoRoute(
           path: 'm/:module',
-          builder: (c, s) => ModuleMenuScreen(moduleId: s.pathParameters['module']!),
+          builder: (c, s) =>
+              ModuleMenuScreen(moduleId: s.pathParameters['module']!),
           routes: [
             GoRoute(
               path: 'flashcards',
               builder: (c, s) => ModeSetupScreen(
-                  moduleId: s.pathParameters['module']!, kind: 'kana'),
+                moduleId: s.pathParameters['module']!,
+                kind: 'kana',
+              ),
             ),
             GoRoute(
               path: 'vocabulary',
@@ -82,7 +85,8 @@ final router = GoRouter(
             ),
             GoRoute(
               path: 'games',
-              builder: (c, s) => GamesMenuScreen(moduleId: s.pathParameters['module']!),
+              builder: (c, s) =>
+                  GamesMenuScreen(moduleId: s.pathParameters['module']!),
               routes: [
                 GoRoute(
                   path: ':game',
@@ -115,7 +119,8 @@ final router = GoRouter(
             ),
             GoRoute(
               path: 'learn',
-              builder: (c, s) => LearnScreen(moduleId: s.pathParameters['module']!),
+              builder: (c, s) =>
+                  LearnScreen(moduleId: s.pathParameters['module']!),
             ),
             GoRoute(
               path: 'practice',

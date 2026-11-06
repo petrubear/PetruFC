@@ -2,17 +2,35 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
 import '../data/database.dart';
+import '../l10n/language.dart';
 
 /// Estado de dominio de un caracter o palabra segun su racha de aciertos.
 enum Mastery {
-  unseen(Pt.surface0, Pt.surface1, 'Sin ver'),
-  weak(Pt.redTint, Pt.red, 'Fallado'),
-  learning(Color(0x24FCD583), Pt.yellow, 'Aprendiendo'),
-  mastered(Pt.greenTint, Pt.green, 'Dominado');
+  unseen,
+  weak,
+  learning,
+  mastered;
 
-  const Mastery(this.bg, this.border, this.label);
-  final Color bg, border;
-  final String label;
+  String label(AppLocalizations l) => switch (this) {
+        unseen => l.masteryUnseen,
+        weak => l.masteryWeak,
+        learning => l.masteryLearning,
+        mastered => l.masteryMastered,
+      };
+
+  Color bgOf(PtColors c) => switch (this) {
+        unseen => c.surface0,
+        weak => c.redTint,
+        learning => c.yellowTint,
+        mastered => c.greenTint,
+      };
+
+  Color borderOf(PtColors c) => switch (this) {
+        unseen => c.surface1,
+        weak => c.red,
+        learning => c.yellow,
+        mastered => c.green,
+      };
 
   static Mastery of(ReviewStat? s) {
     if (s == null || s.attempts == 0) return unseen;
@@ -37,13 +55,13 @@ class MasteryLegend extends StatelessWidget {
                   width: 14,
                   height: 14,
                   decoration: BoxDecoration(
-                    color: m.bg,
+                    color: m.bgOf(context.pt),
                     borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: m.border),
+                    border: Border.all(color: m.borderOf(context.pt)),
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text(m.label, style: const TextStyle(fontSize: 12, color: Pt.subtext)),
+                Text(m.label(context.l10n), style: TextStyle(fontSize: 12, color: context.pt.subtext)),
               ],
             ),
         ],

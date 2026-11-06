@@ -9,8 +9,7 @@ import '../../core/data/app_settings.dart';
 import '../../core/data/repository.dart';
 import '../../core/widgets/mascot.dart';
 import '../../core/widgets/ui_kit.dart';
-
-const _weekdays = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+import '../../core/l10n/language.dart';
 
 class DailyGoalCard extends ConsumerWidget {
   const DailyGoalCard({super.key});
@@ -35,33 +34,33 @@ class DailyGoalCard extends ConsumerWidget {
                 width: 76,
                 height: 76,
                 child: CustomPaint(
-                  painter: _RingPainter(todaySec / goalSec, done),
+                  painter: _RingPainter(todaySec / goalSec, done, context.pt),
                   child: Center(
                     child: Text(
                       '${todaySec ~/ 60}',
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SectionLabel('META DE HOY'),
+                    SectionLabel(context.l10n.goalTodayLabel),
                     const SizedBox(height: 4),
                     Text(
-                      done ? '¡Meta cumplida!' : 'Te faltan $left min',
+                      done ? context.l10n.goalReached : context.l10n.goalMinutesLeft(left),
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: done ? Pt.green : Pt.text,
+                        color: done ? context.pt.green : context.pt.text,
                       ),
                     ),
                     Text(
-                      'de $goalMin min de práctica',
-                      style: const TextStyle(fontSize: 13, color: Pt.subtext),
+                      context.l10n.goalOfMinutes(goalMin),
+                      style: TextStyle(fontSize: 13, color: context.pt.subtext),
                     ),
                   ],
                 ),
@@ -74,7 +73,8 @@ class DailyGoalCard extends ConsumerWidget {
               for (var i = 6; i >= 0; i--)
                 Expanded(
                   child: _DayBar(
-                    label: _weekdays[now.subtract(Duration(days: i)).weekday - 1],
+                    label: MaterialLocalizations.of(context)
+                        .narrowWeekdays[now.subtract(Duration(days: i)).weekday % 7],
                     ratio: min(1.0, (days[dayKey(now.subtract(Duration(days: i)))] ?? 0) / goalSec),
                     today: i == 0,
                   ),
@@ -100,16 +100,16 @@ class _DayBar extends StatelessWidget {
         width: 14,
         height: 36,
         alignment: Alignment.bottomCenter,
-        decoration: BoxDecoration(color: Pt.surface1, borderRadius: BorderRadius.circular(999)),
+        decoration: BoxDecoration(color: context.pt.surface1, borderRadius: BorderRadius.circular(999)),
         child: FractionallySizedBox(
           heightFactor: ratio == 0 ? 0.08 : max(0.08, ratio),
           child: Container(
             decoration: BoxDecoration(
               color: ratio >= 1
-                  ? Pt.green
+                  ? context.pt.green
                   : ratio == 0
-                  ? Pt.surface2
-                  : Pt.flamingo,
+                  ? context.pt.surface2
+                  : context.pt.flamingo,
               borderRadius: BorderRadius.circular(999),
             ),
           ),
@@ -121,7 +121,7 @@ class _DayBar extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           fontWeight: today ? FontWeight.w700 : FontWeight.w500,
-          color: today ? Pt.text : Pt.subtext,
+          color: today ? context.pt.text : context.pt.subtext,
         ),
       ),
     ],
@@ -129,7 +129,8 @@ class _DayBar extends StatelessWidget {
 }
 
 class _RingPainter extends CustomPainter {
-  _RingPainter(this.ratio, this.done);
+  _RingPainter(this.ratio, this.done, this.colors);
+  final PtColors colors;
   final double ratio;
   final bool done;
 
@@ -141,18 +142,18 @@ class _RingPainter extends CustomPainter {
     final base = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = w
-      ..color = Pt.surface1;
+      ..color = colors.surface1;
     canvas.drawArc(r, 0, 2 * pi, false, base);
     final fill = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = w
       ..strokeCap = StrokeCap.round
-      ..color = done ? Pt.green : Pt.flamingo;
+      ..color = done ? colors.green : colors.flamingo;
     canvas.drawArc(r, -pi / 2, 2 * pi * ratio.clamp(0.0, 1.0), false, fill);
   }
 
   @override
-  bool shouldRepaint(_RingPainter old) => old.ratio != ratio || old.done != done;
+  bool shouldRepaint(_RingPainter old) => old.ratio != ratio || old.done != done || old.colors != colors;
 }
 
 /// Mascota con un globo que cambia segun el avance del dia.
@@ -169,10 +170,10 @@ class MascotGreeting extends ConsumerWidget {
     final goalMin = settings.goalMinutes;
     final min = (activity[dayKey(DateTime.now())] ?? 0) ~/ 60;
     final (pose, text) = min >= goalMin
-        ? (MascotPose.celebrando, '¡Meta cumplida! Hoy lo diste todo')
+        ? (MascotPose.celebrando, context.l10n.mascotGoalDone)
         : min == 0
-            ? (MascotPose.kimono, '¡Hola! Empecemos con unos minutos de japonés')
-            : (MascotPose.animando, 'Vas muy bien, te faltan ${goalMin - min} min');
+            ? (MascotPose.kimono, context.l10n.mascotHello)
+            : (MascotPose.animando, context.l10n.mascotKeepGoing(goalMin - min));
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [

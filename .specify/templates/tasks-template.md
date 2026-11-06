@@ -156,7 +156,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
-- [ ] TXXX Verify slab and extended (foldable) layouts, light and dark themes, and English, Spanish and Japanese text
+- [ ] TXXX Verify slab and extended (foldable) layouts, light and dark themes, and English and Spanish text
 - [ ] TXXX Run `flutter analyze` and remove any temporary test code
 - [ ] TXXX Run quickstart.md validation
 

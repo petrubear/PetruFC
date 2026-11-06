@@ -6,6 +6,8 @@ App Flutter para Android para estudiar japonés con flashcards. Incluye **Hiraga
 
 ## Funciones
 
+La app sigue el modo claro u oscuro del teléfono y su idioma (inglés o español, inglés por defecto). Los significados del vocabulario también aparecen en el idioma elegido.
+
 Cada módulo (Hiragana y Katakana) ofrece las mismas funciones:
 
 - **Aprender**: cada carácter en el orden de la Referencia, con guía gris, trazos numerados y animación del orden de trazos; dibujas encima con el dedo, con Anterior, Siguiente y Borrar. Recuerda dónde te quedaste. Datos de trazos: [KanjiVG](http://kanjivg.tagaini.net) (CC BY-SA 3.0).
@@ -51,6 +53,7 @@ Las capturas salen de los mockups de diseño (tema PetruTheme Dark) y muestran H
 - [Riverpod](https://riverpod.dev) 2.x (estado), [go_router](https://pub.dev/packages/go_router) (rutas)
 - [Drift](https://drift.simonbinder.eu) + SQLite, con los datos sembrados desde código Dart
 - `flutter_tts` para la voz japonesa (requiere la voz `ja-JP` de Google instalada en el teléfono)
+- `flutter_localizations` e `intl` (textos en `lib/l10n/*.arb`, `flutter gen-l10n`)
 - Fuentes empaquetadas: Zen Maru Gothic y Shippori Mincho
 
 ## Estructura

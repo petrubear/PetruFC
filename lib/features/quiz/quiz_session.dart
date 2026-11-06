@@ -4,6 +4,7 @@ import '../../core/data/app_settings.dart';
 import '../../core/data/providers.dart';
 import '../../core/feedback/feedback.dart';
 import 'quiz_engine.dart';
+import '../../core/l10n/language.dart';
 
 typedef QuizArgs = (String moduleId, QuizMode mode, String? groupId, bool multi);
 
@@ -38,6 +39,8 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
   @override
   Future<QuizState> build(QuizArgs arg) async {
     final (moduleId, mode, groupId, multi) = arg;
+    // Si el telefono cambia de idioma la ronda se reinicia con los textos nuevos.
+    final lang = ref.watch(appLanguageProvider);
     final repo = ref.read(repoProvider);
     final Set<String> ids;
     if (mode.kind == 'kana') {
@@ -47,7 +50,7 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
     } else {
       ids = (await repo.groups(moduleId, 'word')).map((g) => g.id).toSet();
     }
-    _engine = QuizEngine(await repo.items(moduleId, ids), mode, multi: multi);
+    _engine = QuizEngine(await repo.items(moduleId, ids), mode, lang, multi: multi);
     final size = (await ref.read(settingsProvider.future)).sessionSize;
     return QuizState(question: _engine.next(), size: size);
   }

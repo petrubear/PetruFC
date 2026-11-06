@@ -7,6 +7,8 @@ import '../../app/theme.dart';
 import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/widgets/mastery.dart';
+import '../../core/l10n/group_names.dart';
+import '../../core/l10n/language.dart';
 
 /// (moduleId, kind: 'kana' | 'word', groupId solo para 'word')
 typedef GameArgs = (String moduleId, String kind, String? groupId);
@@ -52,18 +54,18 @@ List<Item> pickPriority(
   return out..shuffle(r);
 }
 
-/// "Hiragana · Básicos + Dakuten" o "Katakana · Colores": lo que se esta practicando.
-final gameScopeLabelProvider =
-    FutureProvider.autoDispose.family<String, GameArgs>((ref, a) async {
+/// Lo que se esta practicando: el modulo y los grupos (se muestra como "Hiragana · Basic + Dakuten").
+final gameScopeProvider =
+    FutureProvider.autoDispose.family<(String, List<ItemGroup>), GameArgs>((ref, a) async {
   final modules = await ref.watch(modulesProvider.future);
   final name = modules.firstWhere((m) => m.id == a.$1).name;
   if (a.$2 == 'kana') {
     final active = await ref.watch(activeGroupsProvider(a.$1).future);
     final groups = await ref.watch(groupsProvider((a.$1, 'kana')).future);
-    return '$name · ${groups.where((g) => active.contains(g.id)).map((g) => g.name).join(' + ')}';
+    return (name, groups.where((g) => active.contains(g.id)).toList());
   }
   final groups = await ref.watch(groupsProvider((a.$1, 'word')).future);
-  return '$name · ${groups.firstWhere((g) => g.id == a.$3).name}';
+  return (name, [groups.firstWhere((g) => g.id == a.$3)]);
 });
 
 class ScopeChip extends ConsumerWidget {
@@ -72,18 +74,21 @@ class ScopeChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final label = ref.watch(gameScopeLabelProvider(args)).valueOrNull ?? '';
+    final scope = ref.watch(gameScopeProvider(args)).valueOrNull;
+    final label = scope == null
+        ? ''
+        : '${scope.$1} · ${scope.$2.map((g) => groupName(context.l10n, g)).join(' + ')}';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: Pt.surface0,
+        color: context.pt.surface0,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Pt.surface1),
+        border: Border.all(color: context.pt.surface1),
       ),
       child: Text(label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 13, color: Pt.subtext, fontWeight: FontWeight.w500)),
+          style: TextStyle(fontSize: 13, color: context.pt.subtext, fontWeight: FontWeight.w500)),
     );
   }
 }

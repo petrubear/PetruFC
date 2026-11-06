@@ -7,6 +7,7 @@ import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'home_screen.dart';
+import '../../core/l10n/language.dart';
 
 /// Rotulo japones, kana de ejemplo y glifo de vocabulario de cada modulo kana.
 const _scriptLabels = {
@@ -40,7 +41,7 @@ class ModuleMenuScreen extends ConsumerWidget {
             children: [
               RoundIconButton(
                   icon: Icons.arrow_back_ios_new_rounded,
-                  label: 'Volver',
+                  label: context.l10n.back,
                   onTap: () => context.pop()),
               const SizedBox(height: 24),
               Expanded(child: ModuleMenuBody(moduleId: moduleId, expanded: false)),
@@ -75,17 +76,17 @@ class ModuleMenuBody extends ConsumerWidget {
     if (module == null) return const SizedBox();
     final (eyebrow, kanaGlyph, wordGlyph) = scriptLabel(moduleId);
     final entries = [
-      MenuEntry('Referencia', 'Tabla de caracteres', Pt.yellow,
+      MenuEntry(context.l10n.menuReference, context.l10n.menuReferenceSub, context.pt.yellow,
           '/m/$moduleId/reference', icon: Icons.grid_view_rounded),
-      MenuEntry('Aprender', 'Trazo paso a paso', Pt.red, '/m/$moduleId/learn',
+      MenuEntry(context.l10n.menuLearn, context.l10n.menuLearnSub, context.pt.red, '/m/$moduleId/learn',
           icon: Icons.gesture_rounded),
-      MenuEntry('Práctica', 'Dibuja con el dedo', Pt.pink, '/m/$moduleId/practice',
+      MenuEntry(context.l10n.menuPractice, context.l10n.menuPracticeSub, context.pt.pink, '/m/$moduleId/practice',
           icon: Icons.edit_rounded),
-      MenuEntry('Flashcards', 'Reconoce cada carácter', Pt.flamingo,
+      MenuEntry(context.l10n.menuFlashcards, context.l10n.menuFlashcardsSub, context.pt.flamingo,
           '/m/$moduleId/flashcards', glyph: kanaGlyph),
-      MenuEntry('Vocabulario', 'Palabras por tema', Pt.teal,
+      MenuEntry(context.l10n.menuVocabulary, context.l10n.menuVocabularySub, context.pt.teal,
           '/m/$moduleId/vocabulary', glyph: wordGlyph),
-      MenuEntry('Juegos', 'Memorama y más', Pt.green,
+      MenuEntry(context.l10n.menuGames, context.l10n.menuGamesSub, context.pt.green,
           '/m/$moduleId/games', icon: Icons.sports_esports_rounded),
     ];
     final header = Row(
@@ -96,8 +97,8 @@ class ModuleMenuBody extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(eyebrow,
-                style: const TextStyle(
-                    color: Pt.flamingo,
+                style: TextStyle(
+                    color: context.pt.flamingo,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 2)),
@@ -112,7 +113,7 @@ class ModuleMenuBody extends ConsumerWidget {
                 fontWeight: FontWeight.w700,
                 fontSize: expanded ? 120 : 84,
                 height: 0.9,
-                color: Pt.flamingo)),
+                color: context.pt.flamingo)),
       ],
     );
     List<Widget> tilesFor(double? boxSize) =>
@@ -165,10 +166,10 @@ class MenuEntryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final box = boxSize ?? (expanded ? 72.0 : 64.0);
     return Material(
-      color: Pt.surface0,
+      color: context.pt.surface0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(expanded ? 32 : 28),
-        side: const BorderSide(color: Pt.surface1),
+        side: BorderSide(color: context.pt.surface1),
       ),
       child: InkWell(
         customBorder: RoundedRectangleBorder(
@@ -191,8 +192,8 @@ class MenuEntryTile extends StatelessWidget {
                             fontFamily: Pt.kana,
                             fontWeight: FontWeight.w700,
                             fontSize: box * 0.52,
-                            color: Pt.crust))
-                    : Icon(e.icon, color: Pt.crust, size: box * 0.5),
+                            color: context.pt.crust))
+                    : Icon(e.icon, color: context.pt.crust, size: box * 0.5),
               ),
               const SizedBox(width: 18),
               Expanded(
@@ -204,11 +205,11 @@ class MenuEntryTile extends StatelessWidget {
                             fontSize: expanded ? 26 : 21, fontWeight: FontWeight.w700)),
                     Text(e.subtitle,
                         style: TextStyle(
-                            fontSize: expanded ? 16 : 14, color: Pt.subtext)),
+                            fontSize: expanded ? 16 : 14, color: context.pt.subtext)),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: Pt.subtext),
+              Icon(Icons.chevron_right_rounded, color: context.pt.subtext),
             ],
           ),
         ),

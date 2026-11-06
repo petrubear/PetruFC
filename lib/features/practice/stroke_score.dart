@@ -92,7 +92,7 @@ Future<Uint8List> _refMask(String glyph) async {
           fontFamily: Pt.kana,
           fontWeight: FontWeight.w500,
           fontSize: 200,
-          color: Colors.black),
+          color: Colors.black), // mascara de puntuacion, no se muestra
     ),
     textDirection: TextDirection.ltr,
   )..layout();

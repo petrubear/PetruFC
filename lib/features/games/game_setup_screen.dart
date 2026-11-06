@@ -8,12 +8,8 @@ import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import '../quiz/mode_setup_screen.dart';
-
-const _titles = {
-  'memory': 'Memorama',
-  'build': 'Arma la palabra',
-  'wordsearch': 'Sopa de letras',
-};
+import '../../core/l10n/group_names.dart';
+import '../../core/l10n/language.dart';
 
 /// "¿Que quieres practicar?": caracteres (los sets activos del modulo) o una
 /// seccion de vocabulario. Se recuerda la ultima eleccion de cada modulo.
@@ -54,6 +50,13 @@ class _GameSetupState extends ConsumerState<GameSetupScreen> {
     ref.read(repoProvider).saveSetting(_groupKey, v);
   }
 
+  String _title(BuildContext context) => switch (widget.game) {
+        'memory' => context.l10n.memoryName,
+        'build' => context.l10n.buildName,
+        'wordsearch' => context.l10n.wordSearchName,
+        _ => '',
+      };
+
   @override
   Widget build(BuildContext context) {
     final expanded = isExpanded(context);
@@ -65,9 +68,9 @@ class _GameSetupState extends ConsumerState<GameSetupScreen> {
     Widget kindButton(String id, String label) => Expanded(
           child: PillButton(label,
               onTap: () => _setKind(id),
-              bg: kind == id ? Pt.flamingo : Pt.surface0,
-              fg: kind == id ? Pt.crust : Pt.text,
-              border: kind == id ? null : Pt.surface1),
+              bg: kind == id ? context.pt.flamingo : context.pt.surface0,
+              fg: kind == id ? context.pt.crust : context.pt.text,
+              border: kind == id ? null : context.pt.surface1),
         );
 
     void play() {
@@ -91,11 +94,11 @@ class _GameSetupState extends ConsumerState<GameSetupScreen> {
                 children: [
                   RoundIconButton(
                       icon: Icons.arrow_back_ios_new_rounded,
-                      label: 'Volver',
+                      label: context.l10n.back,
                       size: expanded ? 48 : 44,
                       onTap: () => context.pop()),
                   const SizedBox(height: 22),
-                  Text(_titles[widget.game] ?? '',
+                  Text(_title(context),
                       style: TextStyle(fontSize: expanded ? 38 : 32, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 20),
                   Expanded(
@@ -103,16 +106,16 @@ class _GameSetupState extends ConsumerState<GameSetupScreen> {
                       children: [
                         if (supportsKana) ...[
                           Row(children: [
-                            kindButton('kana', 'Caracteres'),
-                            const SizedBox(width: 12),
-                            kindButton('word', 'Vocabulario'),
+                            kindButton('kana', context.l10n.gameKindCharacters),
+                            SizedBox(width: 12),
+                            kindButton('word', context.l10n.gameKindVocabulary),
                           ]),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20),
                         ],
                         if (kind == 'kana')
                           SetList(widget.moduleId, showMultiSelect: false)
                         else ...[
-                          const SectionLabel('SECCIÓN'),
+                          SectionLabel(context.l10n.gameSection),
                           const SizedBox(height: 12),
                           for (final g in groups) ...[
                             _SectionTile(g, selected: g.id == group, onTap: () => _setGroup(g.id)),
@@ -125,7 +128,7 @@ class _GameSetupState extends ConsumerState<GameSetupScreen> {
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
-                    child: PillButton('Jugar', onTap: kind == 'word' && group == null ? null : play),
+                    child: PillButton(context.l10n.play, onTap: kind == 'word' && group == null ? null : play),
                   ),
                 ],
               ),
@@ -149,9 +152,9 @@ class _SectionTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           decoration: BoxDecoration(
-            color: selected ? Pt.surface1 : Pt.surface0,
+            color: selected ? context.pt.surface1 : context.pt.surface0,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: selected ? Pt.flamingo : Pt.surface1, width: selected ? 2 : 1),
+            border: Border.all(color: selected ? context.pt.flamingo : context.pt.surface1, width: selected ? 2 : 1),
           ),
           child: Row(
             children: [
@@ -159,13 +162,13 @@ class _SectionTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(g.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                    Text(g.subtitle, style: const TextStyle(fontSize: 13, color: Pt.subtext)),
+                    Text(groupName(context.l10n, g), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                    Text(groupSubtitle(context.l10n, g), style: TextStyle(fontSize: 13, color: context.pt.subtext)),
                   ],
                 ),
               ),
               Icon(selected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                  color: selected ? Pt.flamingo : Pt.subtext),
+                  color: selected ? context.pt.flamingo : context.pt.subtext),
             ],
           ),
         ),

@@ -9,6 +9,7 @@ import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'daily_goal_card.dart';
 import 'module_menu.dart';
+import '../../core/l10n/language.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -36,22 +37,22 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Expanded(child: _titles()),
+      Expanded(child: _titles(context)),
       RoundIconButton(
         icon: Icons.settings_rounded,
-        label: 'Configuración',
+        label: context.l10n.settings,
         onTap: () => context.push('/settings'),
       ),
     ],
   );
 
-  Widget _titles() => Column(
+  Widget _titles(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Text(
+      Text(
         '日本語 · NIHONGO',
         style: TextStyle(
-          color: Pt.flamingo,
+          color: context.pt.flamingo,
           fontSize: 14,
           fontWeight: FontWeight.w500,
           letterSpacing: 2,
@@ -63,7 +64,7 @@ class _Header extends StatelessWidget {
         style: TextStyle(fontSize: title, fontWeight: FontWeight.w700, height: 1.1),
       ),
       const SizedBox(height: 6),
-      const Text('Estudia japonés a tu ritmo', style: TextStyle(fontSize: 16, color: Pt.subtext)),
+      Text(context.l10n.homeTagline, style: TextStyle(fontSize: 16, color: context.pt.subtext)),
     ],
   );
 }
@@ -85,10 +86,10 @@ class _Narrow extends StatelessWidget {
         const SizedBox(height: 8),
         const DailyGoalCard(),
         const SizedBox(height: 20),
-        for (final m in active) ...[_Hero(m), const SizedBox(height: 16)],
+        for (final m in active) ...[_Hero(m), SizedBox(height: 16)],
         if (soon.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          const SectionLabel('PRÓXIMAMENTE'),
+          SizedBox(height: 12),
+          SectionLabel(context.l10n.comingSoon),
           const SizedBox(height: 14),
           GridView.count(
             crossAxisCount: 2,
@@ -111,11 +112,11 @@ class _Hero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Pt.surface0,
+        color: context.pt.surface0,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32),
-          side: const BorderSide(color: Pt.surface1),
+          side: BorderSide(color: context.pt.surface1),
         ),
         child: InkWell(
           onTap: () => context.push('/m/${m.id}'),
@@ -127,12 +128,12 @@ class _Hero extends StatelessWidget {
                   right: -6,
                   top: -18,
                   child: Text(m.glyph,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontFamily: Pt.kana,
                           fontWeight: FontWeight.w700,
                           fontSize: 210,
                           height: 1,
-                          color: Pt.flamingo)),
+                          color: context.pt.flamingo)),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(28),
@@ -143,28 +144,28 @@ class _Hero extends StatelessWidget {
                       Text(m.name,
                           style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700)),
                       const SizedBox(height: 6),
-                      const SizedBox(
+                      SizedBox(
                         width: 200,
-                        child: Text('Flashcards, práctica y vocabulario',
-                            style: TextStyle(fontSize: 15, color: Pt.subtext)),
+                        child: Text(context.l10n.moduleBlurb,
+                            style: TextStyle(fontSize: 15, color: context.pt.subtext)),
                       ),
                       const SizedBox(height: 14),
                       Container(
                         padding:
                             const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                         decoration: BoxDecoration(
-                            color: Pt.flamingo,
+                            color: context.pt.flamingo,
                             borderRadius: BorderRadius.circular(999)),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('Entrar',
+                            Text(context.l10n.open,
                                 style: TextStyle(
-                                    color: Pt.crust,
+                                    color: context.pt.crust,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 15)),
                             SizedBox(width: 8),
-                            Icon(Icons.arrow_forward_rounded, color: Pt.crust, size: 18),
+                            Icon(Icons.arrow_forward_rounded, color: context.pt.crust, size: 18),
                           ],
                         ),
                       ),
@@ -188,14 +189,14 @@ class _Soon extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-              color: Pt.surface0, borderRadius: BorderRadius.circular(24)),
+              color: context.pt.surface0, borderRadius: BorderRadius.circular(24)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(m.glyph,
-                  style: const TextStyle(
-                      fontFamily: Pt.kana, fontSize: 40, height: 1.1, color: Pt.pink)),
+                  style: TextStyle(
+                      fontFamily: Pt.kana, fontSize: 40, height: 1.1, color: context.pt.pink)),
               Text(m.name,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
             ],
@@ -216,7 +217,7 @@ class _Wide extends ConsumerWidget {
       children: [
         Container(
           width: 312,
-          color: Pt.mantle,
+          color: context.pt.mantle,
           padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
           child: ListView(
             children: [
@@ -230,11 +231,11 @@ class _Wide extends ConsumerWidget {
                 _SideTile(m,
                     selected: m.id == selected,
                     onTap: () => ref.read(selectedModuleProvider.notifier).state = m.id),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
               ],
               if (soon.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                const SectionLabel('PRÓXIMAMENTE'),
+                SizedBox(height: 10),
+                SectionLabel(context.l10n.comingSoon),
                 const SizedBox(height: 12),
                 for (final m in soon) ...[
                   Opacity(opacity: 0.7, child: _SideTile(m, selected: false, onTap: null)),
@@ -258,11 +259,11 @@ class _SideTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Pt.surface0,
+        color: context.pt.surface0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(
-              color: selected ? Pt.flamingo : Colors.transparent, width: 2),
+              color: selected ? context.pt.flamingo : Colors.transparent, width: 2),
         ),
         child: InkWell(
           customBorder:
@@ -278,7 +279,7 @@ class _SideTile extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         fontSize: 44,
                         height: 1,
-                        color: m.enabled ? Pt.flamingo : Pt.pink)),
+                        color: m.enabled ? context.pt.flamingo : context.pt.pink)),
                 const SizedBox(width: 14),
                 Text(m.name,
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),

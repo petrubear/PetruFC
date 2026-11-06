@@ -7,6 +7,8 @@ import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'quiz_engine.dart';
+import '../../core/l10n/group_names.dart';
+import '../../core/l10n/language.dart';
 
 class ModeSetupScreen extends StatelessWidget {
   const ModeSetupScreen(
@@ -20,10 +22,10 @@ class ModeSetupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final expanded = isExpanded(context);
     final modes = QuizMode.values.where((m) => m.kind == kind).toList();
-    final title = _isKana ? 'Flashcards' : 'Práctica';
+    final title = _isKana ? context.l10n.setupFlashcards : context.l10n.setupPractice;
     final back = RoundIconButton(
         icon: Icons.arrow_back_ios_new_rounded,
-        label: 'Volver',
+        label: context.l10n.back,
         size: expanded ? 48 : 44,
         onTap: () => context.pop());
     final heading = Text(title,
@@ -37,20 +39,20 @@ class ModeSetupScreen extends StatelessWidget {
             child: Column(
               children: [
                 Row(children: [back, const SizedBox(width: 18), heading]),
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
                 Expanded(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (_isKana) ...[
                         Expanded(child: SingleChildScrollView(child: SetList(moduleId))),
-                        const SizedBox(width: 32),
+                        SizedBox(width: 32),
                       ],
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SectionLabel('MODO'),
+                            SectionLabel(context.l10n.modeSectionLabel),
                             const SizedBox(height: 12),
                             for (var i = 0; i < modes.length; i++) ...[
                               Expanded(
@@ -80,14 +82,14 @@ class ModeSetupScreen extends StatelessWidget {
               back,
               const SizedBox(height: 22),
               heading,
-              const SizedBox(height: 22),
-              if (_isKana) ...[SetList(moduleId), const SizedBox(height: 22)],
-              const SectionLabel('MODO'),
+              SizedBox(height: 22),
+              if (_isKana) ...[SetList(moduleId), SizedBox(height: 22)],
+              SectionLabel(context.l10n.modeSectionLabel),
               const SizedBox(height: 12),
               for (var i = 0; i < modes.length; i++) ...[
                 _ModeTile(moduleId, modes[i],
                     groupId: groupId, primary: i == 0, tall: false),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
               ],
             ],
           ),
@@ -109,23 +111,23 @@ class SetList extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionLabel('QUÉ QUIERES PRACTICAR'),
+        SectionLabel(context.l10n.setupWhatToPractice),
         const SizedBox(height: 12),
         for (final g in groups) ...[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
             decoration: BoxDecoration(
-                color: Pt.surface0, borderRadius: BorderRadius.circular(22)),
+                color: context.pt.surface0, borderRadius: BorderRadius.circular(22)),
             child: Row(
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(g.name,
+                      Text(groupName(context.l10n, g),
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                      Text(g.subtitle,
-                          style: const TextStyle(fontSize: 13, color: Pt.subtext)),
+                      Text(groupSubtitle(context.l10n, g),
+                          style: TextStyle(fontSize: 13, color: context.pt.subtext)),
                     ],
                   ),
                 ),
@@ -143,17 +145,17 @@ class SetList extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           decoration: BoxDecoration(
-              color: Pt.surface0, borderRadius: BorderRadius.circular(22)),
+              color: context.pt.surface0, borderRadius: BorderRadius.circular(22)),
           child: Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Selección múltiple',
+                    Text(context.l10n.multiSelect,
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                    Text('9 caracteres en 3 bloques de 3',
-                        style: TextStyle(fontSize: 13, color: Pt.subtext)),
+                    Text(context.l10n.multiSelectSub,
+                        style: TextStyle(fontSize: 13, color: context.pt.subtext)),
                   ],
                 ),
               ),
@@ -181,21 +183,21 @@ class _ModeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fg = primary ? Pt.crust : Pt.text;
-    final badge = Text(mode.badge(moduleId),
+    final fg = primary ? context.pt.crust : context.pt.text;
+    final badge = Text(mode.badge(moduleId, context.lang),
         style: TextStyle(
             fontFamily: Pt.kana,
             fontWeight: FontWeight.w700,
             fontSize: tall ? 56 : 26,
-            color: primary ? Pt.crust : Pt.flamingo));
-    final label = Text(mode.label(moduleId),
+            color: primary ? context.pt.crust : context.pt.flamingo));
+    final label = Text(mode.label(context.l10n, moduleId),
         style: TextStyle(
             fontSize: tall ? 24 : 19, fontWeight: FontWeight.w700, color: fg));
     return Material(
-      color: primary ? Pt.flamingo : Pt.surface0,
+      color: primary ? context.pt.flamingo : context.pt.surface0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(tall ? 32 : 26),
-        side: primary ? BorderSide.none : const BorderSide(color: Pt.surface1),
+        side: primary ? BorderSide.none : BorderSide(color: context.pt.surface1),
       ),
       child: InkWell(
         customBorder:

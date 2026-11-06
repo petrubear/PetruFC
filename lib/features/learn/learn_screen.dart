@@ -12,6 +12,7 @@ import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import '../practice/stroke_board.dart';
 import 'kana_strokes.dart';
+import '../../core/l10n/language.dart';
 
 class _LearnData {
   const _LearnData(this.items, this.start);
@@ -31,8 +32,6 @@ final _learnDataProvider = FutureProvider.autoDispose.family<_LearnData, String>
   final saved = int.tryParse((await repo.allSettings())['learn_index:$module'] ?? '') ?? 0;
   return _LearnData(items, saved.clamp(0, items.length - 1));
 });
-
-const _groupNames = {'basic': 'Básicos', 'dakuten': 'Dakuten y handakuten', 'combined': 'Combinados'};
 
 class LearnScreen extends ConsumerStatefulWidget {
   const LearnScreen({super.key, required this.moduleId});
@@ -101,23 +100,29 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
     if (first) WidgetsBinding.instance.addPostFrameCallback((_) => _play());
 
     final expanded = isExpanded(context);
-    final group = _groupNames[item.groupId.split('_').last] ?? '';
+    final l = context.l10n;
+    final group = switch (item.groupId.split('_').last) {
+      'basic' => l.groupBasic,
+      'dakuten' => l.groupDakuten,
+      'combined' => l.groupCombined,
+      _ => '',
+    };
     final speak = item.audioText ?? item.japanese;
 
     final top = Row(
       children: [
         RoundIconButton(
           icon: Icons.close_rounded,
-          label: 'Cerrar',
+          label: context.l10n.close,
           size: expanded ? 48 : 44,
           onTap: () => context.pop(),
         ),
         Expanded(
           child: Text(
-            'APRENDER · ${i + 1}/${d.items.length}',
+            context.l10n.learnTag(i + 1, d.items.length),
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Pt.subtext,
+            style: TextStyle(
+              color: context.pt.subtext,
               fontSize: 13,
               fontWeight: FontWeight.w500,
               letterSpacing: 1.4,
@@ -132,14 +137,14 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
       children: [
         Column(
           children: [
-            Text(group, style: const TextStyle(fontSize: 14, color: Pt.subtext)),
+            Text(group, style: TextStyle(fontSize: 14, color: context.pt.subtext)),
             Text(
               item.reading,
               style: TextStyle(
                 fontSize: expanded ? 84 : 72,
                 fontWeight: FontWeight.w700,
                 height: 1.05,
-                color: Pt.flamingo,
+                color: context.pt.flamingo,
               ),
             ),
           ],
@@ -157,6 +162,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
               strokes: _strokes,
               underlay: GuidePainter(
                 parts,
+                context.pt,
                 showGuide: _guide,
                 progress: _anim.isAnimating ? _anim.value * _strokeCount : null,
               ),
@@ -171,17 +177,17 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
               children: [
                 RoundIconButton(
                   icon: _guide ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                  label: _guide ? 'Ocultar guía' : 'Mostrar guía',
+                  label: _guide ? context.l10n.hideGuide : context.l10n.showGuide,
                   size: 44,
                   onTap: () => setState(() => _guide = !_guide),
                 ),
                 const SizedBox(width: 8),
                 RoundIconButton(
                   icon: Icons.play_arrow_rounded,
-                  label: 'Ver trazos',
+                  label: context.l10n.viewStrokes,
                   size: 44,
-                  bg: Pt.flamingo,
-                  fg: Pt.crust,
+                  bg: context.pt.flamingo,
+                  fg: context.pt.crust,
                   onTap: _play,
                 ),
               ],
@@ -194,26 +200,26 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
       children: [
         Expanded(
           child: PillButton(
-            'Anterior',
+            context.l10n.previous,
             onTap: i == 0 ? null : () => _go(i - 1, d),
-            bg: Pt.surface0,
-            fg: Pt.text,
-            border: Pt.surface1,
+            bg: context.pt.surface0,
+            fg: context.pt.text,
+            border: context.pt.surface1,
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: PillButton(
-            'Borrar',
+            context.l10n.erase,
             onTap: () => setState(() => _strokes = []),
-            bg: Pt.surface0,
-            fg: Pt.text,
-            border: Pt.surface1,
+            bg: context.pt.surface0,
+            fg: context.pt.text,
+            border: context.pt.surface1,
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: PillButton('Siguiente', onTap: i + 1 >= d.items.length ? null : () => _go(i + 1, d)),
+          child: PillButton(context.l10n.next, onTap: i + 1 >= d.items.length ? null : () => _go(i + 1, d)),
         ),
       ],
     );

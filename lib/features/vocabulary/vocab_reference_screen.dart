@@ -10,6 +10,8 @@ import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/mastery.dart';
 import '../../core/widgets/ui_kit.dart';
+import '../../core/l10n/group_names.dart';
+import '../../core/l10n/language.dart';
 
 final _wordsProvider = FutureProvider.family<List<Item>, (String, String)>(
     (ref, k) => ref.read(repoProvider).items(k.$1, [k.$2]));
@@ -23,10 +25,11 @@ class VocabReferenceScreen extends ConsumerWidget {
     final expanded = isExpanded(context);
     final words = ref.watch(_wordsProvider((moduleId, groupId)));
     final groups = ref.watch(groupsProvider((moduleId, 'word'))).valueOrNull ?? [];
-    final name = groups.where((g) => g.id == groupId).firstOrNull?.name ?? '';
+    final group = groups.where((g) => g.id == groupId).firstOrNull;
+    final name = group == null ? '' : groupName(context.l10n, group);
     final back = RoundIconButton(
         icon: Icons.arrow_back_ios_new_rounded,
-        label: 'Volver',
+        label: context.l10n.back,
         size: expanded ? 48 : 44,
         onTap: () => context.pop());
     return Scaffold(
@@ -41,11 +44,11 @@ class VocabReferenceScreen extends ConsumerWidget {
             final heading = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Referencia · $name',
+                Text(context.l10n.vocabReferenceHeading(name),
                     style: TextStyle(
                         fontSize: expanded ? 32 : 26, fontWeight: FontWeight.w700)),
-                Text('${list.length} palabras · $mastered dominadas',
-                    style: const TextStyle(fontSize: 14, color: Pt.subtext)),
+                Text(context.l10n.vocabCounts(list.length, mastered),
+                    style: TextStyle(fontSize: 14, color: context.pt.subtext)),
               ],
             );
             final top = Row(children: [
@@ -100,10 +103,10 @@ class _WordRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final m = Mastery.of(ref.watch(statsProvider).valueOrNull?[item.id]);
     return Material(
-        color: m.bg,
+        color: m.bgOf(context.pt),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(22),
-          side: BorderSide(color: m.border),
+          side: BorderSide(color: m.borderOf(context.pt)),
         ),
         child: InkWell(
           customBorder:
@@ -112,7 +115,8 @@ class _WordRow extends ConsumerWidget {
             final error =
                 await ref.read(ttsProvider).speak(item.audioText ?? item.japanese);
             if (error != null && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(error.message(context.l10n))));
             }
           },
           child: Padding(
@@ -134,10 +138,10 @@ class _WordRow extends ConsumerWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   flex: 4,
-                  child: Text(item.meaningEs ?? '',
+                  child: Text(item.meaning(ref.watch(appLanguageProvider)) ?? '',
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                 ),
-                const Icon(Icons.volume_up_rounded, color: Pt.subtext, size: 22),
+                Icon(Icons.volume_up_rounded, color: context.pt.subtext, size: 22),
               ],
             ),
           ),

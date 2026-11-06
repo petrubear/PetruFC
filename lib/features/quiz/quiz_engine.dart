@@ -1,55 +1,66 @@
 import 'dart:math';
 
 import '../../core/data/database.dart';
+import '../../core/l10n/language.dart';
 
-// (nombre del sistema, kana de ejemplo, palabra de ejemplo, su significado)
+// (nombre del sistema, kana de ejemplo, palabra de ejemplo, significado en espanol e ingles)
 const _scripts = {
-  'hiragana': ('Hiragana', 'あ', 'はな', 'Nariz'),
-  'katakana': ('Katakana', 'ア', 'コーヒー', 'Café'),
+  'hiragana': ('Hiragana', 'あ', 'はな', 'Nariz', 'Nose'),
+  'katakana': ('Katakana', 'ア', 'コーヒー', 'Café', 'Coffee'),
 };
 
 enum QuizMode {
-  kanaToRomaji('Hiragana → Romaji', 'kana', true),
-  romajiToKana('Romaji → Hiragana', 'kana', false),
-  scriptSwap('Hiragana → Katakana', 'kana', true),
-  wordToMeaning('Hiragana → Español', 'word', true),
-  meaningToWord('Español → Hiragana', 'word', false);
+  kanaToRomaji('kana', true),
+  romajiToKana('kana', false),
+  scriptSwap('kana', true),
+  wordToMeaning('word', true),
+  meaningToWord('word', false);
 
-  const QuizMode(this._template, this.kind, this.promptIsJapanese);
-  final String _template, kind;
+  const QuizMode(this.kind, this.promptIsJapanese);
+  final String kind;
   final bool promptIsJapanese;
 
-  (String, String, String, String) _script(String moduleId) =>
+  (String, String, String, String, String) _script(String moduleId) =>
       _scripts[moduleId] ?? _scripts['hiragana']!;
 
-  String label(String moduleId) => this == scriptSwap
-      ? (moduleId == 'katakana' ? 'Katakana → Hiragana' : 'Hiragana → Katakana')
-      : _template.replaceAll('Hiragana', _script(moduleId).$1);
+  String label(AppLocalizations l, String moduleId) {
+    final script = _script(moduleId).$1;
+    return switch (this) {
+      kanaToRomaji => l.modeKanaToRomaji(script),
+      romajiToKana => l.modeRomajiToKana(script),
+      scriptSwap => moduleId == 'katakana'
+          ? l.modeScriptSwap('Katakana', 'Hiragana')
+          : l.modeScriptSwap('Hiragana', 'Katakana'),
+      wordToMeaning => l.modeWordToMeaning(script),
+      meaningToWord => l.modeMeaningToWord(script),
+    };
+  }
 
-  String badge(String moduleId) {
+  String badge(String moduleId, AppLanguage lang) {
     final s = _script(moduleId);
+    final meaning = lang == AppLanguage.en ? s.$5 : s.$4;
     return switch (this) {
       kanaToRomaji => '${s.$2}→a',
       romajiToKana => 'a→${s.$2}',
       scriptSwap => moduleId == 'katakana' ? 'ア→あ' : 'あ→ア',
-      wordToMeaning => '${s.$3}→${s.$4}',
-      meaningToWord => '${s.$4}→${s.$3}',
+      wordToMeaning => '${s.$3}→$meaning',
+      meaningToWord => '$meaning→${s.$3}',
     };
   }
 
   bool get answersAreJapanese => this == scriptSwap || !promptIsJapanese;
 
-  String prompt(Item i) => switch (this) {
+  String prompt(Item i, AppLanguage lang) => switch (this) {
         kanaToRomaji || scriptSwap || wordToMeaning => i.japanese,
         romajiToKana => i.reading,
-        meaningToWord => i.meaningEs!,
+        meaningToWord => i.meaning(lang)!,
       };
 
-  String answer(Item i) => switch (this) {
+  String answer(Item i, AppLanguage lang) => switch (this) {
         kanaToRomaji => i.reading,
         romajiToKana || meaningToWord => i.japanese,
         scriptSwap => _swapScript(i),
-        wordToMeaning => i.meaningEs!,
+        wordToMeaning => i.meaning(lang)!,
       };
 }
 
@@ -70,11 +81,15 @@ class QuizQuestion {
 }
 
 class QuizEngine {
-  QuizEngine(this.pool, this.mode, {this.multi = false, Random? rng})
+  QuizEngine(this.pool, this.mode, this.lang, {this.multi = false, Random? rng})
       : _rng = rng ?? Random();
   final List<Item> pool;
   final QuizMode mode;
+  final AppLanguage lang;
   final bool multi;
+
+  String _answer(Item i) => mode.answer(i, lang);
+  String _prompt(Item i) => mode.prompt(i, lang);
   final Random _rng;
   int? _lastId;
 
@@ -85,9 +100,9 @@ class QuizEngine {
 
   QuizQuestion _nextMulti() {
     final picks = [for (var i = 0; i < 9; i++) pool[_rng.nextInt(pool.length)]];
-    final answers = picks.map(mode.answer).toList();
+    final answers = picks.map(_answer).toList();
     final correct = _blocks(answers);
-    final choices = pool.map(mode.answer).toSet().toList();
+    final choices = pool.map(_answer).toSet().toList();
     final options = <String>{correct};
     for (var tries = 0; options.length < 4 && tries < 50; tries++) {
       final alt = [...answers];
@@ -97,7 +112,7 @@ class QuizEngine {
       }
       options.add(_blocks(alt));
     }
-    return QuizQuestion(picks, _blocks(picks.map(mode.prompt).toList()),
+    return QuizQuestion(picks, _blocks(picks.map(_prompt).toList()),
         options.toList()..shuffle(_rng), correct);
   }
 
@@ -108,10 +123,10 @@ class QuizEngine {
       target = pool[_rng.nextInt(pool.length)];
     } while (pool.length > 1 && target.id == _lastId);
     _lastId = target.id;
-    final correct = mode.answer(target);
-    final others = pool.map(mode.answer).where((a) => a != correct).toSet().toList()
+    final correct = _answer(target);
+    final others = pool.map(_answer).where((a) => a != correct).toSet().toList()
       ..shuffle(_rng);
     final options = [correct, ...others.take(3)]..shuffle(_rng);
-    return QuizQuestion([target], mode.prompt(target), options, correct);
+    return QuizQuestion([target], _prompt(target), options, correct);
   }
 }

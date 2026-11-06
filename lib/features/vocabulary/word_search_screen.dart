@@ -13,6 +13,7 @@ import '../../core/data/providers.dart';
 import '../../core/feedback/feedback.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
+import '../../core/l10n/language.dart';
 
 const _n = 8;
 const _wordsPerGame = 8;
@@ -160,16 +161,16 @@ class WordSearchScreen extends ConsumerWidget {
                 children: [
                   RoundIconButton(
                     icon: Icons.close_rounded,
-                    label: 'Cerrar',
+                    label: context.l10n.close,
                     size: expanded ? 48 : 44,
                     onTap: () => context.pop(),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'SOPA DE LETRAS',
+                      context.l10n.wordSearchTag,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Pt.subtext,
+                        color: context.pt.subtext,
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 1.4,
@@ -178,7 +179,7 @@ class WordSearchScreen extends ConsumerWidget {
                   ),
                   RoundIconButton(
                     icon: Icons.refresh_rounded,
-                    label: 'Nueva sopa',
+                    label: context.l10n.newWordSearch,
                     size: expanded ? 48 : 44,
                     onTap: notifier.newGame,
                   ),
@@ -254,9 +255,9 @@ class _Board extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Pt.surface0,
+                color: context.pt.surface0,
                 borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: Pt.surface1),
+                border: Border.all(color: context.pt.surface1),
               ),
               child: Column(
                 children: [
@@ -292,12 +293,12 @@ class _CellView extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: selected
-              ? Pt.flamingo.withValues(alpha: 0.35)
+              ? context.pt.flamingo.withValues(alpha: 0.35)
               : found
-                  ? Pt.greenTint
+                  ? context.pt.greenTint
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          border: selected ? Border.all(color: Pt.flamingo) : null,
+          border: selected ? Border.all(color: context.pt.flamingo) : null,
         ),
         child: FittedBox(
           fit: BoxFit.scaleDown,
@@ -306,7 +307,7 @@ class _CellView extends StatelessWidget {
                   fontFamily: Pt.kana,
                   fontWeight: FontWeight.w700,
                   fontSize: 26,
-                  color: found ? Pt.green : Pt.text)),
+                  color: found ? context.pt.green : context.pt.text)),
         ),
       );
 }
@@ -320,7 +321,7 @@ class _Clues extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SectionLabel('ENCUENTRA · ${s.found.length}/${s.words.length}'),
+          SectionLabel(context.l10n.findLabel(s.found.length, s.words.length)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 10,
@@ -332,10 +333,10 @@ class _Clues extends StatelessWidget {
           ),
           if (s.done) ...[
             const SizedBox(height: 24),
-            const Text('¡Las encontraste todas!',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Pt.green)),
+            Text(context.l10n.foundAll,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: context.pt.green)),
             const SizedBox(height: 12),
-            PillButton('Nueva sopa', onTap: notifier.newGame),
+            PillButton(context.l10n.newWordSearch, onTap: notifier.newGame),
           ],
         ],
       );
@@ -350,14 +351,14 @@ class _Clue extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: found ? Pt.greenTint : Pt.surface0,
+          color: found ? context.pt.greenTint : context.pt.surface0,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: found ? Pt.green : Pt.surface1),
+          border: Border.all(color: found ? context.pt.green : context.pt.surface1),
         ),
-        child: Text(found ? '${item.meaningEs} · ${item.japanese}' : item.meaningEs ?? '',
+        child: Text(found ? '${item.meaning(context.lang)} · ${item.japanese}' : item.meaning(context.lang) ?? '',
             style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: found ? Pt.green : Pt.text)),
+                color: found ? context.pt.green : context.pt.text)),
       );
 }

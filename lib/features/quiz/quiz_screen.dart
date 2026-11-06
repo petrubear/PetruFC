@@ -12,6 +12,7 @@ import '../../core/widgets/mascot.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'quiz_engine.dart';
 import 'quiz_session.dart';
+import '../../core/l10n/language.dart';
 
 enum _Opt { idle, good, bad, dim }
 
@@ -30,7 +31,7 @@ class QuizScreen extends ConsumerWidget {
       final m = next.valueOrNull?.mastered ?? const [];
       if (m.isNotEmpty && !identical(prev?.valueOrNull?.mastered, m)) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('¡${m.join(' ')} dominado!'), duration: const Duration(seconds: 2)));
+            SnackBar(content: Text(context.l10n.masteredToast(m.join(' '))), duration: const Duration(seconds: 2)));
       }
     });
     final celebrations = session.valueOrNull?.celebrations ?? 0;
@@ -95,17 +96,17 @@ class QuizScreen extends ConsumerWidget {
                     children: [
                       RoundIconButton(
                         icon: Icons.close_rounded,
-                        label: 'Cerrar',
+                        label: context.l10n.close,
                         size: expanded ? 48 : 44,
                         onTap: () => context.pop(),
                       ),
                       Expanded(
                         child: Text(
-                          mode.label(moduleId).toUpperCase(),
+                          mode.label(context.l10n, moduleId).toUpperCase(),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Pt.subtext,
+                          style: TextStyle(
+                            color: context.pt.subtext,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 1.2,
@@ -123,7 +124,7 @@ class QuizScreen extends ConsumerWidget {
                 opacity: s.answered ? 1 : 0,
                 child: IgnorePointer(
                   ignoring: !s.answered,
-                  child: PillButton(s.finished ? 'Ver resumen' : 'Siguiente', onTap: notifier.next),
+                  child: PillButton(s.finished ? context.l10n.viewSummary : context.l10n.next, onTap: notifier.next),
                 ),
               );
 
@@ -192,8 +193,8 @@ class QuizScreen extends ConsumerWidget {
               child: MascotPopup(
                 key: ValueKey(celebrations),
                 text: (session.valueOrNull?.mastered ?? const []).isNotEmpty
-                    ? '¡Dominado!'
-                    : '¡Combo x${session.valueOrNull?.combo ?? 0}!',
+                    ? context.l10n.masteredBang
+                    : context.l10n.comboBang(session.valueOrNull?.combo ?? 0),
                 pose: (session.valueOrNull?.mastered ?? const []).isNotEmpty
                     ? MascotPose.rockero
                     : MascotPose.ninja,
@@ -250,7 +251,7 @@ class _PromptCard extends StatelessWidget {
                           fontSize: size,
                           fontWeight: FontWeight.w700,
                           height: 1.1,
-                          color: japanese ? Pt.text : Pt.flamingo)),
+                          color: japanese ? context.pt.text : context.pt.flamingo)),
                 ),
               ),
             ),
@@ -279,9 +280,9 @@ class _OptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (bg, border, fg) = switch (state) {
-      _Opt.good => (Pt.greenTint, Pt.green, Pt.green),
-      _Opt.bad => (Pt.redTint, Pt.red, Pt.red),
-      _ => (Pt.surface0, Pt.surface1, Pt.text),
+      _Opt.good => (context.pt.greenTint, context.pt.green, context.pt.green),
+      _Opt.bad => (context.pt.redTint, context.pt.red, context.pt.red),
+      _ => (context.pt.surface0, context.pt.surface1, context.pt.text),
     };
     final mark = state == _Opt.good ? '✓ ' : (state == _Opt.bad ? '✗ ' : '');
     final highlighted = state == _Opt.good || state == _Opt.bad;

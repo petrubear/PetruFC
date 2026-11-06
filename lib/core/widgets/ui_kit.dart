@@ -6,6 +6,7 @@ import '../audio/tts_service.dart';
 import '../data/app_settings.dart';
 import '../feedback/feedback.dart';
 import 'mascot.dart';
+import '../l10n/language.dart';
 
 class RoundIconButton extends StatelessWidget {
   const RoundIconButton({
@@ -14,20 +15,20 @@ class RoundIconButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.size = 44,
-    this.bg = Pt.surface0,
-    this.fg = Pt.text,
+    this.bg,
+    this.fg,
   });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
   final double size;
-  final Color bg, fg;
+  final Color? bg, fg;
 
   @override
   Widget build(BuildContext context) => Tooltip(
         message: label,
         child: Material(
-          color: bg,
+          color: bg ?? context.pt.surface0,
           shape: const CircleBorder(),
           child: InkWell(
             customBorder: const CircleBorder(),
@@ -35,7 +36,7 @@ class RoundIconButton extends StatelessWidget {
             child: SizedBox(
               width: size,
               height: size,
-              child: Icon(icon, color: fg, size: size * 0.5),
+              child: Icon(icon, color: fg ?? context.pt.text, size: size * 0.5),
             ),
           ),
         ),
@@ -47,18 +48,17 @@ class PillButton extends StatelessWidget {
     this.label, {
     super.key,
     required this.onTap,
-    this.bg = Pt.flamingo,
-    this.fg = Pt.crust,
+    this.bg,
+    this.fg,
     this.border,
   });
   final String label;
   final VoidCallback? onTap;
-  final Color bg, fg;
-  final Color? border;
+  final Color? bg, fg, border;
 
   @override
   Widget build(BuildContext context) => Material(
-        color: bg,
+        color: bg ?? context.pt.flamingo,
         shape: StadiumBorder(
             side: border == null ? BorderSide.none : BorderSide(color: border!)),
         child: InkWell(
@@ -69,7 +69,7 @@ class PillButton extends StatelessWidget {
             child: Center(
               child: Text(label,
                   style: TextStyle(
-                      color: fg, fontSize: 18, fontWeight: FontWeight.w700)),
+                      color: fg ?? context.pt.crust, fontSize: 18, fontWeight: FontWeight.w700)),
             ),
           ),
         ),
@@ -92,22 +92,22 @@ class ScoreChips extends StatelessWidget {
   Widget build(BuildContext context) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _chip('✓ $correct', Pt.green, Pt.greenTint),
+          _chip('✓ $correct', context.pt.green, context.pt.greenTint),
           const SizedBox(width: 8),
-          _chip('✗ $wrong', Pt.red, Pt.redTint),
+          _chip('✗ $wrong', context.pt.red, context.pt.redTint),
         ],
       );
 }
 
 class SectionLabel extends StatelessWidget {
-  const SectionLabel(this.text, {super.key, this.color = Pt.subtext});
+  const SectionLabel(this.text, {super.key, this.color});
   final String text;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) => Text(text,
       style: TextStyle(
-          color: color,
+          color: color ?? context.pt.subtext,
           fontSize: 13,
           fontWeight: FontWeight.w500,
           letterSpacing: 1.4));
@@ -118,23 +118,23 @@ class SurfaceCard extends StatelessWidget {
     super.key,
     required this.child,
     this.radius = 36,
-    this.color = Pt.surface0,
-    this.borderColor = Pt.surface1,
+    this.color,
+    this.borderColor,
     this.borderWidth = 1,
     this.padding,
   });
   final Widget child;
   final double radius, borderWidth;
-  final Color color, borderColor;
+  final Color? color, borderColor;
   final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) => Container(
         padding: padding,
         decoration: BoxDecoration(
-          color: color,
+          color: color ?? context.pt.surface0,
           borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: borderColor, width: borderWidth),
+          border: Border.all(color: borderColor ?? context.pt.surface1, width: borderWidth),
         ),
         child: child,
       );
@@ -148,14 +148,15 @@ class SpeakerButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => RoundIconButton(
         icon: Icons.volume_up_rounded,
-        label: 'Escuchar pronunciación',
+        label: context.l10n.listenPronunciation,
         size: size,
-        bg: Pt.flamingo,
-        fg: Pt.crust,
+        bg: context.pt.flamingo,
+        fg: context.pt.crust,
         onTap: () async {
           final error = await ref.read(ttsProvider).speak(text);
           if (error != null && context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(error.message(context.l10n))));
           }
         },
       );
@@ -174,15 +175,15 @@ class SessionProgress extends StatelessWidget {
           child: LinearProgressIndicator(
             value: (done / size).clamp(0, 1).toDouble(),
             minHeight: 8,
-            backgroundColor: Pt.surface1,
-            color: Pt.flamingo,
+            backgroundColor: context.pt.surface1,
+            color: context.pt.flamingo,
           ),
         ),
       ),
       const SizedBox(width: 12),
       Text(
         '$done / $size',
-        style: const TextStyle(color: Pt.subtext, fontSize: 13, fontWeight: FontWeight.w500),
+        style: TextStyle(color: context.pt.subtext, fontSize: 13, fontWeight: FontWeight.w500),
       ),
     ],
   );
@@ -223,7 +224,7 @@ class _SessionSummaryState extends ConsumerState<SessionSummary> {
         child: Column(
           children: [
             Text(value, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
-            Text(label, style: const TextStyle(fontSize: 13, color: Pt.subtext)),
+            Text(label, style: TextStyle(fontSize: 13, color: context.pt.subtext)),
           ],
         ),
       ),
@@ -246,38 +247,38 @@ class _SessionSummaryState extends ConsumerState<SessionSummary> {
                 height: 150,
               ),
               const SizedBox(height: 8),
-              const Text(
-                '¡Ronda completa!',
+              Text(
+                context.l10n.summaryTitle,
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 16),
               Text(
                 '$correct / $total',
-                style: const TextStyle(fontSize: 72, fontWeight: FontWeight.w700, color: Pt.green),
+                style: TextStyle(fontSize: 72, fontWeight: FontWeight.w700, color: context.pt.green),
               ),
-              const Text('aciertos', style: TextStyle(fontSize: 16, color: Pt.subtext)),
+              Text(context.l10n.summaryCorrectLabel, style: TextStyle(fontSize: 16, color: context.pt.subtext)),
               const SizedBox(height: 24),
               Row(
                 children: [
-                  stat('Mejor combo', '$bestCombo'),
+                  stat(context.l10n.summaryBestCombo, '$bestCombo'),
                   const SizedBox(width: 12),
-                  stat('Precisión', '$pct%'),
+                  stat(context.l10n.summaryAccuracy, '$pct%'),
                 ],
               ),
               const SizedBox(height: 28),
               SizedBox(
                 width: double.infinity,
-                child: PillButton('Otra ronda', onTap: onAgain),
+                child: PillButton(context.l10n.summaryAgain, onTap: onAgain),
               ),
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: PillButton(
-                  'Salir',
+                  context.l10n.summaryExit,
                   onTap: onExit,
-                  bg: Pt.surface0,
-                  fg: Pt.text,
-                  border: Pt.surface1,
+                  bg: context.pt.surface0,
+                  fg: context.pt.text,
+                  border: context.pt.surface1,
                 ),
               ),
             ],

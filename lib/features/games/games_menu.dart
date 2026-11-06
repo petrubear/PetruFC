@@ -7,6 +7,7 @@ import '../../core/data/providers.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import '../home/module_menu.dart';
+import '../../core/l10n/language.dart';
 
 class GamesMenuScreen extends ConsumerWidget {
   const GamesMenuScreen({super.key, required this.moduleId});
@@ -22,11 +23,11 @@ class GamesMenuScreen extends ConsumerWidget {
         .firstOrNull;
     final base = '/m/$moduleId/games';
     final entries = [
-      MenuEntry('Memorama', 'Encuentra los pares', Pt.teal, '$base/memory',
+      MenuEntry(context.l10n.memoryName, context.l10n.memorySub, context.pt.teal, '$base/memory',
           icon: Icons.extension_rounded),
-      MenuEntry('Arma la palabra', 'Ordena los caracteres', Pt.flamingo, '$base/build',
+      MenuEntry(context.l10n.buildName, context.l10n.buildSub, context.pt.flamingo, '$base/build',
           icon: Icons.abc_rounded),
-      MenuEntry('Sopa de letras', 'Encuentra las palabras', Pt.pink, '$base/wordsearch',
+      MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, context.pt.pink, '$base/wordsearch',
           icon: Icons.search_rounded),
     ];
     return Scaffold(
@@ -43,17 +44,17 @@ class GamesMenuScreen extends ConsumerWidget {
                 children: [
                   RoundIconButton(
                       icon: Icons.arrow_back_ios_new_rounded,
-                      label: 'Volver',
+                      label: context.l10n.back,
                       size: expanded ? 48 : 44,
                       onTap: () => context.pop()),
                   SizedBox(height: expanded ? 28 : 24),
-                  const Text('ゲーム',
+                  Text('ゲーム',
                       style: TextStyle(
-                          color: Pt.green,
+                          color: context.pt.green,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 2)),
-                  Text('Juegos${module == null ? '' : ' · ${module.name}'}',
+                  Text(module == null ? context.l10n.gamesTitle : context.l10n.gamesTitleModule(module.name),
                       style: TextStyle(
                           fontSize: expanded ? 44 : 34, fontWeight: FontWeight.w700)),
                   SizedBox(height: expanded ? 28 : 28),

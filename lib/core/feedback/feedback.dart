@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/theme.dart';
 import '../data/app_settings.dart';
 import '../widgets/mascot.dart';
+import '../l10n/language.dart';
 
 enum Buzz { soft, light, medium, heavy }
 
@@ -26,21 +27,20 @@ void buzz(bool enabled, Buzz kind) {
 }
 
 /// Caracteres que acaban de pasar a verde (la pantalla de estudio muestra un aviso).
-final masteredProvider = StateProvider<List<String>>((ref) => const []);
+final masteredProvider = StateProvider<List<String>>((ref) => []);
 
 /// Cada vez que se alcanza la meta diaria se incrementa (la app muestra el festejo).
 final goalReachedProvider = StateProvider<int>((ref) => 0);
 
 class _Piece {
-  _Piece(Random r)
+  _Piece(Random r, List<Color> palette)
       : angle = -pi / 2 + (r.nextDouble() - 0.5) * pi * 1.1,
         speed = 0.55 + r.nextDouble() * 0.75,
         spin = (r.nextDouble() - 0.5) * 14,
         size = 6 + r.nextDouble() * 7,
-        color = _colors[r.nextInt(_colors.length)];
+        color = palette[r.nextInt(palette.length)];
   final double angle, speed, spin, size;
   final Color color;
-  static const _colors = [Pt.flamingo, Pt.pink, Pt.teal, Pt.yellow, Pt.green];
 }
 
 /// Explosion de confeti ligera. Se reproduce una vez al aparecer.
@@ -60,7 +60,8 @@ class _ConfettiBurstState extends ConsumerState<ConfettiBurst>
   )..forward();
   late final List<_Piece> _pieces = () {
     final r = Random();
-    return List.generate(widget.big ? 90 : 42, (_) => _Piece(r));
+    final c = Theme.of(context).extension<PtColors>() ?? PtColors.dark;
+    return List.generate(widget.big ? 90 : 42, (_) => _Piece(r, [c.flamingo, c.pink, c.teal, c.yellow, c.green]));
   }();
 
   @override
@@ -164,12 +165,12 @@ class _GoalCelebrationState extends ConsumerState<GoalCelebrationOverlay> {
             child: GestureDetector(
               onTap: _hide,
               child: Material(
-                color: Pt.surface1,
+                color: context.pt.surface1,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
-                  side: const BorderSide(color: Pt.green, width: 2),
+                  side: BorderSide(color: context.pt.green, width: 2),
                 ),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Row(
                     children: [
@@ -179,13 +180,13 @@ class _GoalCelebrationState extends ConsumerState<GoalCelebrationOverlay> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('¡Meta del día cumplida!',
+                            Text(context.l10n.goalCelebrationTitle,
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
-                                    color: Pt.text)),
-                            Text('Lo lograste, sigue si quieres',
-                                style: TextStyle(fontSize: 13, color: Pt.subtext)),
+                                    color: context.pt.text)),
+                            Text(context.l10n.goalCelebrationBody,
+                                style: TextStyle(fontSize: 13, color: context.pt.subtext)),
                           ],
                         ),
                       ),

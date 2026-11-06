@@ -56,7 +56,8 @@ Path _parsePath(String d) {
 /// Dibuja la guia: trazos grises numerados y, mientras dura la animacion,
 /// los trazos que ya se dibujaron en color. Los combinados (kya) usan dos cuadros.
 class GuidePainter extends CustomPainter {
-  GuidePainter(this.glyphs, {this.showGuide = true, this.progress});
+  GuidePainter(this.glyphs, this.colors, {this.showGuide = true, this.progress});
+  final PtColors colors;
   final List<KanaGlyph> glyphs;
   final bool showGuide;
 
@@ -72,13 +73,13 @@ class GuidePainter extends CustomPainter {
     final y0 = (size.height - side) / 2;
 
     final base = Paint()
-      ..color = const Color(0xFFC9CCD8)
+      ..color = colors.guide
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = 3.8 * scale;
     final hot = Paint()
-      ..color = Pt.flamingo
+      ..color = colors.flamingo
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
@@ -107,8 +108,8 @@ class GuidePainter extends CustomPainter {
           final tp = TextPainter(
             text: TextSpan(
               text: '${k - glyph.numbers.length + i + 1}',
-              style: const TextStyle(
-                color: Color(0xFF7D8296),
+              style: TextStyle(
+                color: colors.guideNumber,
                 fontSize: 7,
                 fontWeight: FontWeight.w700,
               ),

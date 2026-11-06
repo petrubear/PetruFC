@@ -31,6 +31,7 @@ class Items extends Table {
   TextColumn get japanese => text()();
   TextColumn get reading => text()();
   TextColumn get meaningEs => text().nullable()();
+  TextColumn get meaningEn => text().nullable()();
   TextColumn get audioText => text().nullable()();
 }
 

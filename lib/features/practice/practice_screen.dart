@@ -9,6 +9,7 @@ import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
 import 'practice_session.dart';
 import 'stroke_board.dart';
+import '../../core/l10n/language.dart';
 
 class PracticeScreen extends ConsumerWidget {
   const PracticeScreen({super.key, required this.moduleId});
@@ -21,7 +22,7 @@ class PracticeScreen extends ConsumerWidget {
     ref.listen(masteredProvider, (prev, next) {
       if (next.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('¡${next.join(' ')} dominado!'),
+            content: Text(context.l10n.masteredToast(next.join(' '))),
             duration: const Duration(seconds: 2)));
       }
     });
@@ -52,16 +53,16 @@ class PracticeScreen extends ConsumerWidget {
                     children: [
                       RoundIconButton(
                         icon: Icons.close_rounded,
-                        label: 'Cerrar',
+                        label: context.l10n.close,
                         size: expanded ? 48 : 44,
                         onTap: () => context.pop(),
                       ),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'PRÁCTICA · TRAZO',
+                          context.l10n.practiceTag,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Pt.subtext,
+                            color: context.pt.subtext,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 1.4,
@@ -78,8 +79,8 @@ class PracticeScreen extends ConsumerWidget {
               final romaji = Column(
                 children: [
                   Text(
-                    'Dibuja el ${moduleId == 'katakana' ? 'katakana' : 'hiragana'} de',
-                    style: const TextStyle(fontSize: 15, color: Pt.subtext),
+                    context.l10n.practiceDrawPrompt(moduleId == 'katakana' ? 'katakana' : 'hiragana'),
+                    style: TextStyle(fontSize: 15, color: context.pt.subtext),
                   ),
                   Text(
                     s.item.reading,
@@ -87,7 +88,7 @@ class PracticeScreen extends ConsumerWidget {
                       fontSize: expanded ? 96 : 84,
                       fontWeight: FontWeight.w700,
                       height: 1.05,
-                      color: Pt.flamingo,
+                      color: context.pt.flamingo,
                     ),
                   ),
                 ],
@@ -101,9 +102,9 @@ class PracticeScreen extends ConsumerWidget {
                 height: height,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Pt.greenTint,
+                  color: context.pt.greenTint,
                   borderRadius: BorderRadius.circular(28),
-                  border: Border.all(color: Pt.green, width: 2),
+                  border: Border.all(color: context.pt.green, width: 2),
                 ),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
@@ -114,7 +115,7 @@ class PracticeScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                       fontSize: fontSize,
                       height: 1,
-                      color: Pt.green,
+                      color: context.pt.green,
                     ),
                   ),
                 ),
@@ -123,36 +124,36 @@ class PracticeScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: PillButton(
-                      'Borrar',
+                      context.l10n.erase,
                       onTap: n.clear,
-                      bg: Pt.surface0,
-                      fg: Pt.text,
-                      border: Pt.surface1,
+                      bg: context.pt.surface0,
+                      fg: context.pt.text,
+                      border: context.pt.surface1,
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(flex: 2, child: PillButton('Check', onTap: n.check)),
+                  Expanded(flex: 2, child: PillButton(context.l10n.practiceCheck, onTap: n.check)),
                 ],
               );
               final grade = Column(
                 children: [
                   if (s.score != null) _ScoreBadge(s.score!),
-                  const Text('¿Cómo te fue?', style: TextStyle(fontSize: 15, color: Pt.subtext)),
+                  Text(context.l10n.practiceHowDidYouDo, style: TextStyle(fontSize: 15, color: context.pt.subtext)),
                   const SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
                         child: PillButton(
-                          'Repasar',
+                          context.l10n.practiceReview,
                           onTap: () => n.grade(false),
-                          bg: Pt.redTint,
-                          fg: Pt.red,
-                          border: Pt.red,
+                          bg: context.pt.redTint,
+                          fg: context.pt.red,
+                          border: context.pt.red,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: PillButton('Lo logré', onTap: () => n.grade(true), bg: Pt.green),
+                        child: PillButton(context.l10n.practiceGotIt, onTap: () => n.grade(true), bg: context.pt.green),
                       ),
                     ],
                   ),
@@ -177,7 +178,7 @@ class PracticeScreen extends ConsumerWidget {
                                   romaji,
                                   if (s.checked) ...[
                                     const SizedBox(height: 20),
-                                    const SectionLabel('CORRECTO', color: Pt.green),
+                                    SectionLabel(context.l10n.practiceCorrect, color: context.pt.green),
                                     const SizedBox(height: 8),
                                     correctCard(230, 150),
                                   ],
@@ -224,11 +225,11 @@ class PracticeScreen extends ConsumerWidget {
                 );
               }
               return Padding(
-                padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+                padding: EdgeInsets.fromLTRB(24, 12, 24, 32),
                 child: Column(
                   children: [
                     top,
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -236,7 +237,7 @@ class PracticeScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SectionLabel('TU TRAZO'),
+                              SectionLabel(context.l10n.practiceYourStroke),
                               const SizedBox(height: 8),
                               SizedBox(height: 200, child: StrokeBoard(strokes: s.strokes)),
                             ],
@@ -247,7 +248,7 @@ class PracticeScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SectionLabel('CORRECTO', color: Pt.green),
+                              SectionLabel(context.l10n.practiceCorrect, color: context.pt.green),
                               const SizedBox(height: 8),
                               correctCard(200, 120),
                             ],
@@ -269,9 +270,9 @@ class PracticeScreen extends ConsumerWidget {
                                   s.item.reading,
                                   style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                                 ),
-                                const Text(
-                                  'Compara el orden y la forma de los trazos',
-                                  style: TextStyle(fontSize: 14, color: Pt.subtext),
+                                Text(
+                                  context.l10n.practiceCompare,
+                                  style: TextStyle(fontSize: 14, color: context.pt.subtext),
                                 ),
                               ],
                             ),
@@ -304,10 +305,10 @@ class _ScoreBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color) = score >= 0.72
-        ? ('Muy bien', Pt.green)
+        ? (context.l10n.verdictGreat, context.pt.green)
         : score >= 0.5
-            ? ('Casi, revisa la forma', Pt.yellow)
-            : ('Repasa los trazos', Pt.red);
+            ? (context.l10n.verdictClose, context.pt.yellow)
+            : (context.l10n.verdictReview, context.pt.red);
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -316,7 +317,7 @@ class _ScoreBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: color),
       ),
-      child: Text('${(score * 100).round()}% de parecido · $label',
+      child: Text(context.l10n.similarity((score * 100).round(), label),
           textAlign: TextAlign.center,
           style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w700)),
     );

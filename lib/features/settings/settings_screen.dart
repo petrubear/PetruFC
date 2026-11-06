@@ -7,6 +7,7 @@ import '../../core/app_version.dart';
 import '../../core/data/app_settings.dart';
 import '../../core/layout/breakpoints.dart';
 import '../../core/widgets/ui_kit.dart';
+import '../../core/l10n/language.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -18,11 +19,11 @@ class SettingsScreen extends ConsumerWidget {
     final n = ref.read(settingsProvider.notifier);
     Widget size(int v) => Expanded(
       child: PillButton(
-        '$v tarjetas',
+        context.l10n.settingsCards(v),
         onTap: () => n.setSessionSize(v),
-        bg: settings.sessionSize == v ? Pt.flamingo : Pt.surface0,
-        fg: settings.sessionSize == v ? Pt.crust : Pt.text,
-        border: settings.sessionSize == v ? null : Pt.surface1,
+        bg: settings.sessionSize == v ? context.pt.flamingo : context.pt.surface0,
+        fg: settings.sessionSize == v ? context.pt.crust : context.pt.text,
+        border: settings.sessionSize == v ? null : context.pt.surface1,
       ),
     );
     return Scaffold(
@@ -37,18 +38,18 @@ class SettingsScreen extends ConsumerWidget {
                   alignment: Alignment.centerLeft,
                   child: RoundIconButton(
                     icon: Icons.arrow_back_ios_new_rounded,
-                    label: 'Volver',
+                    label: context.l10n.back,
                     size: expanded ? 48 : 44,
                     onTap: () => context.pop(),
                   ),
                 ),
-                const SizedBox(height: 22),
+                SizedBox(height: 22),
                 Text(
-                  'Configuración',
+                  context.l10n.settings,
                   style: TextStyle(fontSize: expanded ? 38 : 32, fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: 24),
-                const SectionLabel('META DIARIA'),
+                SizedBox(height: 24),
+                SectionLabel(context.l10n.settingsDailyGoal),
                 const SizedBox(height: 12),
                 SurfaceCard(
                   radius: 28,
@@ -57,56 +58,56 @@ class SettingsScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${settings.goalMinutes} minutos al día',
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                        context.l10n.settingsGoalMinutes(settings.goalMinutes),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                       ),
-                      const Text(
-                        'El anillo de Inicio se llena con tu tiempo de práctica.',
-                        style: TextStyle(fontSize: 13, color: Pt.subtext),
+                      Text(
+                        context.l10n.settingsGoalHint,
+                        style: TextStyle(fontSize: 13, color: context.pt.subtext),
                       ),
                       Slider(
                         value: settings.goalMinutes.toDouble(),
                         min: 5,
                         max: 60,
                         divisions: 11,
-                        label: '${settings.goalMinutes} min',
+                        label: context.l10n.settingsGoalSlider(settings.goalMinutes),
                         onChanged: (v) => n.setGoalMinutes(v.round()),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
-                const SectionLabel('TAMAÑO DE LA RONDA'),
+                SizedBox(height: 24),
+                SectionLabel(context.l10n.settingsRoundSize),
                 const SizedBox(height: 12),
                 Row(children: [size(15), const SizedBox(width: 12), size(20)]),
                 const SizedBox(height: 8),
-                const Text(
-                  'Cuántas tarjetas tiene cada ronda de Flashcards y Práctica.',
-                  style: TextStyle(fontSize: 13, color: Pt.subtext),
+                Text(
+                  context.l10n.settingsRoundHint,
+                  style: TextStyle(fontSize: 13, color: context.pt.subtext),
                 ),
-                const SizedBox(height: 24),
-                const SizedBox(height: 24),
-                const SectionLabel('SENSACIONES'),
+                SizedBox(height: 24),
+                SizedBox(height: 24),
+                SectionLabel(context.l10n.settingsFeedback),
                 const SizedBox(height: 12),
                 SurfaceCard(
                   radius: 28,
                   child: Column(
                     children: [
                       SwitchListTile(
-                        title: const Text('Vibración'),
-                        subtitle: const Text('Al acertar, en combos y al dominar'),
+                        title: Text(context.l10n.settingsVibration),
+                        subtitle: Text(context.l10n.settingsVibrationSub),
                         value: settings.haptics,
                         onChanged: n.setHaptics,
                       ),
                       SwitchListTile(
-                        title: const Text('Festejos y animaciones'),
-                        subtitle: const Text('Confeti al completar rondas y metas'),
+                        title: Text(context.l10n.settingsEffects),
+                        subtitle: Text(context.l10n.settingsEffectsSub),
                         value: settings.effects,
                         onChanged: n.setEffects,
                       ),
                       SwitchListTile(
-                        title: const Text('Mostrar mascota'),
-                        subtitle: const Text('El gato que te acompaña y festeja'),
+                        title: Text(context.l10n.settingsMascot),
+                        subtitle: Text(context.l10n.settingsMascotSub),
                         value: settings.mascotOn,
                         onChanged: n.setMascotOn,
                       ),
@@ -114,15 +115,15 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Center(
-                  child: Text('Versión $appVersion',
-                      style: TextStyle(color: Pt.subtext, fontSize: 13)),
+                Center(
+                  child: Text(context.l10n.settingsVersion(appVersion),
+                      style: TextStyle(color: context.pt.subtext, fontSize: 13)),
                 ),
                 const SizedBox(height: 6),
-                const Center(
-                  child: Text('Orden de trazos: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net',
+                Center(
+                  child: Text(context.l10n.settingsCredit,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Pt.subtext, fontSize: 12)),
+                      style: TextStyle(color: context.pt.subtext, fontSize: 12)),
                 ),
               ],
             ),
