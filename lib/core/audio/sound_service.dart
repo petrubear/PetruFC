@@ -19,7 +19,7 @@ class SoundService {
       await AudioPlayer.global.setAudioContext(AudioContext(
         android: const AudioContextAndroid(
           contentType: AndroidContentType.sonification,
-          usageType: AndroidUsageType.assistanceSonification,
+          usageType: AndroidUsageType.media,
           audioFocus: AndroidAudioFocus.none,
         ),
       ));

@@ -1,2 +1,2 @@
 // Lo regenera scripts/build_apk.sh desde pubspec.yaml.
-const appVersion = '1.14.1+22';
+const appVersion = '1.14.2+23';
