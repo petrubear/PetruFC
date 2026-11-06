@@ -1,3 +1,4 @@
+import 'seed_topics.dart';
 import 'package:drift/drift.dart';
 
 import 'database.dart';
@@ -408,6 +409,28 @@ void _addNames(Batch b, AppDatabase db) {
   b.insertAll(db.items, rows);
 }
 
+void _addMoreTopics(Batch b, AppDatabase db) {
+  for (final (module, suffix, name, data, order) in [
+    ('hiragana', 'fruits', 'Frutas', hFruits, 11),
+    ('hiragana', 'veggies', 'Verduras', hVeggies, 12),
+    ('hiragana', 'travel', 'Viajes y equipaje', hTravel, 13),
+    ('hiragana', 'medicine', 'Medicina básica', hMedicine, 14),
+    ('hiragana', 'ai', 'Inteligencia artificial', hAi, 15),
+    ('katakana', 'fruits', 'Frutas', kFruits, 11),
+    ('katakana', 'veggies', 'Verduras', kVeggies, 12),
+    ('katakana', 'travel', 'Viajes y equipaje', kTravel, 13),
+    ('katakana', 'medicine', 'Medicina básica', kMedicine, 14),
+    ('katakana', 'computing', 'Computación y programación', kComputing, 15),
+    ('katakana', 'ai', 'Inteligencia artificial', kAi, 16),
+  ]) {
+    final id = '${module}_$suffix';
+    final rows = _words(module, id, data);
+    b.insert(db.itemGroups,
+        _group(module, id, 'word', name, '${rows.length} palabras', order));
+    b.insertAll(db.items, rows);
+  }
+}
+
 void _addKatakana(Batch b, AppDatabase db) => _addScript(b, db,
     module: 'katakana',
     basic: _kBasic,
@@ -436,6 +459,7 @@ Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
       _addTopics(b, db);
       _addTopics2(b, db);
       _addNames(b, db);
+      _addMoreTopics(b, db);
     });
 
 /// Esquema v3: activa Katakana en bases creadas antes de que existiera.
@@ -467,3 +491,6 @@ Future<void> upgradeToV10(AppDatabase db) async {
   await db.customStatement("DELETE FROM item_groups WHERE id = 'katakana_names'");
   await db.batch((b) => _addNames(b, db));
 }
+
+/// Esquema v11: frutas, verduras, viajes, medicina, computacion e inteligencia artificial.
+Future<void> upgradeToV11(AppDatabase db) => db.batch((b) => _addMoreTopics(b, db));
