@@ -15,6 +15,7 @@ import '../../core/l10n/language.dart';
 const _scriptLabels = {
   'hiragana': ('ひらがな', 'あ', 'め'),
   'katakana': ('カタカナ', 'ア', 'メ'),
+  'kanji': ('漢字', '字', '語'),
 };
 
 (String, String, String) scriptLabel(String moduleId) =>

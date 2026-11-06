@@ -15,9 +15,10 @@ class KanaGlyph {
 
 const kvgSize = 109.0;
 
-final kanaStrokesProvider = FutureProvider<Map<String, KanaGlyph>>((ref) async {
-  final raw = jsonDecode(await rootBundle.loadString('assets/kana/strokes.json'))
-      as Map<String, dynamic>;
+/// Trazos de los caracteres de un modulo (kana o kanji), por caracter.
+final strokesProvider = FutureProvider.family<Map<String, KanaGlyph>, String>((ref, moduleId) async {
+  final asset = moduleId == 'kanji' ? 'assets/kanji/strokes.json' : 'assets/kana/strokes.json';
+  final raw = jsonDecode(await rootBundle.loadString(asset)) as Map<String, dynamic>;
   return {
     for (final e in raw.entries)
       e.key: KanaGlyph(
@@ -30,7 +31,9 @@ final kanaStrokesProvider = FutureProvider<Map<String, KanaGlyph>>((ref) async {
   };
 });
 
-// KanjiVG solo usa M (absoluto) y c (curva cubica relativa).
+final kanaStrokesProvider = strokesProvider('hiragana');
+
+// Los datos usan solo M (absoluto) y c (curva cubica relativa).
 Path _parsePath(String d) {
   final path = Path();
   var x = 0.0, y = 0.0;
@@ -56,7 +59,8 @@ Path _parsePath(String d) {
 /// Dibuja la guia: trazos grises numerados y, mientras dura la animacion,
 /// los trazos que ya se dibujaron en color. Los combinados (kya) usan dos cuadros.
 class GuidePainter extends CustomPainter {
-  GuidePainter(this.glyphs, this.colors, {this.showGuide = true, this.progress});
+  GuidePainter(this.glyphs, this.colors, {this.showGuide = true, this.progress, this.weight = 3.8});
+  final double weight;
   final PtStyle colors;
   final List<KanaGlyph> glyphs;
   final bool showGuide;
@@ -77,13 +81,13 @@ class GuidePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 3.8 * scale;
+      ..strokeWidth = weight * scale;
     final hot = Paint()
       ..color = colors.flamingo
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = 3.8 * scale;
+      ..strokeWidth = weight * scale;
 
     var k = 0; // numero de trazo global
     for (var g = 0; g < glyphs.length; g++) {

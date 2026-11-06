@@ -16,7 +16,7 @@ class ModeSetupScreen extends StatelessWidget {
   final String moduleId, kind;
   final String? groupId;
 
-  bool get _isKana => kind == 'kana';
+  bool get _isKana => kind == 'kana' || kind == 'kanji';
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,8 @@ class SetList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final groups = ref.watch(groupsProvider((moduleId, 'kana'))).valueOrNull ?? [];
+    final groups =
+        ref.watch(groupsProvider((moduleId, moduleId == 'kanji' ? 'kanji' : 'kana'))).valueOrNull ?? [];
     final active = ref.watch(activeGroupsProvider(moduleId)).valueOrNull ?? {};
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +144,7 @@ class SetList extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
         ],
-        if (showMultiSelect) ...[
+        if (showMultiSelect && moduleId != 'kanji') ...[
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           decoration: BoxDecoration(

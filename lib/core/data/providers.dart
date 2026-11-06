@@ -47,14 +47,20 @@ class ActiveGroups extends AutoDisposeFamilyAsyncNotifier<Set<String>, String> {
 final activeGroupsProvider = AsyncNotifierProvider.autoDispose
     .family<ActiveGroups, Set<String>, String>(ActiveGroups.new);
 
-/// Avance de un modulo kana: caracteres dominados (racha >= 5) sobre el total.
+/// Avance de un modulo de caracteres (kana o kanji): caracteres dominados (racha >= 5) sobre el total.
 final moduleProgressProvider =
     FutureProvider.autoDispose.family<double, String>((ref, moduleId) async {
   final repo = ref.watch(repoProvider);
   final stats = ref.watch(statsProvider).valueOrNull ?? {};
-  final groups = await repo.groups(moduleId, 'kana');
+  final groups = await repo.groups(moduleId, moduleId == 'kanji' ? 'kanji' : 'kana');
   final items = await repo.items(moduleId, groups.map((g) => g.id));
   if (items.isEmpty) return 0;
   final done = items.where((i) => (stats[i.id]?.streak ?? 0) >= 5).length;
   return done / items.length;
+});
+
+/// Detalles de los kanji (lecturas on y kun, trazos, grado) por id de item.
+final kanjiDetailsProvider = FutureProvider<Map<int, KanjiDetail>>((ref) async {
+  final db = ref.watch(dbProvider);
+  return {for (final d in await db.select(db.kanjiDetails).get()) d.itemId: d};
 });

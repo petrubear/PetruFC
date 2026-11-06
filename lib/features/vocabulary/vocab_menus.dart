@@ -48,7 +48,8 @@ class VocabSectionMenuScreen extends ConsumerWidget {
       entries: [
         MenuEntry(context.l10n.menuReference, context.l10n.vocabMenuReferenceSub, '表', '$base/reference'),
         MenuEntry(context.l10n.menuPractice, context.l10n.vocabMenuPracticeSub, '練', '$base/practice'),
-        MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, '探', '$base/wordsearch'),
+        if (moduleId != 'kanji')
+          MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, '探', '$base/wordsearch'),
       ],
     );
   }

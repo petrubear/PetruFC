@@ -2069,6 +2069,368 @@ class DailyActivityCompanion extends UpdateCompanion<ActivityDay> {
   }
 }
 
+class $KanjiDetailsTable extends KanjiDetails
+    with TableInfo<$KanjiDetailsTable, KanjiDetail> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KanjiDetailsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
+  @override
+  late final GeneratedColumn<int> itemId = GeneratedColumn<int>(
+    'item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _gradeMeta = const VerificationMeta('grade');
+  @override
+  late final GeneratedColumn<int> grade = GeneratedColumn<int>(
+    'grade',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _strokeCountMeta = const VerificationMeta(
+    'strokeCount',
+  );
+  @override
+  late final GeneratedColumn<int> strokeCount = GeneratedColumn<int>(
+    'stroke_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _onReadingsMeta = const VerificationMeta(
+    'onReadings',
+  );
+  @override
+  late final GeneratedColumn<String> onReadings = GeneratedColumn<String>(
+    'on_readings',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kunReadingsMeta = const VerificationMeta(
+    'kunReadings',
+  );
+  @override
+  late final GeneratedColumn<String> kunReadings = GeneratedColumn<String>(
+    'kun_readings',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    itemId,
+    grade,
+    strokeCount,
+    onReadings,
+    kunReadings,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kanji_details';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KanjiDetail> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('item_id')) {
+      context.handle(
+        _itemIdMeta,
+        itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta),
+      );
+    }
+    if (data.containsKey('grade')) {
+      context.handle(
+        _gradeMeta,
+        grade.isAcceptableOrUnknown(data['grade']!, _gradeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_gradeMeta);
+    }
+    if (data.containsKey('stroke_count')) {
+      context.handle(
+        _strokeCountMeta,
+        strokeCount.isAcceptableOrUnknown(
+          data['stroke_count']!,
+          _strokeCountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_strokeCountMeta);
+    }
+    if (data.containsKey('on_readings')) {
+      context.handle(
+        _onReadingsMeta,
+        onReadings.isAcceptableOrUnknown(data['on_readings']!, _onReadingsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_onReadingsMeta);
+    }
+    if (data.containsKey('kun_readings')) {
+      context.handle(
+        _kunReadingsMeta,
+        kunReadings.isAcceptableOrUnknown(
+          data['kun_readings']!,
+          _kunReadingsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_kunReadingsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {itemId};
+  @override
+  KanjiDetail map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KanjiDetail(
+      itemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}item_id'],
+      )!,
+      grade: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}grade'],
+      )!,
+      strokeCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stroke_count'],
+      )!,
+      onReadings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}on_readings'],
+      )!,
+      kunReadings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kun_readings'],
+      )!,
+    );
+  }
+
+  @override
+  $KanjiDetailsTable createAlias(String alias) {
+    return $KanjiDetailsTable(attachedDatabase, alias);
+  }
+}
+
+class KanjiDetail extends DataClass implements Insertable<KanjiDetail> {
+  final int itemId;
+  final int grade;
+  final int strokeCount;
+  final String onReadings;
+  final String kunReadings;
+  const KanjiDetail({
+    required this.itemId,
+    required this.grade,
+    required this.strokeCount,
+    required this.onReadings,
+    required this.kunReadings,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['item_id'] = Variable<int>(itemId);
+    map['grade'] = Variable<int>(grade);
+    map['stroke_count'] = Variable<int>(strokeCount);
+    map['on_readings'] = Variable<String>(onReadings);
+    map['kun_readings'] = Variable<String>(kunReadings);
+    return map;
+  }
+
+  KanjiDetailsCompanion toCompanion(bool nullToAbsent) {
+    return KanjiDetailsCompanion(
+      itemId: Value(itemId),
+      grade: Value(grade),
+      strokeCount: Value(strokeCount),
+      onReadings: Value(onReadings),
+      kunReadings: Value(kunReadings),
+    );
+  }
+
+  factory KanjiDetail.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KanjiDetail(
+      itemId: serializer.fromJson<int>(json['itemId']),
+      grade: serializer.fromJson<int>(json['grade']),
+      strokeCount: serializer.fromJson<int>(json['strokeCount']),
+      onReadings: serializer.fromJson<String>(json['onReadings']),
+      kunReadings: serializer.fromJson<String>(json['kunReadings']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'itemId': serializer.toJson<int>(itemId),
+      'grade': serializer.toJson<int>(grade),
+      'strokeCount': serializer.toJson<int>(strokeCount),
+      'onReadings': serializer.toJson<String>(onReadings),
+      'kunReadings': serializer.toJson<String>(kunReadings),
+    };
+  }
+
+  KanjiDetail copyWith({
+    int? itemId,
+    int? grade,
+    int? strokeCount,
+    String? onReadings,
+    String? kunReadings,
+  }) => KanjiDetail(
+    itemId: itemId ?? this.itemId,
+    grade: grade ?? this.grade,
+    strokeCount: strokeCount ?? this.strokeCount,
+    onReadings: onReadings ?? this.onReadings,
+    kunReadings: kunReadings ?? this.kunReadings,
+  );
+  KanjiDetail copyWithCompanion(KanjiDetailsCompanion data) {
+    return KanjiDetail(
+      itemId: data.itemId.present ? data.itemId.value : this.itemId,
+      grade: data.grade.present ? data.grade.value : this.grade,
+      strokeCount: data.strokeCount.present
+          ? data.strokeCount.value
+          : this.strokeCount,
+      onReadings: data.onReadings.present
+          ? data.onReadings.value
+          : this.onReadings,
+      kunReadings: data.kunReadings.present
+          ? data.kunReadings.value
+          : this.kunReadings,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KanjiDetail(')
+          ..write('itemId: $itemId, ')
+          ..write('grade: $grade, ')
+          ..write('strokeCount: $strokeCount, ')
+          ..write('onReadings: $onReadings, ')
+          ..write('kunReadings: $kunReadings')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(itemId, grade, strokeCount, onReadings, kunReadings);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KanjiDetail &&
+          other.itemId == this.itemId &&
+          other.grade == this.grade &&
+          other.strokeCount == this.strokeCount &&
+          other.onReadings == this.onReadings &&
+          other.kunReadings == this.kunReadings);
+}
+
+class KanjiDetailsCompanion extends UpdateCompanion<KanjiDetail> {
+  final Value<int> itemId;
+  final Value<int> grade;
+  final Value<int> strokeCount;
+  final Value<String> onReadings;
+  final Value<String> kunReadings;
+  const KanjiDetailsCompanion({
+    this.itemId = const Value.absent(),
+    this.grade = const Value.absent(),
+    this.strokeCount = const Value.absent(),
+    this.onReadings = const Value.absent(),
+    this.kunReadings = const Value.absent(),
+  });
+  KanjiDetailsCompanion.insert({
+    this.itemId = const Value.absent(),
+    required int grade,
+    required int strokeCount,
+    required String onReadings,
+    required String kunReadings,
+  }) : grade = Value(grade),
+       strokeCount = Value(strokeCount),
+       onReadings = Value(onReadings),
+       kunReadings = Value(kunReadings);
+  static Insertable<KanjiDetail> custom({
+    Expression<int>? itemId,
+    Expression<int>? grade,
+    Expression<int>? strokeCount,
+    Expression<String>? onReadings,
+    Expression<String>? kunReadings,
+  }) {
+    return RawValuesInsertable({
+      if (itemId != null) 'item_id': itemId,
+      if (grade != null) 'grade': grade,
+      if (strokeCount != null) 'stroke_count': strokeCount,
+      if (onReadings != null) 'on_readings': onReadings,
+      if (kunReadings != null) 'kun_readings': kunReadings,
+    });
+  }
+
+  KanjiDetailsCompanion copyWith({
+    Value<int>? itemId,
+    Value<int>? grade,
+    Value<int>? strokeCount,
+    Value<String>? onReadings,
+    Value<String>? kunReadings,
+  }) {
+    return KanjiDetailsCompanion(
+      itemId: itemId ?? this.itemId,
+      grade: grade ?? this.grade,
+      strokeCount: strokeCount ?? this.strokeCount,
+      onReadings: onReadings ?? this.onReadings,
+      kunReadings: kunReadings ?? this.kunReadings,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (itemId.present) {
+      map['item_id'] = Variable<int>(itemId.value);
+    }
+    if (grade.present) {
+      map['grade'] = Variable<int>(grade.value);
+    }
+    if (strokeCount.present) {
+      map['stroke_count'] = Variable<int>(strokeCount.value);
+    }
+    if (onReadings.present) {
+      map['on_readings'] = Variable<String>(onReadings.value);
+    }
+    if (kunReadings.present) {
+      map['kun_readings'] = Variable<String>(kunReadings.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KanjiDetailsCompanion(')
+          ..write('itemId: $itemId, ')
+          ..write('grade: $grade, ')
+          ..write('strokeCount: $strokeCount, ')
+          ..write('onReadings: $onReadings, ')
+          ..write('kunReadings: $kunReadings')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2078,6 +2440,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SettingsTable settings = $SettingsTable(this);
   late final $ReviewStatsTable reviewStats = $ReviewStatsTable(this);
   late final $DailyActivityTable dailyActivity = $DailyActivityTable(this);
+  late final $KanjiDetailsTable kanjiDetails = $KanjiDetailsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2089,6 +2452,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     settings,
     reviewStats,
     dailyActivity,
+    kanjiDetails,
   ];
 }
 
@@ -3238,6 +3602,206 @@ typedef $$DailyActivityTableProcessedTableManager =
       ActivityDay,
       PrefetchHooks Function()
     >;
+typedef $$KanjiDetailsTableCreateCompanionBuilder =
+    KanjiDetailsCompanion Function({
+      Value<int> itemId,
+      required int grade,
+      required int strokeCount,
+      required String onReadings,
+      required String kunReadings,
+    });
+typedef $$KanjiDetailsTableUpdateCompanionBuilder =
+    KanjiDetailsCompanion Function({
+      Value<int> itemId,
+      Value<int> grade,
+      Value<int> strokeCount,
+      Value<String> onReadings,
+      Value<String> kunReadings,
+    });
+
+class $$KanjiDetailsTableFilterComposer
+    extends Composer<_$AppDatabase, $KanjiDetailsTable> {
+  $$KanjiDetailsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get itemId => $composableBuilder(
+    column: $table.itemId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get grade => $composableBuilder(
+    column: $table.grade,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get strokeCount => $composableBuilder(
+    column: $table.strokeCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get onReadings => $composableBuilder(
+    column: $table.onReadings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kunReadings => $composableBuilder(
+    column: $table.kunReadings,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$KanjiDetailsTableOrderingComposer
+    extends Composer<_$AppDatabase, $KanjiDetailsTable> {
+  $$KanjiDetailsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get itemId => $composableBuilder(
+    column: $table.itemId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get grade => $composableBuilder(
+    column: $table.grade,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get strokeCount => $composableBuilder(
+    column: $table.strokeCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get onReadings => $composableBuilder(
+    column: $table.onReadings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kunReadings => $composableBuilder(
+    column: $table.kunReadings,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$KanjiDetailsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KanjiDetailsTable> {
+  $$KanjiDetailsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get itemId =>
+      $composableBuilder(column: $table.itemId, builder: (column) => column);
+
+  GeneratedColumn<int> get grade =>
+      $composableBuilder(column: $table.grade, builder: (column) => column);
+
+  GeneratedColumn<int> get strokeCount => $composableBuilder(
+    column: $table.strokeCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get onReadings => $composableBuilder(
+    column: $table.onReadings,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kunReadings => $composableBuilder(
+    column: $table.kunReadings,
+    builder: (column) => column,
+  );
+}
+
+class $$KanjiDetailsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $KanjiDetailsTable,
+          KanjiDetail,
+          $$KanjiDetailsTableFilterComposer,
+          $$KanjiDetailsTableOrderingComposer,
+          $$KanjiDetailsTableAnnotationComposer,
+          $$KanjiDetailsTableCreateCompanionBuilder,
+          $$KanjiDetailsTableUpdateCompanionBuilder,
+          (
+            KanjiDetail,
+            BaseReferences<_$AppDatabase, $KanjiDetailsTable, KanjiDetail>,
+          ),
+          KanjiDetail,
+          PrefetchHooks Function()
+        > {
+  $$KanjiDetailsTableTableManager(_$AppDatabase db, $KanjiDetailsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KanjiDetailsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KanjiDetailsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KanjiDetailsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> itemId = const Value.absent(),
+                Value<int> grade = const Value.absent(),
+                Value<int> strokeCount = const Value.absent(),
+                Value<String> onReadings = const Value.absent(),
+                Value<String> kunReadings = const Value.absent(),
+              }) => KanjiDetailsCompanion(
+                itemId: itemId,
+                grade: grade,
+                strokeCount: strokeCount,
+                onReadings: onReadings,
+                kunReadings: kunReadings,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> itemId = const Value.absent(),
+                required int grade,
+                required int strokeCount,
+                required String onReadings,
+                required String kunReadings,
+              }) => KanjiDetailsCompanion.insert(
+                itemId: itemId,
+                grade: grade,
+                strokeCount: strokeCount,
+                onReadings: onReadings,
+                kunReadings: kunReadings,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$KanjiDetailsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $KanjiDetailsTable,
+      KanjiDetail,
+      $$KanjiDetailsTableFilterComposer,
+      $$KanjiDetailsTableOrderingComposer,
+      $$KanjiDetailsTableAnnotationComposer,
+      $$KanjiDetailsTableCreateCompanionBuilder,
+      $$KanjiDetailsTableUpdateCompanionBuilder,
+      (
+        KanjiDetail,
+        BaseReferences<_$AppDatabase, $KanjiDetailsTable, KanjiDetail>,
+      ),
+      KanjiDetail,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3254,4 +3818,6 @@ class $AppDatabaseManager {
       $$ReviewStatsTableTableManager(_db, _db.reviewStats);
   $$DailyActivityTableTableManager get dailyActivity =>
       $$DailyActivityTableTableManager(_db, _db.dailyActivity);
+  $$KanjiDetailsTableTableManager get kanjiDetails =>
+      $$KanjiDetailsTableTableManager(_db, _db.kanjiDetails);
 }

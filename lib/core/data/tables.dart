@@ -60,3 +60,14 @@ class DailyActivity extends Table {
   @override
   Set<Column> get primaryKey => {day};
 }
+
+/// Datos propios de un kanji (el item guarda el caracter, la lectura principal y los significados).
+class KanjiDetails extends Table {
+  IntColumn get itemId => integer()();
+  IntColumn get grade => integer()();
+  IntColumn get strokeCount => integer()();
+  TextColumn get onReadings => text()(); // katakana separado por 、
+  TextColumn get kunReadings => text()(); // hiragana separado por 、 (okurigana con .)
+  @override
+  Set<Column> get primaryKey => {itemId};
+}

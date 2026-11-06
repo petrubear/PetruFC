@@ -15,6 +15,7 @@ import '../features/quiz/mode_setup_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/quiz/quiz_engine.dart';
 import '../features/quiz/quiz_screen.dart';
+import '../features/reference/kanji_reference_screen.dart';
 import '../features/reference/reference_screen.dart';
 import '../features/vocabulary/vocab_menus.dart';
 import '../features/vocabulary/vocab_reference_screen.dart';
@@ -37,7 +38,7 @@ final router = GoRouter(
               path: 'flashcards',
               builder: (c, s) => ModeSetupScreen(
                 moduleId: s.pathParameters['module']!,
-                kind: 'kana',
+                kind: s.pathParameters['module'] == 'kanji' ? 'kanji' : 'kana',
               ),
             ),
             GoRoute(
@@ -117,8 +118,9 @@ final router = GoRouter(
             ),
             GoRoute(
               path: 'reference',
-              builder: (c, s) =>
-                  ReferenceScreen(moduleId: s.pathParameters['module']!),
+              builder: (c, s) => s.pathParameters['module'] == 'kanji'
+                  ? const KanjiReferenceScreen(moduleId: 'kanji')
+                  : ReferenceScreen(moduleId: s.pathParameters['module']!),
             ),
             GoRoute(
               path: 'learn',

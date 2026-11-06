@@ -929,7 +929,7 @@ abstract class AppLocalizations {
   /// settingsCredit
   ///
   /// In en, this message translates to:
-  /// **'Stroke order data: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net'**
+  /// **'Kanji data: KANJIDIC2 (EDRDG, CC BY-SA 4.0). Stroke order: KanjiVG (CC BY-SA 3.0)'**
   String get settingsCredit;
 
   /// practiceCorrect
@@ -1009,6 +1009,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SOON'**
   String get comingSoonShort;
+
+  /// groupGrade1
+  ///
+  /// In en, this message translates to:
+  /// **'Grade 1'**
+  String get groupGrade1;
+
+  /// groupNumbers
+  ///
+  /// In en, this message translates to:
+  /// **'Numbers'**
+  String get groupNumbers;
+
+  /// groupNature
+  ///
+  /// In en, this message translates to:
+  /// **'Nature'**
+  String get groupNature;
+
+  /// groupBodyPeople
+  ///
+  /// In en, this message translates to:
+  /// **'Body and people'**
+  String get groupBodyPeople;
+
+  /// groupSchool
+  ///
+  /// In en, this message translates to:
+  /// **'School'**
+  String get groupSchool;
+
+  /// groupTimeDays
+  ///
+  /// In en, this message translates to:
+  /// **'Time and days'**
+  String get groupTimeDays;
+
+  /// groupAnimalsColors
+  ///
+  /// In en, this message translates to:
+  /// **'Animals and colors'**
+  String get groupAnimalsColors;
+
+  /// kanjiMeaning
+  ///
+  /// In en, this message translates to:
+  /// **'Meaning'**
+  String get kanjiMeaning;
+
+  /// kanjiOnReadings
+  ///
+  /// In en, this message translates to:
+  /// **'On readings'**
+  String get kanjiOnReadings;
+
+  /// kanjiKunReadings
+  ///
+  /// In en, this message translates to:
+  /// **'Kun readings'**
+  String get kanjiKunReadings;
+
+  /// kanjiNoReadings
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get kanjiNoReadings;
+
+  /// kanjiStrokeCount
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 stroke} other{{count} strokes}}'**
+  String kanjiStrokeCount(int count);
+
+  /// kanjiGradeLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Grade {grade}'**
+  String kanjiGradeLabel(int grade);
+
+  /// kanjiListen
+  ///
+  /// In en, this message translates to:
+  /// **'Listen'**
+  String get kanjiListen;
+
+  /// modeKanjiToMeaning
+  ///
+  /// In en, this message translates to:
+  /// **'Kanji → English'**
+  String get modeKanjiToMeaning;
+
+  /// modeMeaningToKanji
+  ///
+  /// In en, this message translates to:
+  /// **'English → Kanji'**
+  String get modeMeaningToKanji;
+
+  /// modeKanjiToReading
+  ///
+  /// In en, this message translates to:
+  /// **'Kanji → Reading'**
+  String get modeKanjiToReading;
+
+  /// quizReadingKun
+  ///
+  /// In en, this message translates to:
+  /// **'Kun reading'**
+  String get quizReadingKun;
+
+  /// quizReadingOn
+  ///
+  /// In en, this message translates to:
+  /// **'On reading'**
+  String get quizReadingOn;
+
+  /// practiceDrawKanji
+  ///
+  /// In en, this message translates to:
+  /// **'Draw the kanji for'**
+  String get practiceDrawKanji;
 }
 
 class _AppLocalizationsDelegate

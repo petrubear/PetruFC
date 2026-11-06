@@ -1,6 +1,9 @@
 <!--
 SYNC IMPACT REPORT
-Version change: 1.1.0 -> 1.2.0
+Version change: 1.2.0 -> 1.3.0
+Amendment 1.3.0 (2026-11-06): Kanji module (grade 1). Vocabulary rule now covers Kanji words (only
+  kanji of the module, hiragana reading plus romaji); KANJIDIC2 (EDRDG, CC BY-SA 4.0) added to the
+  credited data sources. Minor bump: nothing that complied with 1.2.0 stops complying.
 Amendment 1.2.0 (2026-11-06): style system (washi) and optional sounds. Principle III now says
   every style MUST keep principles II to IV; Technology adds audioplayers; sounds are original,
   offline and switchable. Minor bump: nothing that complied with 1.1.0 stops complying.
@@ -76,8 +79,9 @@ and Japanese UI needs decisions that belong with the Kanji module.
 ### V. Offline and Private
 The app MUST work fully offline: all data, fonts, stroke data and media are bundled, and the
 app MUST NOT require network access, accounts, analytics or telemetry. Third-party data MUST
-keep its license and attribution (for example KanjiVG under CC BY-SA 3.0 is credited in
-Settings and in `assets/kana/LICENSE-KanjiVG.txt`).
+keep its license and attribution (for example KanjiVG under CC BY-SA 3.0 and KANJIDIC2 under
+CC BY-SA 4.0 are credited in Settings, in `assets/kana/LICENSE-KanjiVG.txt` and in
+`assets/kanji/LICENSE-KANJIDIC2.txt`).
 Rationale: it is a personal study tool that must always open and never leak data.
 
 ### VI. Low-Friction, Attention-Friendly Study
@@ -105,7 +109,9 @@ Rationale: a lean workflow that still catches the layout and theme regressions t
   additions MUST be justified in the plan and MUST work offline on Android.
 - Hiragana vocabulary MUST contain only words written entirely in hiragana; Katakana
   vocabulary MUST contain only katakana words. Readings are lowercase romaji and each list
-  entry MUST have a gloss. Word-search content MUST fit its 8x8 board (8 characters maximum).
+  entry MUST have a gloss. Kanji vocabulary MUST contain only words written with the kanji of the
+  module (grade 1 for now), each with its hiragana reading and romaji, and has no word search.
+  Word-search content MUST fit its 8x8 board (8 characters maximum).
 - Settings are stored in the database settings table; new settings MUST be justified by
   Principle VI.
 
@@ -131,4 +137,4 @@ justification. Known compliance gaps listed in the Sync Impact Report MUST be cl
 their own specs, and no new feature may widen them (new screens MUST already support both
 themes and both languages once the supporting infrastructure exists).
 
-**Version**: 1.2.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06
+**Version**: 1.3.0 | **Ratified**: 2026-11-06 | **Last Amended**: 2026-11-06

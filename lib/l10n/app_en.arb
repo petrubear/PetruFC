@@ -698,7 +698,7 @@
       }
     }
   },
-  "settingsCredit": "Stroke order data: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net",
+  "settingsCredit": "Kanji data: KANJIDIC2 (EDRDG, CC BY-SA 4.0). Stroke order: KanjiVG (CC BY-SA 3.0)",
   "@settingsCredit": {
     "description": "settingsCredit"
   },
@@ -758,5 +758,95 @@
   "comingSoonShort": "SOON",
   "@comingSoonShort": {
     "description": "comingSoonShort"
+  },
+  "groupGrade1": "Grade 1",
+  "@groupGrade1": {
+    "description": "groupGrade1"
+  },
+  "groupNumbers": "Numbers",
+  "@groupNumbers": {
+    "description": "groupNumbers"
+  },
+  "groupNature": "Nature",
+  "@groupNature": {
+    "description": "groupNature"
+  },
+  "groupBodyPeople": "Body and people",
+  "@groupBodyPeople": {
+    "description": "groupBodyPeople"
+  },
+  "groupSchool": "School",
+  "@groupSchool": {
+    "description": "groupSchool"
+  },
+  "groupTimeDays": "Time and days",
+  "@groupTimeDays": {
+    "description": "groupTimeDays"
+  },
+  "groupAnimalsColors": "Animals and colors",
+  "@groupAnimalsColors": {
+    "description": "groupAnimalsColors"
+  },
+  "kanjiMeaning": "Meaning",
+  "@kanjiMeaning": {
+    "description": "kanjiMeaning"
+  },
+  "kanjiOnReadings": "On readings",
+  "@kanjiOnReadings": {
+    "description": "kanjiOnReadings"
+  },
+  "kanjiKunReadings": "Kun readings",
+  "@kanjiKunReadings": {
+    "description": "kanjiKunReadings"
+  },
+  "kanjiNoReadings": "None",
+  "@kanjiNoReadings": {
+    "description": "kanjiNoReadings"
+  },
+  "kanjiStrokeCount": "{count, plural, =1{1 stroke} other{{count} strokes}}",
+  "@kanjiStrokeCount": {
+    "description": "kanjiStrokeCount",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "kanjiGradeLabel": "Grade {grade}",
+  "@kanjiGradeLabel": {
+    "description": "kanjiGradeLabel",
+    "placeholders": {
+      "grade": {
+        "type": "int"
+      }
+    }
+  },
+  "kanjiListen": "Listen",
+  "@kanjiListen": {
+    "description": "kanjiListen"
+  },
+  "modeKanjiToMeaning": "Kanji → English",
+  "@modeKanjiToMeaning": {
+    "description": "modeKanjiToMeaning"
+  },
+  "modeMeaningToKanji": "English → Kanji",
+  "@modeMeaningToKanji": {
+    "description": "modeMeaningToKanji"
+  },
+  "modeKanjiToReading": "Kanji → Reading",
+  "@modeKanjiToReading": {
+    "description": "modeKanjiToReading"
+  },
+  "quizReadingKun": "Kun reading",
+  "@quizReadingKun": {
+    "description": "quizReadingKun"
+  },
+  "quizReadingOn": "On reading",
+  "@quizReadingOn": {
+    "description": "quizReadingOn"
+  },
+  "practiceDrawKanji": "Draw the kanji for",
+  "@practiceDrawKanji": {
+    "description": "practiceDrawKanji"
   }
 }

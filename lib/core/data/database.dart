@@ -6,12 +6,12 @@ import 'tables.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Modules, ItemGroups, Items, Settings, ReviewStats, DailyActivity])
+@DriftDatabase(tables: [Modules, ItemGroups, Items, Settings, ReviewStats, DailyActivity, KanjiDetails])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? driftDatabase(name: 'petrufc'));
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -54,6 +54,10 @@ class AppDatabase extends _$AppDatabase {
       if (from < 10) await upgradeToV10(this);
       if (from < 11) await upgradeToV11(this);
       if (from < 12) await upgradeToV12(this);
+      if (from < 13) {
+        await m.createTable(kanjiDetails);
+        await upgradeToV13(this);
+      }
     },
   );
 }

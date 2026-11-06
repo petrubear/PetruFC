@@ -1,0 +1,10 @@
+Los datos de los kanji (lista, grado, lecturas, numero de trazos y significados) provienen de
+KANJIDIC2, Copyright (C) Electronic Dictionary Research and Development Group (EDRDG),
+https://www.edrdg.org/wiki/index.php/KANJIDIC_Project
+distribuido bajo Creative Commons Attribution-ShareAlike 4.0
+(https://creativecommons.org/licenses/by-sa/4.0/). Se extrajo el subconjunto del grado 1.
+Este archivo y strokes.json se distribuyen bajo la misma licencia.
+
+strokes.json deriva de KanjiVG (http://kanjivg.tagaini.net), Copyright (C) 2009-2011 Ulrich Apel,
+distribuido bajo Creative Commons Attribution-Share Alike 3.0
+(http://creativecommons.org/licenses/by-sa/3.0/). Se extrajeron los trazos y la posicion de los numeros.

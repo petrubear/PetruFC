@@ -495,7 +495,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsCredit =>
-      'Stroke order data: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net';
+      'Kanji data: KANJIDIC2 (EDRDG, CC BY-SA 4.0). Stroke order: KanjiVG (CC BY-SA 3.0)';
 
   @override
   String get practiceCorrect => 'CORRECT';
@@ -537,4 +537,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get comingSoonShort => 'SOON';
+
+  @override
+  String get groupGrade1 => 'Grade 1';
+
+  @override
+  String get groupNumbers => 'Numbers';
+
+  @override
+  String get groupNature => 'Nature';
+
+  @override
+  String get groupBodyPeople => 'Body and people';
+
+  @override
+  String get groupSchool => 'School';
+
+  @override
+  String get groupTimeDays => 'Time and days';
+
+  @override
+  String get groupAnimalsColors => 'Animals and colors';
+
+  @override
+  String get kanjiMeaning => 'Meaning';
+
+  @override
+  String get kanjiOnReadings => 'On readings';
+
+  @override
+  String get kanjiKunReadings => 'Kun readings';
+
+  @override
+  String get kanjiNoReadings => 'None';
+
+  @override
+  String kanjiStrokeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count strokes',
+      one: '1 stroke',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kanjiGradeLabel(int grade) {
+    return 'Grade $grade';
+  }
+
+  @override
+  String get kanjiListen => 'Listen';
+
+  @override
+  String get modeKanjiToMeaning => 'Kanji → English';
+
+  @override
+  String get modeMeaningToKanji => 'English → Kanji';
+
+  @override
+  String get modeKanjiToReading => 'Kanji → Reading';
+
+  @override
+  String get quizReadingKun => 'Kun reading';
+
+  @override
+  String get quizReadingOn => 'On reading';
+
+  @override
+  String get practiceDrawKanji => 'Draw the kanji for';
 }

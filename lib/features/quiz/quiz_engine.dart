@@ -7,6 +7,7 @@ import '../../core/l10n/language.dart';
 const _scripts = {
   'hiragana': ('Hiragana', 'あ', 'はな', 'Nariz', 'Nose'),
   'katakana': ('Katakana', 'ア', 'コーヒー', 'Café', 'Coffee'),
+  'kanji': ('Kanji', '山', '日本', 'Japón', 'Japan'),
 };
 
 enum QuizMode {
@@ -14,7 +15,10 @@ enum QuizMode {
   romajiToKana('kana', false),
   scriptSwap('kana', true),
   wordToMeaning('word', true),
-  meaningToWord('word', false);
+  meaningToWord('word', false),
+  kanjiToMeaning('kanji', true),
+  meaningToKanji('kanji', false),
+  kanjiToReading('kanji', true);
 
   const QuizMode(this.kind, this.promptIsJapanese);
   final String kind;
@@ -33,6 +37,9 @@ enum QuizMode {
           : l.modeScriptSwap('Hiragana', 'Katakana'),
       wordToMeaning => l.modeWordToMeaning(script),
       meaningToWord => l.modeMeaningToWord(script),
+      kanjiToMeaning => l.modeKanjiToMeaning,
+      meaningToKanji => l.modeMeaningToKanji,
+      kanjiToReading => l.modeKanjiToReading,
     };
   }
 
@@ -45,22 +52,26 @@ enum QuizMode {
       scriptSwap => moduleId == 'katakana' ? 'ア→あ' : 'あ→ア',
       wordToMeaning => '${s.$3}→$meaning',
       meaningToWord => '$meaning→${s.$3}',
+      kanjiToMeaning => '山→${lang == AppLanguage.en ? 'mountain' : 'montaña'}',
+      meaningToKanji => '${lang == AppLanguage.en ? 'mountain' : 'montaña'}→山',
+      kanjiToReading => '山→やま',
     };
   }
 
-  bool get answersAreJapanese => this == scriptSwap || !promptIsJapanese;
+  bool get answersAreJapanese => this == scriptSwap || this == kanjiToReading || !promptIsJapanese;
 
   String prompt(Item i, AppLanguage lang) => switch (this) {
-        kanaToRomaji || scriptSwap || wordToMeaning => i.japanese,
+        kanaToRomaji || scriptSwap || wordToMeaning || kanjiToMeaning || kanjiToReading => i.japanese,
         romajiToKana => i.reading,
-        meaningToWord => i.meaning(lang)!,
+        meaningToWord || meaningToKanji => i.meaning(lang)!,
       };
 
   String answer(Item i, AppLanguage lang) => switch (this) {
         kanaToRomaji => i.reading,
-        romajiToKana || meaningToWord => i.japanese,
+        romajiToKana || meaningToWord || meaningToKanji => i.japanese,
         scriptSwap => _swapScript(i),
-        wordToMeaning => i.meaning(lang)!,
+        wordToMeaning || kanjiToMeaning => i.meaning(lang)!,
+        kanjiToReading => i.audioText ?? i.reading,
       };
 }
 
@@ -71,8 +82,19 @@ String _swapScript(Item i) {
       i.japanese.runes.map((r) => toHira ? r - 0x60 : r + 0x60));
 }
 
+/// Tipo de lectura de un kanji: kun (hiragana) u on (katakana).
+enum ReadingType { kun, on }
+
+String _toHira(String s) => String.fromCharCodes(
+    s.runes.map((r) => r >= 0x30A1 && r <= 0x30F6 ? r - 0x60 : r));
+String _toKata(String s) => String.fromCharCodes(
+    s.runes.map((r) => r >= 0x3041 && r <= 0x3096 ? r + 0x60 : r));
+String _plain(String s) => s.replaceAll('.', '').replaceAll('-', '');
+List<String> _split(String s) => s.isEmpty ? [] : s.split('、');
+
 class QuizQuestion {
-  const QuizQuestion(this.items, this.prompt, this.options, this.correct);
+  const QuizQuestion(this.items, this.prompt, this.options, this.correct, {this.readingType});
+  final ReadingType? readingType;
   final List<Item> items;
   Item get item => items.first;
   final String prompt;
@@ -81,8 +103,10 @@ class QuizQuestion {
 }
 
 class QuizEngine {
-  QuizEngine(this.pool, this.mode, this.lang, {this.multi = false, Random? rng})
+  QuizEngine(this.pool, this.mode, this.lang,
+      {this.multi = false, this.details = const {}, Random? rng})
       : _rng = rng ?? Random();
+  final Map<int, KanjiDetail> details;
   final List<Item> pool;
   final QuizMode mode;
   final AppLanguage lang;
@@ -123,10 +147,48 @@ class QuizEngine {
       target = pool[_rng.nextInt(pool.length)];
     } while (pool.length > 1 && target.id == _lastId);
     _lastId = target.id;
+    if (mode == QuizMode.kanjiToReading) return _nextReading(target);
     final correct = _answer(target);
     final others = pool.map(_answer).where((a) => a != correct).toSet().toList()
       ..shuffle(_rng);
     final options = [correct, ...others.take(3)]..shuffle(_rng);
     return QuizQuestion([target], _prompt(target), options, correct);
+  }
+
+  // Lecturas validas (en hiragana) de un kanji: todas las kun y las on.
+  Set<String> _valid(Item i) {
+    final d = details[i.id];
+    return {
+      if (d != null) ...[
+        for (final k in _split(d.kunReadings)) _plain(k),
+        for (final o in _split(d.onReadings)) _toHira(_plain(o)),
+      ],
+      if (i.audioText != null) i.audioText!,
+    };
+  }
+
+  QuizQuestion _nextReading(Item target) {
+    final main = target.audioText ?? target.reading;
+    final kunSet = {for (final k in _split(details[target.id]?.kunReadings ?? '')) _plain(k)};
+    final type = kunSet.contains(main) ? ReadingType.kun : ReadingType.on;
+    String show(String hira) => type == ReadingType.on ? _toKata(hira) : hira;
+    final valid = _valid(target);
+    final others = <String>{};
+    for (final o in pool) {
+      if (o.id == target.id) continue;
+      final d = details[o.id];
+      final list = d == null
+          ? <String>[]
+          : (type == ReadingType.kun
+              ? [for (final k in _split(d.kunReadings)) _plain(k)]
+              : [for (final k in _split(d.onReadings)) _toHira(_plain(k))]);
+      if (list.isEmpty) continue;
+      final r = list[_rng.nextInt(list.length)];
+      if (!valid.contains(r)) others.add(r);
+    }
+    final opts = others.toList()..shuffle(_rng);
+    final correct = show(main);
+    final options = [correct, ...opts.take(3).map(show)]..shuffle(_rng);
+    return QuizQuestion([target], target.japanese, options, correct, readingType: type);
   }
 }

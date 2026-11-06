@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/data/app_settings.dart';
+import '../../core/data/database.dart';
 import '../../core/data/providers.dart';
 import '../../core/feedback/feedback.dart';
 import 'quiz_engine.dart';
@@ -44,14 +45,16 @@ class QuizSession extends AutoDisposeFamilyAsyncNotifier<QuizState, QuizArgs> {
     final lang = ref.watch(appLanguageProvider);
     final repo = ref.read(repoProvider);
     final Set<String> ids;
-    if (mode.kind == 'kana') {
+    if (mode.kind == 'kana' || mode.kind == 'kanji') {
       ids = await ref.read(activeGroupsProvider(moduleId).future);
     } else if (groupId != null) {
       ids = {groupId};
     } else {
       ids = (await repo.groups(moduleId, 'word')).map((g) => g.id).toSet();
     }
-    _engine = QuizEngine(await repo.items(moduleId, ids), mode, lang, multi: multi);
+    final details =
+        mode.kind == 'kanji' ? await ref.read(kanjiDetailsProvider.future) : <int, KanjiDetail>{};
+    _engine = QuizEngine(await repo.items(moduleId, ids), mode, lang, multi: multi, details: details);
     final size = (await ref.read(settingsProvider.future)).sessionSize;
     return QuizState(question: _engine.next(), size: size);
   }

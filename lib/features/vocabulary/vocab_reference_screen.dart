@@ -125,20 +125,34 @@ class _WordRow extends ConsumerWidget {
               children: [
                 Expanded(
                   flex: 5,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(nameLines(item.japanese),
-                        style: const TextStyle(
-                            fontFamily: Pt.kana,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 34)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(nameLines(item.japanese),
+                            style: TextStyle(
+                                fontFamily: Pt.kana,
+                                fontWeight: FontWeight.w700,
+                                fontSize: item.moduleId == 'kanji' ? 28 : 34,
+                                height: 1.1)),
+                      ),
+                      if (item.moduleId == 'kanji' && item.audioText != null)
+                        Text(item.audioText!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 13, height: 1.1, color: context.pt.subtext)),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   flex: 4,
                   child: Text(item.meaning(ref.watch(appLanguageProvider)) ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                 ),
                 Icon(Icons.volume_up_rounded, color: context.pt.subtext, size: 22),

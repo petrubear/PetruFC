@@ -1,4 +1,6 @@
 import 'seed_glosses_en.dart';
+import 'seed_kanji.dart';
+import 'seed_kanji_words.dart';
 import 'seed_topics.dart';
 import 'package:drift/drift.dart';
 
@@ -445,14 +447,15 @@ void _addKatakana(Batch b, AppDatabase db) => _addScript(b, db,
     combinedExample: 'キャ シュ チョ',
     wordsCount: 30);
 
-Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
+Future<void> seedDatabase(AppDatabase db) async {
+  await db.batch((b) {
       b.insertAll(db.modules, [
         ModulesCompanion.insert(
             id: 'hiragana', name: 'Hiragana', glyph: 'あ', sortOrder: 0, enabled: true),
         ModulesCompanion.insert(
             id: 'katakana', name: 'Katakana', glyph: 'ア', sortOrder: 1, enabled: true),
         ModulesCompanion.insert(
-            id: 'kanji', name: 'Kanji', glyph: '字', sortOrder: 2, enabled: false),
+            id: 'kanji', name: 'Kanji', glyph: '字', sortOrder: 2, enabled: true),
       ]);
       _addHiragana(b, db);
       _addHiraganaOrgans(b, db);
@@ -463,6 +466,8 @@ Future<void> seedDatabase(AppDatabase db) => db.batch((b) {
       _addNames(b, db);
       _addMoreTopics(b, db);
     });
+  await _addKanji(db);
+}
 
 /// Esquema v3: activa Katakana en bases creadas antes de que existiera.
 Future<void> upgradeToV3(AppDatabase db) async {
@@ -508,3 +513,80 @@ Future<void> upgradeToV12(AppDatabase db) => db.batch((b) {
         });
       });
     });
+
+const _kanjiSections = [
+  ('numbers', 'Números'),
+  ('nature', 'Naturaleza'),
+  ('body_people', 'Cuerpo y personas'),
+  ('school', 'Escuela'),
+  ('time', 'Tiempo y días'),
+  ('animals_colors', 'Animales y colores'),
+];
+
+// Modulo Kanji: 80 kanji de grado 1, sus detalles y 6 secciones de vocabulario.
+Future<void> _addKanji(AppDatabase db) async {
+  await db.batch((b) {
+    b.insert(
+        db.itemGroups,
+        _group('kanji', 'kanji_g1', 'kanji', 'Grado 1',
+            '${seedKanjiRows.length} caracteres · ${seedKanjiRows.take(3).map((r) => r[0]).join(' ')}', 0),
+        mode: InsertMode.insertOrIgnore);
+    b.insertAll(
+        db.items,
+        [
+          for (final r in seedKanjiRows)
+            ItemsCompanion.insert(
+              moduleId: 'kanji',
+              groupId: 'kanji_g1',
+              kind: 'kanji',
+              japanese: r[0] as String,
+              reading: r[1] as String,
+              audioText: Value(r[2] as String),
+              meaningEs: Value(r[3] as String),
+              meaningEn: Value(r[4] as String),
+            ),
+        ]);
+    for (var i = 0; i < _kanjiSections.length; i++) {
+      final (id, name) = _kanjiSections[i];
+      final words = seedKanjiWordRows.where((w) => w[0] == id).toList();
+      b.insert(
+          db.itemGroups, _group('kanji', 'kanji_$id', 'word', name, '${words.length} palabras', i + 1),
+          mode: InsertMode.insertOrIgnore);
+      b.insertAll(db.items, [
+        for (final w in words)
+          ItemsCompanion.insert(
+            moduleId: 'kanji',
+            groupId: 'kanji_$id',
+            kind: 'word',
+            japanese: w[1],
+            audioText: Value(w[2]),
+            reading: w[3],
+            meaningEn: Value(w[4]),
+            meaningEs: Value(w[5]),
+          ),
+      ]);
+    }
+    b.insert(db.settings, SettingsCompanion.insert(key: 'active_groups:kanji', value: 'kanji_g1'),
+        mode: InsertMode.insertOrIgnore);
+  });
+  final ids = {
+    for (final i in await (db.select(db.items)..where((i) => i.groupId.equals('kanji_g1'))).get())
+      i.japanese: i.id,
+  };
+  await db.batch((b) => b.insertAll(db.kanjiDetails, [
+        for (final r in seedKanjiRows)
+          KanjiDetailsCompanion.insert(
+            itemId: Value(ids[r[0]]!),
+            grade: 1,
+            strokeCount: r[5] as int,
+            onReadings: r[6] as String,
+            kunReadings: r[7] as String,
+          ),
+      ], mode: InsertMode.insertOrIgnore));
+}
+
+/// Esquema v13: modulo Kanji (grado 1) activado, con sus kanji, detalles y vocabulario.
+Future<void> upgradeToV13(AppDatabase db) async {
+  await db.customStatement("UPDATE modules SET enabled = 1 WHERE id = 'kanji'");
+  await _addKanji(db);
+}

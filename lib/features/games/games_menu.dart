@@ -25,7 +25,8 @@ class GamesMenuScreen extends ConsumerWidget {
     final entries = [
       MenuEntry(context.l10n.memoryName, context.l10n.memorySub, '記', '$base/memory'),
       MenuEntry(context.l10n.buildName, context.l10n.buildSub, '組', '$base/build'),
-      MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, '探', '$base/wordsearch'),
+      if (moduleId != 'kanji')
+        MenuEntry(context.l10n.wordSearchName, context.l10n.wordSearchSub, '探', '$base/wordsearch'),
     ];
     return Scaffold(
       body: SafeArea(

@@ -495,7 +495,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsCredit =>
-      'Orden de trazos: KanjiVG (CC BY-SA 3.0), kanjivg.tagaini.net';
+      'Datos de kanji: KANJIDIC2 (EDRDG, CC BY-SA 4.0). Orden de trazos: KanjiVG (CC BY-SA 3.0)';
 
   @override
   String get practiceCorrect => 'CORRECTO';
@@ -538,4 +538,74 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get comingSoonShort => 'PRONTO';
+
+  @override
+  String get groupGrade1 => 'Grado 1';
+
+  @override
+  String get groupNumbers => 'Números';
+
+  @override
+  String get groupNature => 'Naturaleza';
+
+  @override
+  String get groupBodyPeople => 'Cuerpo y personas';
+
+  @override
+  String get groupSchool => 'Escuela';
+
+  @override
+  String get groupTimeDays => 'Tiempo y días';
+
+  @override
+  String get groupAnimalsColors => 'Animales y colores';
+
+  @override
+  String get kanjiMeaning => 'Significado';
+
+  @override
+  String get kanjiOnReadings => 'Lecturas on';
+
+  @override
+  String get kanjiKunReadings => 'Lecturas kun';
+
+  @override
+  String get kanjiNoReadings => 'Ninguna';
+
+  @override
+  String kanjiStrokeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trazos',
+      one: '1 trazo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kanjiGradeLabel(int grade) {
+    return 'Grado $grade';
+  }
+
+  @override
+  String get kanjiListen => 'Escuchar';
+
+  @override
+  String get modeKanjiToMeaning => 'Kanji → Español';
+
+  @override
+  String get modeMeaningToKanji => 'Español → Kanji';
+
+  @override
+  String get modeKanjiToReading => 'Kanji → Lectura';
+
+  @override
+  String get quizReadingKun => 'Lectura kun';
+
+  @override
+  String get quizReadingOn => 'Lectura on';
+
+  @override
+  String get practiceDrawKanji => 'Dibuja el kanji de';
 }

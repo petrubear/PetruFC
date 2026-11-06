@@ -2,7 +2,7 @@
 
 <img src="assets/icon/icon.png" alt="Icono de Petru FC" width="120" align="right">
 
-App Flutter para Android para estudiar japonés con flashcards. Incluye **Hiragana** y **Katakana** (mismas funciones en ambos) y está pensada para crecer (Kanji, etc.) a medida que avancen las clases. Funciona 100% sin conexión y se adapta al Galaxy Z Fold: vista **slab** (cerrado) y **extendida** (abierto).
+App Flutter para Android para estudiar japonés con flashcards. Incluye **Hiragana**, **Katakana** y **Kanji** (grado 1 de primaria, 80 kanji; mismas seis funciones en los tres) y está pensada para crecer (grados 2 a 6) a medida que avancen las clases. Funciona 100% sin conexión y se adapta al Galaxy Z Fold: vista **slab** (cerrado) y **extendida** (abierto).
 
 ## Funciones
 
@@ -10,7 +10,10 @@ La app sigue el modo claro u oscuro del teléfono y su idioma (inglés o españo
 
 Estilo visual "Washi y tinta" (papel crema y tinta, sello rojo, kanji en el menú). Con el Fold abierto el inicio usa dos paneles: módulos a la izquierda y las 6 funciones en cuadrícula 2x3 a la derecha. El botón principal del inicio retoma tu último estudio. Los **sonidos inspirados en el shamisen** (toque, acierto, error, combo, meta) se activan o apagan en Configuración o con el botón de sonido del inicio; se generan con `python3 tool/make_sfx.py` (`assets/sfx/*.wav`).
 
-Cada módulo (Hiragana y Katakana) ofrece las mismas funciones:
+Cada módulo (Hiragana, Katakana y Kanji) ofrece las mismas funciones:
+
+> **Kanji (grado 1)**: la Referencia es una cuadrícula de 80 kanji con detalle (significado, lecturas on y kun, trazos); Flashcards tiene Kanji → Significado, Significado → Kanji y Kanji → Lectura; el Vocabulario trae 6 secciones con palabras escritas solo con esos kanji (sin Sopa de letras). Datos de lista, lecturas y significados: [KANJIDIC2](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project) (EDRDG, CC BY-SA 4.0). Se regeneran con `python3 tool/make_kanji.py` (`lib/core/data/seed_kanji*.dart`, `assets/kanji/strokes.json`, lista de palabras en `tool/kanji_words.txt`).
+
 
 - **Aprender**: cada carácter en el orden de la Referencia, con guía gris, trazos numerados y animación del orden de trazos; dibujas encima con el dedo, con Anterior, Siguiente y Borrar. Recuerda dónde te quedaste. Datos de trazos: [KanjiVG](http://kanjivg.tagaini.net) (CC BY-SA 3.0).
 - **Flashcards**: Kana → Romaji y Romaji → Kana, con 4 opciones al azar y botón de pronunciación. Los sets (Básicos, Dakuten/handakuten, Combinados) se activan o desactivan a gusto.

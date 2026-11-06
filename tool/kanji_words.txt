@@ -1,0 +1,73 @@
+# seccion	palabra	hiragana	romaji	ingles	espanol (solo kanji de grado 1; lo valida tool/make_kanji.py)
+numbers	十一	じゅういち	juuichi	eleven	once
+numbers	二十	にじゅう	nijuu	twenty	veinte
+numbers	四十	よんじゅう	yonjuu	forty	cuarenta
+numbers	五十	ごじゅう	gojuu	fifty	cincuenta
+numbers	六十	ろくじゅう	rokujuu	sixty	sesenta
+numbers	七十	ななじゅう	nanajuu	seventy	setenta
+numbers	九十	きゅうじゅう	kyuujuu	ninety	noventa
+numbers	三百	さんびゃく	sanbyaku	three hundred	trescientos
+numbers	八百	はっぴゃく	happyaku	eight hundred	ochocientos
+numbers	三千	さんぜん	sanzen	three thousand	tres mil
+numbers	百円	ひゃくえん	hyakuen	100 yen	cien yenes
+numbers	千円	せんえん	senen	1000 yen	mil yenes
+nature	日本	にほん	nihon	Japan	Japón
+nature	山川	やまかわ	yamakawa	mountains and rivers	montañas y ríos
+nature	火山	かざん	kazan	volcano	volcán
+nature	大雨	おおあめ	ooame	heavy rain	lluvia fuerte
+nature	青空	あおぞら	aozora	blue sky	cielo azul
+nature	水田	すいでん	suiden	rice paddy	arrozal
+nature	草木	くさき	kusaki	plants and trees	plantas y árboles
+nature	森林	しんりん	shinrin	forest	bosque
+nature	竹林	ちくりん	chikurin	bamboo grove	bosque de bambú
+nature	小川	おがわ	ogawa	brook	arroyo
+nature	小石	こいし	koishi	pebble	guijarro
+nature	花火	はなび	hanabi	fireworks	fuegos artificiales
+nature	大木	たいぼく	taiboku	big tree	árbol grande
+body_people	人口	じんこう	jinkou	population	población
+body_people	女子	じょし	joshi	girl	niña
+body_people	男子	だんし	danshi	boy	niño
+body_people	女王	じょおう	joou	queen	reina
+body_people	王子	おうじ	ouji	prince	príncipe
+body_people	大人	おとな	otona	adult	adulto
+body_people	手足	てあし	teashi	hands and feet	manos y pies
+body_people	入口	いりぐち	iriguchi	entrance	entrada
+body_people	出口	でぐち	deguchi	exit	salida
+body_people	左手	ひだりて	hidarite	left hand	mano izquierda
+body_people	右手	みぎて	migite	right hand	mano derecha
+body_people	人気	にんき	ninki	popularity	popularidad
+body_people	日本人	にほんじん	nihonjin	Japanese person	japonés
+body_people	赤子	あかご	akago	baby	bebé
+school	学校	がっこう	gakkou	school	escuela
+school	学生	がくせい	gakusei	student	estudiante
+school	先生	せんせい	sensei	teacher	profesor
+school	小学生	しょうがくせい	shougakusei	elementary student	alumno de primaria
+school	一年生	いちねんせい	ichinensei	first-year student	alumno de primer año
+school	文字	もじ	moji	letter, character	letra
+school	名字	みょうじ	myouji	surname	apellido
+school	中学	ちゅうがく	chuugaku	junior high school	secundaria
+school	学年	がくねん	gakunen	school year	año escolar
+school	入学	にゅうがく	nyuugaku	entering school	ingreso a la escuela
+time	二日	ふつか	futsuka	second day of the month	día dos del mes
+time	三日	みっか	mikka	third day of the month	día tres del mes
+time	四日	よっか	yokka	fourth day of the month	día cuatro del mes
+time	六日	むいか	muika	sixth day of the month	día seis del mes
+time	十日	とおか	tooka	tenth day of the month	día diez del mes
+time	先月	せんげつ	sengetsu	last month	mes pasado
+time	二月	にがつ	nigatsu	February	febrero
+time	三月	さんがつ	sangatsu	March	marzo
+time	七月	しちがつ	shichigatsu	July	julio
+time	九月	くがつ	kugatsu	September	septiembre
+time	十月	じゅうがつ	juugatsu	October	octubre
+time	正月	しょうがつ	shougatsu	New Year	Año Nuevo
+time	夕日	ゆうひ	yuuhi	evening sun	sol del atardecer
+animals_colors	子犬	こいぬ	koinu	puppy	cachorro
+animals_colors	白犬	しろいぬ	shiroinu	white dog	perro blanco
+animals_colors	青虫	あおむし	aomushi	caterpillar	oruga
+animals_colors	小虫	こむし	komushi	small insect	insecto pequeño
+animals_colors	赤貝	あかがい	akagai	ark clam	almeja roja
+animals_colors	赤字	あかじ	akaji	deficit, being in the red	déficit
+animals_colors	赤土	あかつち	akatsuchi	red soil	tierra roja
+animals_colors	白玉	しらたま	shiratama	white rice dumpling	bolita de arroz blanca
+animals_colors	白糸	しらいと	shiraito	white thread	hilo blanco
+animals_colors	青竹	あおたけ	aotake	green bamboo	bambú verde

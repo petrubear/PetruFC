@@ -75,7 +75,7 @@ class MemoryGame extends AutoDisposeFamilyAsyncNotifier<MemoryState, GameArgs> {
 
   late AppLanguage _lang;
 
-  String _key(Item i) => arg.$2 == 'kana' ? i.reading : (i.meaning(_lang) ?? i.reading);
+  String _key(Item i) => arg.$2 == 'kana' && arg.$1 != 'kanji' ? i.reading : (i.meaning(_lang) ?? i.reading);
 
   @override
   Future<MemoryState> build(GameArgs arg) async {

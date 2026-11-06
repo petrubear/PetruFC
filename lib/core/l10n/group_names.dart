@@ -23,6 +23,13 @@ String groupName(AppLocalizations l, ItemGroup g) => switch (_suffix(g)) {
       'medicine' => l.groupMedicine,
       'computing' => l.groupComputing,
       'ai' => l.groupAi,
+      'g1' => l.groupGrade1,
+      'numbers' => l.groupNumbers,
+      'nature' => l.groupNature,
+      'body_people' => l.groupBodyPeople,
+      'school' => l.groupSchool,
+      'time' => l.groupTimeDays,
+      'animals_colors' => l.groupAnimalsColors,
       _ => g.name,
     };
 

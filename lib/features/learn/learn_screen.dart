@@ -23,7 +23,9 @@ class _LearnData {
 /// Los kana en el orden de la Referencia (basicos, dakuten, combinados) y donde se quedo el usuario.
 final _learnDataProvider = FutureProvider.autoDispose.family<_LearnData, String>((ref, module) async {
   final repo = ref.read(repoProvider);
-  final ids = ['${module}_basic', '${module}_dakuten', '${module}_combined'];
+  final ids = module == 'kanji'
+      ? ['kanji_g1']
+      : ['${module}_basic', '${module}_dakuten', '${module}_combined'];
   final items = await repo.items(module, ids);
   items.sort((a, b) {
     final g = ids.indexOf(a.groupId).compareTo(ids.indexOf(b.groupId));
@@ -74,7 +76,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     final data = ref.watch(_learnDataProvider(widget.moduleId));
-    final glyphs = ref.watch(kanaStrokesProvider);
+    final glyphs = ref.watch(strokesProvider(widget.moduleId));
     return ActivityScope(
       child: Scaffold(
         body: SafeArea(
@@ -105,8 +107,11 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
       'basic' => l.groupBasic,
       'dakuten' => l.groupDakuten,
       'combined' => l.groupCombined,
+      'g1' => l.groupGrade1,
       _ => '',
     };
+    final isKanji = widget.moduleId == 'kanji';
+    final titleText = isKanji ? (item.meaning(context.lang) ?? item.reading) : item.reading;
     final speak = item.audioText ?? item.japanese;
 
     final top = Row(
@@ -138,15 +143,24 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
         Column(
           children: [
             Text(group, style: TextStyle(fontSize: 14, color: context.pt.subtext)),
-            Text(
-              item.reading,
-              style: TextStyle(
-                fontSize: expanded ? 84 : 72,
-                fontWeight: FontWeight.w700,
-                height: 1.05,
-                color: context.pt.flamingo,
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: expanded ? 220 : 220),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  titleText,
+                  style: TextStyle(
+                    fontSize: expanded ? 84 : 72,
+                    fontWeight: FontWeight.w700,
+                    height: 1.05,
+                    color: context.pt.flamingo,
+                  ),
+                ),
               ),
             ),
+            if (isKanji)
+              Text(item.audioText ?? '',
+                  style: TextStyle(fontSize: 18, color: context.pt.subtext)),
           ],
         ),
         const SizedBox(width: 20),
@@ -164,6 +178,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> with SingleTickerProv
                 parts,
                 context.pt,
                 showGuide: _guide,
+                weight: isKanji ? 2.2 : 3.8,
                 progress: _anim.isAnimating ? _anim.value * _strokeCount : null,
               ),
               onStart: (p) => setState(() => _strokes = [..._strokes, [p]]),

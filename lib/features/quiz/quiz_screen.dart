@@ -55,13 +55,16 @@ class QuizScreen extends ConsumerWidget {
               }
               final expanded = isExpanded(context);
               final q = s.question;
-              final asList = mode == QuizMode.wordToMeaning;
+              final asList = mode == QuizMode.wordToMeaning || mode == QuizMode.kanjiToMeaning;
               final base = switch (mode) {
                 QuizMode.kanaToRomaji => 150.0,
                 QuizMode.romajiToKana => 110.0,
                 QuizMode.scriptSwap => 150.0,
                 QuizMode.wordToMeaning => 96.0,
                 QuizMode.meaningToWord => 60.0,
+                QuizMode.kanjiToMeaning => 150.0,
+                QuizMode.meaningToKanji => 70.0,
+                QuizMode.kanjiToReading => 150.0,
               };
               _Opt stateOf(String o) => !s.answered
                   ? _Opt.idle
@@ -75,6 +78,11 @@ class QuizScreen extends ConsumerWidget {
                 text: q.prompt,
                 japanese: mode.promptIsJapanese,
                 size: (expanded ? base * 1.7 : base) * (multi ? 0.42 : 1),
+                tag: switch (q.readingType) {
+                  ReadingType.kun => context.l10n.quizReadingKun,
+                  ReadingType.on => context.l10n.quizReadingOn,
+                  null => null,
+                },
                 speakText: mode.promptIsJapanese
                     ? q.items.map((i) => i.audioText ?? i.japanese).join(multi ? '、' : '')
                     : null,
@@ -228,7 +236,9 @@ class _PromptCard extends StatelessWidget {
     required this.japanese,
     required this.size,
     required this.speakText,
+    this.tag,
   });
+  final String? tag;
   final String text;
   final bool japanese;
   final double size;
@@ -255,6 +265,13 @@ class _PromptCard extends StatelessWidget {
                 ),
               ),
             ),
+            if (tag != null)
+              Positioned(
+                left: 20,
+                top: 16,
+                child: Text(tag!.toUpperCase(),
+                    style: context.pt.label.copyWith(color: context.pt.flamingo)),
+              ),
             if (speakText != null)
               Positioned(right: 18, bottom: 18, child: SpeakerButton(text: speakText!)),
           ],

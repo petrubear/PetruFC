@@ -61,7 +61,8 @@ final gameScopeProvider =
   final name = modules.firstWhere((m) => m.id == a.$1).name;
   if (a.$2 == 'kana') {
     final active = await ref.watch(activeGroupsProvider(a.$1).future);
-    final groups = await ref.watch(groupsProvider((a.$1, 'kana')).future);
+    final groups =
+        await ref.watch(groupsProvider((a.$1, a.$1 == 'kanji' ? 'kanji' : 'kana')).future);
     return (name, groups.where((g) => active.contains(g.id)).toList());
   }
   final groups = await ref.watch(groupsProvider((a.$1, 'word')).future);

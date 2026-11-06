@@ -76,21 +76,30 @@ class PracticeScreen extends ConsumerWidget {
                   SessionProgress(done: s.graded, size: s.size),
                 ],
               );
+              final isKanji = moduleId == 'kanji';
               final romaji = Column(
                 children: [
                   Text(
-                    context.l10n.practiceDrawPrompt(moduleId == 'katakana' ? 'katakana' : 'hiragana'),
+                    isKanji
+                        ? context.l10n.practiceDrawKanji
+                        : context.l10n.practiceDrawPrompt(moduleId == 'katakana' ? 'katakana' : 'hiragana'),
                     style: TextStyle(fontSize: 15, color: context.pt.subtext),
                   ),
-                  Text(
-                    s.item.reading,
-                    style: TextStyle(
-                      fontSize: expanded ? 96 : 84,
-                      fontWeight: FontWeight.w700,
-                      height: 1.05,
-                      color: context.pt.flamingo,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      isKanji ? (s.item.meaning(context.lang) ?? s.item.reading) : s.item.reading,
+                      style: TextStyle(
+                        fontSize: expanded ? 96 : 84,
+                        fontWeight: FontWeight.w700,
+                        height: 1.05,
+                        color: context.pt.flamingo,
+                      ),
                     ),
                   ),
+                  if (isKanji)
+                    Text(s.item.audioText ?? '',
+                        style: TextStyle(fontSize: 20, color: context.pt.subtext)),
                 ],
               );
               final board = StrokeBoard(
